@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -243,5 +243,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Mon Feb 22 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.4-2
+- https://fedoraproject.org/wiki/Changes/golang1.6
+
 * Fri Jan 29 2016 Antonio Murdaca <runcom@redhat.com> - 0.1.4
 - First package for Fedora
