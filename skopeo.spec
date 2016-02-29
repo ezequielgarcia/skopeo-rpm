@@ -25,12 +25,12 @@
 # https://github.com/runcom/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          98aca9c188cd78c808e4560f4827f8c70a8b7f4f
+%global commit          3eefe215e08c8b6661210080c037fc939a17ff47
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.4
-Release:        2%{?dist}
+Version:        0.1.8
+Release:        1%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -243,6 +243,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Mon Feb 29 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.8-1
+- update to v0.1.8
+
 * Mon Feb 22 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.4-2
 - https://fedoraproject.org/wiki/Changes/golang1.6
 
