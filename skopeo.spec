@@ -20,16 +20,16 @@
 
 %global provider        github
 %global provider_tld    com
-%global project         runcom
+%global project         projectatomic
 %global repo            skopeo
-# https://github.com/runcom/skopeo
+# https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          30db2ad7fc9176996f21b235b8dbbdb395fdd529
+%global commit          82b121caf19e0e66b06df1e4f0d421f58c3c29c6
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.9
+Version:        0.1.10
 Release:        1%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
@@ -157,8 +157,8 @@ providing packages with %{import_path} prefix.
 %setup -q -n %{repo}-%{commit}
 
 %build
-mkdir -p src/github.com/runcom
-ln -s ../../../ src/github.com/runcom/skopeo
+mkdir -p src/github.com/projectatomic
+ln -s ../../../ src/github.com/projectatomic/skopeo
 
 mkdir -p vendor/src
 mv vendor/github.com vendor/src/.
@@ -243,6 +243,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Tue Mar 08 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.10-1
+- update to v0.1.10
+- change runcom -> projectatomic
+
 * Mon Feb 29 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.9-1
 - update to v0.1.9
 
