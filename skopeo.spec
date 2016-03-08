@@ -25,11 +25,11 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          82b121caf19e0e66b06df1e4f0d421f58c3c29c6
+%global commit          8094910c9a8122311e175b83b9c611f886a0a034
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.10
+Version:        0.1.11
 Release:        1%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
@@ -243,6 +243,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Tue Mar 08 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.11-1
+- update to v0.1.11
+
 * Tue Mar 08 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.10-1
 - update to v0.1.10
 - change runcom -> projectatomic
