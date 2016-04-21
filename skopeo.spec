@@ -43,6 +43,7 @@ BuildRequires: compiler(go-compiler)
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires:  golang-github-cpuguy83-go-md2man
+BuildRequires:  gpgme-devel
 
 %description
 Command line utility to inspect images and repositories directly on Docker
