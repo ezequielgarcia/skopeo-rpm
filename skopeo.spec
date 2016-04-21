@@ -161,8 +161,11 @@ mkdir -p src/github.com/projectatomic
 ln -s ../../../ src/github.com/projectatomic/skopeo
 
 mkdir -p vendor/src
-mv vendor/github.com vendor/src/.
-mv vendor/golang.org vendor/src/.
+for v in github.com golang.org; do
+    if test -d vendor/${v}; then
+	mv vendor/${v} vendor/src/
+    fi
+done    
 
 %if ! 0%{?with_bundled}
 rm -rf vendor/
