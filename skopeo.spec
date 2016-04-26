@@ -181,7 +181,9 @@ export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 export GO15VENDOREXPERIMENT=1
 %gobuild -o skopeo .
 
-go-md2man -in man/skopeo.1.md -out skopeo.1
+if test -f man/skopeo.1.md; then
+    go-md2man -in man/skopeo.1.md -out skopeo.1
+fi    
 
 %install
 mkdir -p %{buildroot}/%{_mandir}/man1
