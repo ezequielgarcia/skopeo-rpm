@@ -165,9 +165,10 @@ mkdir -p src/github.com/projectatomic
 ln -s ../../../ src/github.com/projectatomic/skopeo
 
 mkdir -p vendor/src
-for v in github.com golang.org; do
-    if test -d vendor/${v}; then
-	mv vendor/${v} vendor/src/
+for v in vendor/*; do
+    if test ${v} = vendor/src; then continue; fi
+    if test -d ${v}; then
+	mv ${v} vendor/src/
     fi
 done    
 
