@@ -12,11 +12,11 @@
 %global with_unit_test 0
 %endif
 
-%if 0%{?with_debug}
-%global _dwz_low_mem_die_limit 0
-%else
+#%if 0%{?with_debug}
+#%global _dwz_low_mem_die_limit 0
+#%else
 %global debug_package   %{nil}
-%endif
+#%endif
 
 %global provider        github
 %global provider_tld    com
