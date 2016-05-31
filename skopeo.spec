@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.12
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -170,7 +170,7 @@ for v in vendor/*; do
     if test -d ${v}; then
 	mv ${v} vendor/src/
     fi
-done    
+done
 
 %if ! 0%{?with_bundled}
 rm -rf vendor/
@@ -180,11 +180,11 @@ export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 %endif
 
 export GO15VENDOREXPERIMENT=1
-%gobuild -o skopeo .
+%gobuild -o skopeo ./cmd/skopeo
 
 if test -f man/skopeo.1.md; then
     go-md2man -in man/skopeo.1.md -out skopeo.1
-fi    
+fi
 
 %install
 mkdir -p %{buildroot}/%{_mandir}/man1
@@ -253,6 +253,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Tue May 31 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.12-3
+- fix go build source path
+
 * Fri May 27 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.12-2
 - update to v0.1.12
 
