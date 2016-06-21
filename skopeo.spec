@@ -30,16 +30,22 @@
 
 Name:           skopeo
 Version:        0.1.13
-Release:        1%{?dist}
+Release:        5%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+%if 0%{?rhel}
+Patch0:         skopeo-go142.patch
+%endif
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+%if 0%{?fedora}
 BuildRequires: go-srpm-macros
 BuildRequires: compiler(go-compiler)
+%endif
+BuildRequires:  git
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires:  golang-github-cpuguy83-go-md2man
@@ -158,7 +164,7 @@ providing packages with %{import_path} prefix.
 %endif
 
 %prep
-%setup -q -n %{repo}-%{commit}
+%autosetup -Sgit -n %{repo}-%{commit}
 
 %build
 mkdir -p src/github.com/projectatomic
@@ -180,6 +186,11 @@ export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 %endif
 
 export GO15VENDOREXPERIMENT=1
+
+%if ! 0%{?gobuild:1}
+%define gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x %{?**};
+%endif
+
 %gobuild -o skopeo ./cmd/skopeo
 
 if test -f man/skopeo.1.md; then
@@ -253,6 +264,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Tue Jun 21 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.13-5
+- include go-srpm-macros and compiler(go-compiler) in fedora conditionals
+- define %%gobuild if not already
+- add patch to build with older version of golang
+
 * Thu Jun 02 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.13-4
 - update to v0.1.12
 
