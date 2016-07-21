@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.13
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -264,6 +264,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Thu Jul 21 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.13-6
+- https://fedoraproject.org/wiki/Changes/golang1.7
+
 * Tue Jun 21 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.13-5
 - include go-srpm-macros and compiler(go-compiler) in fedora conditionals
 - define %%gobuild if not already
