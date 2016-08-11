@@ -25,12 +25,12 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          9e971b4937d176aa7ac3af6377b69e58bfd789eb
+%global commit          ffe92ed2bbbf4e77fc8ef8c62d2b4c2844195c66
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.13
-Release:        6%{?dist}
+Version:        0.1.14
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -164,11 +164,11 @@ providing packages with %{import_path} prefix.
 %endif
 
 %prep
-%autosetup -Sgit -n %{repo}-%{commit}
+%autosetup -Sgit -n %{name}-%{commit}
 
 %build
 mkdir -p src/github.com/projectatomic
-ln -s ../../../ src/github.com/projectatomic/skopeo
+ln -s ../../../ src/%{import_path}
 
 mkdir -p vendor/src
 for v in vendor/*; do
@@ -185,20 +185,9 @@ export GOPATH=$(pwd):%{gopath}
 export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 %endif
 
-export GO15VENDOREXPERIMENT=1
-
-%if ! 0%{?gobuild:1}
-%define gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x %{?**};
-%endif
-
-%gobuild -o skopeo ./cmd/skopeo
-
-if test -f man/skopeo.1.md; then
-    go-md2man -in man/skopeo.1.md -out skopeo.1
-fi
+make binary-local docs
 
 %install
-mkdir -p %{buildroot}/%{_mandir}/man1
 make DESTDIR=%{buildroot} install
 
 # source codes for building projects
@@ -258,12 +247,15 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %files
-%{_bindir}/skopeo
-%{_mandir}/man1/skopeo.1*
+%{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 %license LICENSE
 %doc README.md
 
 %changelog
+* Thu Aug 11 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-1.gitffe92ed
+- build origin/master commit ffe92ed
+
 * Thu Jul 21 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.1.13-6
 - https://fedoraproject.org/wiki/Changes/golang1.7
 
