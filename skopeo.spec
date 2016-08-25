@@ -248,7 +248,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %files
 %{_bindir}/%{name}
+%{_sysconfdir}/containers
 %{_mandir}/man1/%{name}.1*
+%{_datadir}/bash-completion/completions/%{name}
 %license LICENSE
 %doc README.md
 
