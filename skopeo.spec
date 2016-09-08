@@ -25,12 +25,12 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          ffe92ed2bbbf4e77fc8ef8c62d2b4c2844195c66
+%global commit          362bfc5fe37db08b945d190c377b617c6a7e4c3c
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
 Version:        0.1.14
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -255,6 +255,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 
 %changelog
+* Thu Sep 08 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-2.git362bfc5
+- built commit 362bfc5
+
 * Thu Aug 11 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-1.gitffe92ed
 - build origin/master commit ffe92ed
 
