@@ -12,11 +12,11 @@
 %global with_unit_test 0
 %endif
 
-#%if 0%{?with_debug}
-#%global _dwz_low_mem_die_limit 0
-#%else
+#%%if 0%{?with_debug}
+#%%global _dwz_low_mem_die_limit 0
+#%%else
 %global debug_package   %{nil}
-#%endif
+#%%endif
 
 %global provider        github
 %global provider_tld    com
@@ -25,16 +25,16 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          362bfc5fe37db08b945d190c377b617c6a7e4c3c
+%global commit          d8303916d52272e08d92163bba18e30c50ee24d7
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
 Version:        0.1.14
-Release:        2.git%{shortcommit}%{?dist}
+Release:        3.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
-Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 %if 0%{?rhel}
 Patch0:         skopeo-go142.patch
 %endif
@@ -247,14 +247,22 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %files
+%license LICENSE
+%doc README.md
 %{_bindir}/%{name}
 %{_sysconfdir}/containers
 %{_mandir}/man1/%{name}.1*
+%dir %{_datadir}/bash-completion
+%dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
-%license LICENSE
-%doc README.md
+%config(noreplace)%{_sysconfdir}/containers/policy.json
+%dir %{_sysconfdir}/containers
+%{_sysconfdir}/containers/registries.d
 
 %changelog
+* Wed Sep 21 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-3.gitd830391
+- built mtrmac/integrate-all-the-things commit d830391
+
 * Thu Sep 08 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-2.git362bfc5
 - built commit 362bfc5
 
