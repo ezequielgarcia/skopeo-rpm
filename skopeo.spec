@@ -25,12 +25,12 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          d8303916d52272e08d92163bba18e30c50ee24d7
+%global commit          550a480173090c9b94ac3bce48953b338fa92e94
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
 Version:        0.1.14
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -51,6 +51,10 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires:  golang-github-cpuguy83-go-md2man
 BuildRequires:  gpgme-devel
 BuildRequires:  libassuan-devel
+
+Requires: %{repo}-containers = %{version}-%{release}
+
+Conflicts: atomic <= 1.13.1-2
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -163,6 +167,13 @@ This package contains unit tests for project
 providing packages with %{import_path} prefix.
 %endif
 
+%package containers
+Summary: Configuration files for working with image signatures
+
+%description containers
+This package installs a default signature store configuration and a default
+policy under `/etc/containers/`.
+
 %prep
 %autosetup -Sgit -n %{name}-%{commit}
 
@@ -246,20 +257,27 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 %endif
 
+%files containers
+%{_sysconfdir}/containers
+%config(noreplace) %{_sysconfdir}/containers/policy.json
+%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
+%dir %{_sysconfdir}/containers
+%dir %{_sysconfdir}/containers/registries.d
+%dir %{_sharedstatedir}/atomic/sigstore
+
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
-%{_sysconfdir}/containers
 %{_mandir}/man1/%{name}.1*
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
-%config(noreplace)%{_sysconfdir}/containers/policy.json
-%dir %{_sysconfdir}/containers
-%{_sysconfdir}/containers/registries.d
 
 %changelog
+* Wed Oct 12 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-4.git550a480
+- built skopeo-containers
+
 * Wed Sep 21 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.14-3.gitd830391
 - built mtrmac/integrate-all-the-things commit d830391
 
