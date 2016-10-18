@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.14
-Release:        4.git%{shortcommit}%{?dist}
+Release:        5.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -53,8 +53,6 @@ BuildRequires:  gpgme-devel
 BuildRequires:  libassuan-devel
 
 Requires: %{repo}-containers = %{version}-%{release}
-
-Conflicts: atomic <= 1.13.1-2
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -169,6 +167,7 @@ providing packages with %{import_path} prefix.
 
 %package containers
 Summary: Configuration files for working with image signatures
+Conflicts: atomic <= 1.13.1-2
 
 %description containers
 This package installs a default signature store configuration and a default
@@ -275,6 +274,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Oct 18 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-5.git550a480
+- Conflicts with atomic in skopeo-containers
+
 * Wed Oct 12 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-4.git550a480
 - built skopeo-containers
 
