@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.14
-Release:        5.git%{shortcommit}%{?dist}
+Release:        6.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -40,7 +40,10 @@ Patch0:         skopeo-go142.patch
 %endif
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+#ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+# manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
+ExclusiveArch:  %{?go_arches:%{ix86} x86_64 %{arm} aarch64 ppc64le s390x %{mips}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
 BuildRequires: compiler(go-compiler)
@@ -274,6 +277,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Fri Nov 04 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-6.git550a480
+- Fix BZ#1391932
+
 * Tue Oct 18 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-5.git550a480
 - Conflicts with atomic in skopeo-containers
 
