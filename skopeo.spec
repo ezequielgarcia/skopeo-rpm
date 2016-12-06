@@ -25,19 +25,16 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          550a480173090c9b94ac3bce48953b338fa92e94
+%global commit          2b3af4ad51520b35590f285024506393663ff8f4
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.14
-Release:        6.git%{shortcommit}%{?dist}
+Version:        0.1.17
+Release:        1.dev.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-%if 0%{?rhel}
-Patch0:         skopeo-go142.patch
-%endif
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 #ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -277,6 +274,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Dec 06 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.17-1.dev.git2b3af4a
+- bump to 0.1.17-dev
+
 * Fri Nov 04 2016 Antonio Murdaca <runcom@fedoraproject.org> - 0.1.14-6.git550a480
 - Fix BZ#1391932
 
