@@ -30,7 +30,7 @@
 
 Name:           skopeo
 Version:        0.1.17
-Release:        1.dev.git%{shortcommit}%{?dist}
+Release:        2.dev.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -274,6 +274,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Dec 10 2016 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.1.17-2.dev.git2b3af4a
+- Rebuild for gpgme 1.18
+
 * Tue Dec 06 2016 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.17-1.dev.git2b3af4a
 - bump to 0.1.17-dev
 
