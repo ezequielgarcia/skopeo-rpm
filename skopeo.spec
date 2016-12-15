@@ -51,6 +51,7 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires:  golang-github-cpuguy83-go-md2man
 BuildRequires:  gpgme-devel
 BuildRequires:  libassuan-devel
+BuildRequires:  btrfs-progs-devel
 
 Requires: %{repo}-containers = %{version}-%{release}
 
