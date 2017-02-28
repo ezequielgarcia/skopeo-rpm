@@ -25,12 +25,12 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          2b3af4ad51520b35590f285024506393663ff8f4
+%global commit          0224d8cd387b69f1d48d7727e303e4e95a02c2af
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           skopeo
-Version:        0.1.17
-Release:        3.dev.git%{shortcommit}%{?dist}
+Version:        0.1.19
+Release:        1.dev.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -277,6 +277,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Feb 28 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.19-1.dev.git0224d8c
+- bump to v0.1.19-dev
+- built commit 0224d8c
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.17-3.dev.git2b3af4a
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
