@@ -28,9 +28,11 @@
 %global commit          0224d8cd387b69f1d48d7727e303e4e95a02c2af
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+ExcludeArch: ppc64
+
 Name:           skopeo
 Version:        0.1.19
-Release:        1.dev.git%{shortcommit}%{?dist}
+Release:        2.dev.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -277,6 +279,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Apr 25 2017 bbaude <bbaude@redhat.com> - 0.1.19-2.dev.git0224d8c
+- No golang support for ppc64.  Adding exclude arch. BZ #1445490
+
 * Tue Feb 28 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.19-1.dev.git0224d8c
 - bump to v0.1.19-dev
 - built commit 0224d8c
