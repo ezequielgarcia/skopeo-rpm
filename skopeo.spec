@@ -28,6 +28,8 @@
 %global commit          0224d8cd387b69f1d48d7727e303e4e95a02c2af
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+# e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
+# manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
 ExcludeArch: ppc64
 
 Name:           skopeo
@@ -38,10 +40,6 @@ License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
-# e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-#ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
-# manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
-ExclusiveArch:  %{?go_arches:%{ix86} x86_64 %{arm} aarch64 ppc64le s390x %{mips}}%{!?go_arches:%{ix86} x86_64 %{arm}}
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
