@@ -25,7 +25,7 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          0224d8cd387b69f1d48d7727e303e4e95a02c2af
+%global commit          e802625b7cb7f4af9ab77bd2be9eb441ff2f28a2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -33,8 +33,8 @@
 ExcludeArch: ppc64
 
 Name:           skopeo
-Version:        0.1.19
-Release:        2.dev.git%{shortcommit}%{?dist}
+Version:        0.1.20
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -277,6 +277,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue May 23 2017 bbaude <bbaude@redhat.com> - 0.1.20-1.dev.git0224d8c
+- BZ #1380078 - New release
+
 * Tue Apr 25 2017 bbaude <bbaude@redhat.com> - 0.1.19-2.dev.git0224d8c
 - No golang support for ppc64.  Adding exclude arch. BZ #1445490
 
