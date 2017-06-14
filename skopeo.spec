@@ -34,11 +34,13 @@ ExcludeArch: ppc64
 
 Name:           skopeo
 Version:        0.1.20
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
 Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Source1:        storage.conf
+Source2:        storage.conf.5.md
 
 
 %if 0%{?fedora}
@@ -202,6 +204,10 @@ make binary-local docs
 
 %install
 make DESTDIR=%{buildroot} install
+mkdir -p %{buildroot}%{_sysconfdir}
+install -m0644 %SOURCE1 %{buildroot}%{_sysconfdir}/containers/storage.conf
+mkdir -p %{buildroot}%{_mandir}/man5
+go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/storage.conf.1
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -260,12 +266,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %files containers
-%{_sysconfdir}/containers
-%config(noreplace) %{_sysconfdir}/containers/policy.json
-%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/registries.d
+%config(noreplace) %{_sysconfdir}/containers/policy.json
+%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
+%config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
+%{_mandir}/man5/storage*
 
 %files
 %license LICENSE
@@ -277,6 +284,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue May 23 2017 bbaude <bbaude@redhat.com> - 0.1.20-2.dev.git0224d8c
+- Add support for storage.conf and storage-config.5.md from github container storage package
+
 * Tue May 23 2017 bbaude <bbaude@redhat.com> - 0.1.20-1.dev.git0224d8c
 - BZ #1380078 - New release
 
