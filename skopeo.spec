@@ -57,6 +57,7 @@ BuildRequires:  libassuan-devel
 BuildRequires:  btrfs-progs-devel
 BuildRequires:  pkgconfig(devmapper)
 BuildRequires:  ostree-devel
+BuildRequires:  glib2-devel
 
 Requires: %{repo}-containers = %{version}-%{release}
 
