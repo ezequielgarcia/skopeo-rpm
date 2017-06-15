@@ -25,7 +25,7 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          e802625b7cb7f4af9ab77bd2be9eb441ff2f28a2
+%global commit          0b7315460126b8945fd53f9318a65d7cc8796af1
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -33,8 +33,8 @@
 ExcludeArch: ppc64
 
 Name:           skopeo
-Version:        0.1.20
-Release:        2.git%{shortcommit}%{?dist}
+Version:        0.1.21
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -284,8 +284,17 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
-* Tue May 23 2017 bbaude <bbaude@redhat.com> - 0.1.20-2.dev.git0224d8c
+* Thu Jun 15 2017 dwalsh <dwalsh@redhat.com> - 0.1.21-1.dev.git0b73154
 - Add support for storage.conf and storage-config.5.md from github container storage package
+- Bump to the latest version of skopeo
+- vendor.conf: add ostree-go
+-       it is used by containers/image for pulling images to the OSTree storage.
+- fail early when image os does not match host os
+- Improve documentation on what to do with containers/image failures in test-skopeo
+-   We now have the docker-archive: transport
+-   Integration tests with built registries also exist
+- Support /etc/docker/certs.d
+- update image-spec to v1.0.0-rc6
 
 * Tue May 23 2017 bbaude <bbaude@redhat.com> - 0.1.20-1.dev.git0224d8c
 - BZ #1380078 - New release
