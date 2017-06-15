@@ -56,6 +56,7 @@ BuildRequires:  libassuan-devel
 # Dependencies for containers/storage
 BuildRequires:  btrfs-progs-devel
 BuildRequires:  pkgconfig(devmapper)
+BuildRequires:  ostree-devel
 
 Requires: %{repo}-containers = %{version}-%{release}
 
