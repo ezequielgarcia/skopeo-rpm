@@ -25,7 +25,7 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          0b7315460126b8945fd53f9318a65d7cc8796af1
+%global commit          d5e34c1b5e1635c9d4ca2c45c240c78f2b26d395
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
