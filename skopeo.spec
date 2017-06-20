@@ -41,7 +41,7 @@ URL:            https://%{provider_prefix}
 Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        storage.conf
 Source2:        storage.conf.5.md
-Patch:          ostree.patch
+Patch0:         ostree.patch
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
