@@ -25,7 +25,7 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          d5e34c1b5e1635c9d4ca2c45c240c78f2b26d395
+%global commit          5d24b67f5eeeca348966adb412d8119837faa1c2
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -33,7 +33,7 @@
 ExcludeArch: ppc64
 
 Name:           skopeo
-Version:        0.1.21
+Version:        0.1.22
 Release:        1.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
@@ -41,7 +41,6 @@ URL:            https://%{provider_prefix}
 Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 Source1:        storage.conf
 Source2:        storage.conf.5.md
-Patch0:         ostree.patch
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -286,6 +285,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Jun 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.22-1.dev.git5d24b67
+-  Give more useful help when explaining usage
+-  Also specify container-storage as a valid transport
+-  Remove docker reference wherever possible
+-  vendor in ostree fixes
+
 * Thu Jun 15 2017 dwalsh <dwalsh@redhat.com> - 0.1.21-1.dev.git0b73154
 - Add support for storage.conf and storage-config.5.md from github container storage package
 - Bump to the latest version of skopeo
