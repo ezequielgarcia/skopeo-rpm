@@ -33,8 +33,11 @@
 ExcludeArch: ppc64
 
 Name:           skopeo
+%if 0%{?centos}
+Epoch:          1
+%endif # centos
 Version:        0.1.22
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -285,6 +288,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Jul 01 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.22-2.dev.git5d24b67
+- Epoch: 1 for CentOS as CentOS Extras' build already has epoch set to 1
+
 * Wed Jun 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.22-1.dev.git5d24b67
 -  Give more useful help when explaining usage
 -  Also specify container-storage as a valid transport
