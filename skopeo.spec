@@ -25,7 +25,7 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          5d24b67f5eeeca348966adb412d8119837faa1c2
+%global commit          1bbd87f4356fed4f21b860b18c50dbe72027b1a0
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -36,8 +36,8 @@ Name:           skopeo
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.22
-Release:        2.git%{shortcommit}%{?dist}
+Version:        0.1.23
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -288,6 +288,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Fri Jul 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-1.dev.git1bbd87
+- Support for OCI V1.0 Images
+- Update to image-spec v1.0.0 and revendor
+- Fixes for authentication
+
 * Sat Jul 01 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.22-2.dev.git5d24b67
 - Epoch: 1 for CentOS as CentOS Extras' build already has epoch set to 1
 
