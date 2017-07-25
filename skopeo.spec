@@ -37,7 +37,7 @@ Name:           skopeo
 Epoch:          1
 %endif # centos
 Version:        0.1.23
-Release:        1.git%{shortcommit}%{?dist}
+Release:        2.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -211,7 +211,7 @@ make DESTDIR=%{buildroot} install
 mkdir -p %{buildroot}%{_sysconfdir}
 install -m0644 %SOURCE1 %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
-go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/storage.conf.1
+go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/storage.conf.5
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -276,7 +276,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
-%{_mandir}/man5/storage*
+%{_mandir}/man5/storage.conf.5*
 
 %files
 %license LICENSE
@@ -288,6 +288,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Jul 24 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-2.dev.git1bbd87
+- Fix storage.conf man page to be storage.conf.5.gz so that it works.
+
 * Fri Jul 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-1.dev.git1bbd87
 - Support for OCI V1.0 Images
 - Update to image-spec v1.0.0 and revendor
