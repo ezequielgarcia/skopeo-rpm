@@ -37,7 +37,7 @@ Name:           skopeo
 Epoch:          1
 %endif # centos
 Version:        0.1.23
-Release:        3.git%{shortcommit}%{?dist}
+Release:        4.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -288,6 +288,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sun Jul 30 2017 Florian Weimer <fweimer@redhat.com> - 0.1.23-4.git1bbd87f
+- Rebuild with binutils fix for ppc64le (#1475636)
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.23-3.git1bbd87f
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
