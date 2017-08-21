@@ -37,7 +37,7 @@ Name:           skopeo
 Epoch:          1
 %endif # centos
 Version:        0.1.23
-Release:        5.git%{shortcommit}%{?dist}
+Release:        6.git%{shortcommit}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -211,7 +211,7 @@ make DESTDIR=%{buildroot} install
 mkdir -p %{buildroot}%{_sysconfdir}
 install -m0644 %SOURCE1 %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
-go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/storage.conf.5
+go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -276,7 +276,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
-%{_mandir}/man5/storage.conf.5*
+%{_mandir}/man5/containers-storage.conf.5*
 
 %files
 %license LICENSE
@@ -288,6 +288,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Mon Aug 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-6.dev.git1bbd87
+- Change name of storage.conf.5 man page to containers-storage.conf.5, since
+it conflicts with inn package
+- Also remove default to "overalay" in the configuration, since we should
+- allow containers storage to pick the best default for the platform.
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.23-5.git1bbd87f
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
