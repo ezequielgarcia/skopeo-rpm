@@ -25,23 +25,24 @@
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          1bbd87f4356fed4f21b860b18c50dbe72027b1a0
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
+%global git0            https://%{import_path}
+%global commit0         a41cd0a0abf026951374c6b9ffe8b7689f19ec7f
+%global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 # manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
 ExcludeArch: ppc64
 
-Name:           skopeo
+Name:           %{repo}
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.23
-Release:        6.git%{shortcommit}%{?dist}
+Version:        0.1.24
+Release:        1.dev.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
-URL:            https://%{provider_prefix}
-Source0:        https://github.com/mtrmac/skopeo/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+URL:            %{git0}
+Source0:        %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1:        storage.conf
 Source2:        storage.conf.5.md
 
@@ -183,7 +184,7 @@ This package installs a default signature store configuration and a default
 policy under `/etc/containers/`.
 
 %prep
-%autosetup -Sgit -n %{name}-%{commit}
+%autosetup -Sgit -n %{name}-%{commit0}
 
 %build
 mkdir -p src/github.com/projectatomic
@@ -209,9 +210,9 @@ make binary-local docs
 %install
 make DESTDIR=%{buildroot} install
 mkdir -p %{buildroot}%{_sysconfdir}
-install -m0644 %SOURCE1 %{buildroot}%{_sysconfdir}/containers/storage.conf
+install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
-go-md2man -in %SOURCE2 -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
+go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 
 # source codes for building projects
 %if 0%{?with_devel}
@@ -288,6 +289,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Sep 12 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-1.dev.gita41cd0
+- bump to 0.1.24-dev
+
 * Mon Aug 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-6.dev.git1bbd87
 - Change name of storage.conf.5 man page to containers-storage.conf.5, since
 it conflicts with inn package
