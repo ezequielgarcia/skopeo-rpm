@@ -12,7 +12,7 @@
 %global with_unit_test 0
 %endif
 
-#%%if 0%{?with_debug}
+#%%if 0%%{?with_debug}
 #%%global _dwz_low_mem_die_limit 0
 #%%else
 %global debug_package   %{nil}
@@ -291,6 +291,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %changelog
 * Tue Sep 12 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-1.dev.gita41cd0
 - bump to 0.1.24-dev
+- correct a prior bogus date
+- fix macro in comment warning
 
 * Mon Aug 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-6.dev.git1bbd87
 - Change name of storage.conf.5 man page to containers-storage.conf.5, since
@@ -307,7 +309,7 @@ it conflicts with inn package
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.23-3.git1bbd87f
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
-* Tue Jul 24 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-2.dev.git1bbd87
+* Tue Jul 25 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-2.dev.git1bbd87
 - Fix storage.conf man page to be storage.conf.5.gz so that it works.
 
 * Fri Jul 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.23-1.dev.git1bbd87
