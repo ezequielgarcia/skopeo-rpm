@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 %global git0            https://%{import_path}
-%global commit0         875dd2e7a965adb92dfc97c69eaceba9d33b27ba
+%global commit0         28d4e08a4bee85ad7c25106431df649c6f9e389b
 %global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.24
-Release:        2.dev.git%{shortcommit0}%{?dist}
+Release:        3.dev.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -289,6 +289,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Oct 10 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-3.dev.git28d4e08
+- built commit 28d4e08
+
 * Mon Sep 18 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-2.dev.git875dd2e
 - built commit 875dd2e
 - Resolves: gh#416
