@@ -38,13 +38,13 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.24
-Release:        3.dev.git%{shortcommit0}%{?dist}
+Release:        4.dev.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
 Source0:        %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1:        storage.conf
-Source2:        storage.conf.5.md
+Source2:        containers-storage.conf.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -289,6 +289,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Oct 12 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-4.dev.git28d4e08
+- Update container/storage.conf and containers-storage.conf man page
+- Default override to true so it is consistent with RHEL.
+
 * Tue Oct 10 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-3.dev.git28d4e08
 - built commit 28d4e08
 
