@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.24
-Release:        5.dev.git%{shortcommit0}%{?dist}
+Release:        6.dev.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -178,6 +178,7 @@ providing packages with %{import_path} prefix.
 %package containers
 Summary: Configuration files for working with image signatures
 Conflicts: atomic <= 1.13.1-2
+Conflicts: docker-rhsubscription <= 2:1.13.1-31
 
 %description containers
 This package installs a default signature store configuration and a default
@@ -300,6 +301,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Oct 17 2017 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.24-6.dev.git28d4e08
+- skopeo-containers conflicts with docker-rhsubscription <= 2:1.13.1-31
+
 * Tue Oct 17 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-5.dev.git28d4e08
 - Add rhel subscription secrets data to skopeo-containers
 
