@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.24
-Release:        4.dev.git%{shortcommit0}%{?dist}
+Release:        5.dev.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -214,6 +214,13 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 
+# install secrets patch directory
+install -d -p -m 750 %{buildroot}/%{_datadir}/rhel/secrets
+# rhbz#1110876 - update symlinks for subscription management
+ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
+ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
+ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/rhel7.repo
+
 # source codes for building projects
 %if 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
@@ -278,6 +285,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
 %{_mandir}/man5/containers-storage.conf.5*
+%dir %{_datadir}/rhel/secrets
+%{_datadir}/rhel/secrets/etc-pki-entitlement
+%{_datadir}/rhel/secrets/rhel7.repo
+%{_datadir}/rhel/secrets/rhsm
 
 %files
 %license LICENSE
@@ -289,6 +300,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Oct 17 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-5.dev.git28d4e08
+- Add rhel subscription secrets data to skopeo-containers
+
 * Thu Oct 12 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-4.dev.git28d4e08
 - Update container/storage.conf and containers-storage.conf man page
 - Default override to true so it is consistent with RHEL.
