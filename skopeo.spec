@@ -38,13 +38,14 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.24
-Release:        7.git%{shortcommit0}%{?dist}
+Release:        8.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
 Source0:        %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1:        storage.conf
 Source2:        containers-storage.conf.5.md
+Source3:        mounts.conf
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -214,6 +215,8 @@ mkdir -p %{buildroot}%{_sysconfdir}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
+mkdir -p %{buildroot}%{_datadir}/containers
+install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 
 # install secrets patch directory
 install -d -p -m 750 %{buildroot}/%{_datadir}/rhel/secrets
@@ -286,6 +289,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
 %{_mandir}/man5/containers-storage.conf.5*
+%dir %{_datadir}/containers
+%{_datadir}/containers/mounts.conf
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/etc-pki-entitlement
 %{_datadir}/rhel/secrets/rhel7.repo
@@ -301,6 +306,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Nov 7 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-8.git28d4e08a
+- Add /usr/share/containers/mounts.conf
+
 * Sun Oct 22 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-7.git28d4e08a
 - Bug fixes
 - Update to release
