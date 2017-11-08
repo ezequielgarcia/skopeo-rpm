@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.25
-Release:        1.git%{shortcommit0}%{?dist}
+Release:        2.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -306,6 +306,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Nov 8 2017 dwalsh <dwalsh@redhat.com> - 0.1.25-2.git7fd6f66b
+- Force storage.conf to default to overlay
+
 * Wed Nov 8 2017 dwalsh <dwalsh@redhat.com> - 0.1.25-1.git7fd6f66b
 -   Fix CVE in tar-split
 -   copy: add shared blob directory support for OCI sources/destinations
