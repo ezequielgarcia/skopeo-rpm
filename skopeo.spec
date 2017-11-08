@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 %global git0            https://%{import_path}
-%global commit0         dd2c3e3a8e33b849f3625f4f56fa229c76448629
+%global commit0         7fd6f66b7ff599767a2bb50ad96521a23ead8297
 %global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,8 +37,8 @@ Name:           %{repo}
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.24
-Release:        8.git%{shortcommit0}%{?dist}
+Version:        0.1.25
+Release:        1.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -306,6 +306,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Nov 8 2017 dwalsh <dwalsh@redhat.com> - 0.1.25-1.git7fd6f66b
+-   Fix CVE in tar-split
+-   copy: add shared blob directory support for OCI sources/destinations
+-   Aligning Docker version between containers/image and skopeo
+-   Update image-tools, and remove the duplicate Sirupsen/logrus vendor
+-   makefile: use -buildmode=pie
+  
 * Tue Nov 7 2017 dwalsh <dwalsh@redhat.com> - 0.1.24-8.git28d4e08a
 - Add /usr/share/containers/mounts.conf
 
