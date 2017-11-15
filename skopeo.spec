@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 %global git0            https://%{import_path}
-%global commit0         7fd6f66b7ff599767a2bb50ad96521a23ead8297
+%global commit0         2e8377a7085c13674be156f32c100708da838b7e
 %global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,8 +37,8 @@ Name:           %{repo}
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.25
-Release:        2.git%{shortcommit0}%{?dist}
+Version:        0.1.26
+Release:        1.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -306,6 +306,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Nov 15 2017 dwalsh <dwalsh@redhat.com> - 0.1.25-2.git2e8377a7
+-  Add manifest type conversion to skopeo copy
+-  User can select from 3 manifest types: oci, v2s1, or v2s2
+-   e.g skopeo copy --format v2s1 --compress-blobs docker-archive:alp.tar dir:my-directory
+
 * Wed Nov 8 2017 dwalsh <dwalsh@redhat.com> - 0.1.25-2.git7fd6f66b
 - Force storage.conf to default to overlay
 
