@@ -51,6 +51,7 @@ Source3:        mounts.conf
 BuildRequires: go-srpm-macros
 BuildRequires: compiler(go-compiler)
 %endif
+BuildRequires:  git
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires:  golang-github-cpuguy83-go-md2man
@@ -59,6 +60,7 @@ BuildRequires:  libassuan-devel
 # Dependencies for containers/storage
 BuildRequires:  btrfs-progs-devel
 BuildRequires:  pkgconfig(devmapper)
+BuildRequires:  ostree-devel
 BuildRequires:  glib2-devel
 
 Requires: %{repo}-containers = %{version}-%{release}
@@ -184,7 +186,7 @@ This package installs a default signature store configuration and a default
 policy under `/etc/containers/`.
 
 %prep
-%setup -q -n %{name}-%{commit0}
+%autosetup -Sgit -n %{name}-%{commit0}
 
 %build
 mkdir -p src/github.com/projectatomic
@@ -205,7 +207,7 @@ export GOPATH=$(pwd):%{gopath}
 export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 %endif
 
-BUILDTAGS+='containers_image_ostree_stub' make binary-local docs
+make binary-local docs
 
 %install
 make DESTDIR=%{buildroot} install
