@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 %global git0            https://%{import_path}
-%global commit0         93876acc5ef7ecfc79bdd6852013a49901c54591
+%global commit0         0270e5694c9adf6eabfa3ab1f2980b8b62deb4b7
 %global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,7 +37,7 @@ Name:           %{repo}
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.27
+Version:        0.1.28
 Release:        1.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
@@ -306,6 +306,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Fri Feb 2 2018 dwalsh <dwalsh@redhat.com> - 0.1.28-1.git
+- Vendor in fixed libraries in containers/image and containers/storage
+
 * Tue Nov 21 2017 dwalsh <dwalsh@redhat.com> - 0.1.27-1.git
 - Fix Conflicts to Obsoletes
 - Add better docs to man pages.
