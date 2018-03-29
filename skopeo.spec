@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 %global git0            https://%{import_path}
-%global commit0         0270e5694c9adf6eabfa3ab1f2980b8b62deb4b7
+%global commit0         7add6fc80b0f33406217e7c3361cb711c814f028
 %global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,8 +37,8 @@ Name:           %{repo}
 %if 0%{?centos}
 Epoch:          1
 %endif # centos
-Version:        0.1.28
-Release:        2.git%{shortcommit0}%{?dist}
+Version:        0.1.29
+Release:        1.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -306,6 +306,26 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Mar 29 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-1.git
+- bump to 0.1.29-1
+- Updated containers/image
+    docker-archive generates docker legacy compatible images
+    Do not create $DiffID subdirectories for layers with no configs
+    Ensure the layer IDs in legacy docker/tarfile metadata are unique
+    docker-archive: repeated layers are symlinked in the tar file
+    sysregistries: remove all trailing slashes
+    Improve docker/* error messages
+    Fix failure to make auth directory
+    Create a new slice in Schema1.UpdateLayerInfos
+    Drop unused storageImageDestination.{image,systemContext}
+    Load a *storage.Image only once in storageImageSource
+    Support gzip for docker-archive files
+    Remove .tar extension from blob and config file names
+    ostree, src: support copy of compressed layers
+    ostree: re-pull layer if it misses uncompressed_digest|uncompressed_size
+    image: fix docker schema v1 -> OCI conversion
+    Add /etc/containers/certs.d as default certs directory
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.28-2.git0270e56
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
