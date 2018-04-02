@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.29
-Release:        1.git%{shortcommit0}%{?dist}
+Release:        2.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -46,6 +46,7 @@ Source0:        %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1:        storage.conf
 Source2:        containers-storage.conf.5.md
 Source3:        mounts.conf
+Source4:        registries.conf.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -215,6 +216,7 @@ mkdir -p %{buildroot}%{_sysconfdir}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
+go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/registries.conf.5
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 
@@ -288,7 +290,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %dir %{_sharedstatedir}/atomic/sigstore
-%{_mandir}/man5/containers-storage.conf.5*
+%{_mandir}/man5/*
 %dir %{_datadir}/containers
 %{_datadir}/containers/mounts.conf
 %dir %{_datadir}/rhel/secrets
@@ -306,6 +308,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Mon Apr 2 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-2.git
+- Add registries.conf man page
+
 * Thu Mar 29 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-1.git
 - bump to 0.1.29-1
 - Updated containers/image
