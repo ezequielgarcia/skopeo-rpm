@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.29
-Release:        2.git%{shortcommit0}%{?dist}
+Release:        3.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -47,6 +47,7 @@ Source1:        storage.conf
 Source2:        containers-storage.conf.5.md
 Source3:        mounts.conf
 Source4:        registries.conf.5.md
+Source5:        registries.conf
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -169,6 +170,7 @@ Summary:         Unit tests for %{name} package
 
 # test subpackage tests code from devel subpackage
 Requires:        %{name}-devel = %{version}-%{release}
+conflicts: atomic-registries <= 1.22.1-1.fc27
 
 %description unit-test-devel
 %{summary}
@@ -217,6 +219,8 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/registries.conf.5
+install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
+
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 
@@ -289,6 +293,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
+%config(noreplace) %{_sysconfdir}/containers/registries.conf
 %dir %{_sharedstatedir}/atomic/sigstore
 %{_mandir}/man5/*
 %dir %{_datadir}/containers
@@ -308,6 +313,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Mon Apr 2 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-3.git
+- Add registries.conf
+
 * Mon Apr 2 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-2.git
 - Add registries.conf man page
 
