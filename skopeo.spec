@@ -170,7 +170,7 @@ Summary:         Unit tests for %{name} package
 
 # test subpackage tests code from devel subpackage
 Requires:        %{name}-devel = %{version}-%{release}
-conflicts: atomic-registries <= 1.22.1-1.fc27
+conflicts: atomic-registries <= 1.22.1-1
 
 %description unit-test-devel
 %{summary}
