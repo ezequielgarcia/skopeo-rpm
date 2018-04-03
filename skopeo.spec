@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.29
-Release:        3.git%{shortcommit0}%{?dist}
+Release:        4.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -48,6 +48,7 @@ Source2:        containers-storage.conf.5.md
 Source3:        mounts.conf
 Source4:        registries.conf.5.md
 Source5:        registries.conf
+Source6:        policy.json.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -220,6 +221,7 @@ mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/registries.conf.5
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
+go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
@@ -313,6 +315,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Apr 3 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-4.git
+- Add policy.json.5
+
 * Mon Apr 2 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-3.git
 - Add registries.conf
 
