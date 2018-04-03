@@ -38,7 +38,7 @@ Name:           %{repo}
 Epoch:          1
 %endif # centos
 Version:        0.1.29
-Release:        4.git%{shortcommit0}%{?dist}
+Release:        5.git%{shortcommit0}%{?dist}
 Summary:        Inspect Docker images and repositories on registries
 License:        ASL 2.0
 URL:            %{git0}
@@ -315,6 +315,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Apr 03 2018 baude <bbaude@redhat.com> - 0.1.29-5.git7add6fc
+- Fix small typo in registries.conf
+
 * Tue Apr 3 2018 dwalsh <dwalsh@redhat.com> - 0.1.29-4.git
 - Add policy.json.5
 
