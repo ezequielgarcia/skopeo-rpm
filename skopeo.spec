@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 7add6fc80b0f33406217e7c3361cb711c814f028
+%global commit0 28080c8d5f7ac21434948601639ab26ab7aa40bb
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,8 +37,8 @@ Name: %{repo}
 %if 0%{?centos}
 Epoch: 1
 %endif # centos
-Version: 0.1.29
-Release: 5.git%{shortcommit0}%{?dist}
+Version: 0.1.30
+Release: 1.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -319,6 +319,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sun Apr 08 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.30-1.git28080c8
+- bump to 0.1.30
+- autobuilt commit 28080c8
+
 * Tue Apr 03 2018 baude <bbaude@redhat.com> - 0.1.29-5.git7add6fc
 - Fix small typo in registries.conf
 
