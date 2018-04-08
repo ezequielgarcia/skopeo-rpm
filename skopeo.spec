@@ -18,55 +18,59 @@
 %global debug_package   %{nil}
 #%%endif
 
-%global provider        github
-%global provider_tld    com
-%global project         projectatomic
-%global repo            skopeo
+%global provider github
+%global provider_tld com
+%global project projectatomic
+%global repo skopeo
 # https://github.com/projectatomic/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
-%global import_path     %{provider_prefix}
-%global git0            https://%{import_path}
-%global commit0         7add6fc80b0f33406217e7c3361cb711c814f028
-%global shortcommit0    %(c=%{commit0}; echo ${c:0:7})
+%global import_path %{provider_prefix}
+%global git0 https://%{import_path}
+%global commit0 7add6fc80b0f33406217e7c3361cb711c814f028
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 # manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
 ExcludeArch: ppc64
 
-Name:           %{repo}
+Name: %{repo}
 %if 0%{?centos}
-Epoch:          1
+Epoch: 1
 %endif # centos
-Version:        0.1.29
-Release:        5.git%{shortcommit0}%{?dist}
-Summary:        Inspect Docker images and repositories on registries
-License:        ASL 2.0
-URL:            %{git0}
-Source0:        %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
-Source1:        storage.conf
-Source2:        containers-storage.conf.5.md
-Source3:        mounts.conf
-Source4:        registries.conf.5.md
-Source5:        registries.conf
-Source6:        policy.json.5.md
+Version: 0.1.29
+Release: 5.git%{shortcommit0}%{?dist}
+Summary: Inspect Docker images and repositories on registries
+License: ASL 2.0
+URL: %{git0}
+Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
+Source1: storage.conf
+Source2: containers-storage.conf.5.md
+Source3: mounts.conf
+Source4: registries.conf.5.md
+Source5: registries.conf
+Source6: policy.json.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
 BuildRequires: compiler(go-compiler)
 %endif
-BuildRequires:  git
+BuildRequires: git
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
-BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
-BuildRequires:  golang-github-cpuguy83-go-md2man
-BuildRequires:  gpgme-devel
-BuildRequires:  libassuan-devel
+BuildRequires: %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
+BuildRequires: golang-github-cpuguy83-go-md2man
+BuildRequires: gpgme-devel
+BuildRequires: libassuan-devel
 # Dependencies for containers/storage
-BuildRequires:  btrfs-progs-devel
-BuildRequires:  pkgconfig(devmapper)
-BuildRequires:  ostree-devel
-BuildRequires:  glib2-devel
+BuildRequires: btrfs-progs-devel
+BuildRequires: pkgconfig(devmapper)
+BuildRequires: ostree-devel
+BuildRequires: glib2-devel
 
+%if 0%{?centos}
+Requires: %{repo}-containers = %{epoch}:%{version}-%{release}
+%else
 Requires: %{repo}-containers = %{version}-%{release}
+%endif # centos
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -74,8 +78,8 @@ registries without the need to pull them
 
 %if 0%{?with_devel}
 %package devel
-Summary:       %{summary}
-BuildArch:     noarch
+Summary: %{summary}
+BuildArch: noarch
 
 %if 0%{?with_check} && ! 0%{?with_bundled}
 BuildRequires: golang(github.com/Azure/go-ansiterm/winterm)
@@ -163,14 +167,14 @@ building other packages which use import path with
 
 %if 0%{?with_unit_test} && 0%{?with_devel}
 %package unit-test-devel
-Summary:         Unit tests for %{name} package
+Summary: Unit tests for %{name} package
 %if 0%{?with_check}
 #Here comes all BuildRequires: PACKAGE the unit tests
 #in %%check section need for running
 %endif
 
 # test subpackage tests code from devel subpackage
-Requires:        %{name}-devel = %{version}-%{release}
+Requires: %{name}-devel = %{version}-%{release}
 conflicts: atomic-registries <= 1.22.1-1
 
 %description unit-test-devel
