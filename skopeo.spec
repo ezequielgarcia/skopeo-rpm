@@ -65,6 +65,7 @@ BuildRequires: btrfs-progs-devel
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
+BuildRequires: make
 
 %if 0%{?centos}
 Requires: %{repo}-containers = %{epoch}:%{version}-%{release}
