@@ -38,7 +38,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.30
-Release: 7.git%{shortcommit0}%{?dist}
+Release: 8.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -320,6 +320,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Apr 17 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-8.gitab2bc6e
+- autobuilt commit ab2bc6e
+
 * Tue Apr 17 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-7.gitab2bc6e
 - autobuilt commit ab2bc6e
 
