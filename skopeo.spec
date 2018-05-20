@@ -362,7 +362,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 * Sun Apr 08 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.30-1.git28080c8
 - bump to 0.1.30
 - autobuilt commit 28080c8
-
 * Tue Apr 03 2018 baude <bbaude@redhat.com> - 0.1.29-5.git7add6fc
 - Fix small typo in registries.conf
 
