@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 0b8ab959bba614a4f88bb3791dbc078c3d47f259
+%global commit0 5c611083f263f330f396772ed9dd7d25299e20a0
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -320,7 +320,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
-* Sun May 20 2018 dwalsh <dwalsh@redhat.com> - 0.1.30-14.gitca3bff6
+* Tue May 22 2018 dwalsh <dwalsh@redhat.com> - 0.1.30-14.git0b8ab9
 - Add devicemapper support
 
 * Wed May 16 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-13.git7e9a664
