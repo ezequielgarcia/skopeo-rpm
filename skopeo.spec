@@ -26,7 +26,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 5c611083f263f330f396772ed9dd7d25299e20a0
+%global commit0 f9baaa6b87262c3f7c2faef6d5462579f01f6810
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -37,8 +37,8 @@ Name: %{repo}
 %if 0%{?centos}
 Epoch: 1
 %endif # centos
-Version: 0.1.30
-Release: 14.git%{shortcommit0}%{?dist}
+Version: 0.1.31
+Release: 1.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -320,6 +320,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat May 26 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.31-1.gitf9baaa6
+- bump to 0.1.31
+- autobuilt f9baaa6
+
 * Tue May 22 2018 dwalsh <dwalsh@redhat.com> - 0.1.30-14.git0b8ab9
 - Add devicemapper support
 
