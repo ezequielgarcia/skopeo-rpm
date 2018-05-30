@@ -1,22 +1,15 @@
-%if 0%{?fedora} || 0%{?rhel} == 6
 %global with_devel 0
 %global with_bundled 1
 %global with_debug 1
-%global with_check 0
 %global with_unit_test 0
-%else
-%global with_devel 0
-%global with_bundled 1
-%global with_debug 1
 %global with_check 0
-%global with_unit_test 0
-%endif
 
-#%%if 0%%{?with_debug}
-#%%global _dwz_low_mem_die_limit 0
-#%%else
+%if 0%{?with_debug}
+%global _find_debuginfo_dwz_opts %{nil}
+%global _dwz_low_mem_die_limit 0
+%else
 %global debug_package   %{nil}
-#%%endif
+%endif
 
 %global provider github
 %global provider_tld com
@@ -68,9 +61,9 @@ BuildRequires: glib2-devel
 BuildRequires: make
 
 %if 0%{?centos}
-Requires: %{repo}-containers = %{epoch}:%{version}-%{release}
+Requires: containers-common = %{epoch}:%{version}-%{release}
 %else
-Requires: %{repo}-containers = %{version}-%{release}
+Requires: containers-common = %{version}-%{release}
 %endif # centos
 
 %description
@@ -185,12 +178,17 @@ This package contains unit tests for project
 providing packages with %{import_path} prefix.
 %endif
 
-%package containers
+%package -n containers-common
 Summary: Configuration files for working with image signatures
-obsoletes: atomic <= 1.13.1-2
-obsoletes: docker-rhsubscription <= 2:1.13.1-31
+Obsoletes: atomic <= 1.13.1-2
+Obsoletes: docker-rhsubscription <= 2:1.13.1-31
+%if 0%{?centos}
+Provides: %{name}-containers = %{epoch}:%{version}-%{release}
+%else
+Provides: %{name}-containers = %{version}-%{release}
+%endif # centos
 
-%description containers
+%description -n containers-common
 This package installs a default signature store configuration and a default
 policy under `/etc/containers/`.
 
@@ -294,7 +292,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 %endif
 
-%files containers
+%files -n containers-common
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/registries.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
