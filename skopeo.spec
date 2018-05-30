@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.31
-Release: 2.git%{shortcommit0}%{?dist}
+Release: 3.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -184,8 +184,10 @@ Obsoletes: atomic <= 1.13.1-2
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 %if 0%{?centos}
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-containers <= 1:0.1.31-2
 %else
 Provides: %{name}-containers = %{version}-%{release}
+Obsoletes: %{name}-containers <= 0.1.31-2
 %endif # centos
 
 %description -n containers-common
@@ -318,6 +320,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed May 30 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.31-3.gitf9baaa6
+- should obsolete older skopeo-containers
+
 * Wed May 30 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.31-2.gitf9baaa6
 - rename skopeo-containers to containers-common
 - enable debuginfo
