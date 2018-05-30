@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.31
-Release: 1.git%{shortcommit0}%{?dist}
+Release: 2.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -318,6 +318,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed May 30 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.31-2.gitf9baaa6
+- rename skopeo-containers to containers-common
+- enable debuginfo
+
 * Sat May 26 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.31-1.gitf9baaa6
 - bump to 0.1.31
 - autobuilt f9baaa6
