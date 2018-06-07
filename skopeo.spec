@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.31
-Release: 4.git%{shortcommit0}%{?dist}
+Release: 5.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -42,6 +42,7 @@ Source3: mounts.conf
 Source4: registries.conf.5.md
 Source5: registries.conf
 Source6: policy.json.5.md
+Source7: seccomp.json
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -230,6 +231,7 @@ go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
+install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
 
 # install secrets patch directory
 install -d -p -m 750 %{buildroot}/%{_datadir}/rhel/secrets
@@ -305,6 +307,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_mandir}/man5/*
 %dir %{_datadir}/containers
 %{_datadir}/containers/mounts.conf
+%{_datadir}/containers/seccomp.json
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/etc-pki-entitlement
 %{_datadir}/rhel/secrets/rhel7.repo
@@ -320,6 +323,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Jun 7 2018 dwalsh <dwalsh@redhat.com> - 0.1.31-5.git0144aa8
+- add seccomp.json to containers-config
+
 * Thu May 31 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.31-4.git0144aa8
 - autobuilt 0144aa8
 
