@@ -170,7 +170,6 @@ Summary: Unit tests for %{name} package
 
 # test subpackage tests code from devel subpackage
 Requires: %{name}-devel = %{version}-%{release}
-conflicts: atomic-registries <= 1.22.1-1
 
 %description unit-test-devel
 %{summary}
@@ -182,6 +181,7 @@ providing packages with %{import_path} prefix.
 %package -n containers-common
 Summary: Configuration files for working with image signatures
 Obsoletes: atomic <= 1.13.1-2
+Conflicts: atomic-registries <= 1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 %if 0%{?centos}
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
