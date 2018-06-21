@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.31
-Release: 5.git%{shortcommit0}%{?dist}
+Release: 6.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -323,6 +323,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Jun 21 2018 dwalsh <dwalsh@redhat.com> - 0.1.31-6.git0144aa8
+- add statx to seccomp.json to containers-config
+
 * Thu Jun 7 2018 dwalsh <dwalsh@redhat.com> - 0.1.31-5.git0144aa8
 - add seccomp.json to containers-config
 
