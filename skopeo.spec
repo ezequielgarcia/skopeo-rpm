@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: 1
 %endif # centos
 Version: 0.1.31
-Release: 9.git%{shortcommit0}%{?dist}
+Release: 9.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
