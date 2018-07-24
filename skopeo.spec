@@ -1,8 +1,13 @@
 %global with_devel 0
 %global with_bundled 1
-%global with_debug 1
 %global with_unit_test 0
 %global with_check 0
+
+%if 0%{?fedora} > 28
+%global with_debug 0
+%else
+%global with_debug 1
+%endif # rawhide
 
 %if 0%{?with_debug}
 %global _find_debuginfo_dwz_opts %{nil}
@@ -27,11 +32,8 @@
 ExcludeArch: ppc64
 
 Name: %{repo}
-%if 0%{?centos}
-Epoch: 1
-%endif # centos
 Version: 0.1.31
-Release: 10.dev.git%{shortcommit0}%{?dist}
+Release: 11.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -60,12 +62,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-
-%if 0%{?centos}
-Requires: containers-common = %{epoch}:%{version}-%{release}
-%else
 Requires: containers-common = %{version}-%{release}
-%endif # centos
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -183,13 +180,8 @@ Summary: Configuration files for working with image signatures
 Obsoletes: atomic <= 1.13.1-2
 Conflicts: atomic-registries <= 1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-%if 0%{?centos}
-Provides: %{name}-containers = %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-containers <= 1:0.1.31-2
-%else
 Provides: %{name}-containers = %{version}-%{release}
 Obsoletes: %{name}-containers <= 0.1.31-2
-%endif # centos
 
 %description -n containers-common
 This package installs a default signature store configuration and a default
@@ -323,6 +315,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Jul 24 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.31-11.dev.gitae64ff7
+- Resolves: #1606365 - solve FTBFS - disable debuginfo for rawhide (f29)
+- remove centos conditionals, CentOS Virt SIG gets rhel rebuilds
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.31-10.dev.gitae64ff7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
