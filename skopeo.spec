@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 ae64ff7084c8ba60275232740b79c1876f8a5256
+%global commit0 e3034e1d91056b480b28a5ae7c56526e084588cf
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -33,7 +33,7 @@ ExcludeArch: ppc64
 
 Name: %{repo}
 Version: 0.1.31
-Release: 11.dev.git%{shortcommit0}%{?dist}
+Release: 12.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -315,6 +315,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Jul 25 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.31-12.dev.gite3034e1
+- autobuilt e3034e1
+
 * Tue Jul 24 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.31-11.dev.gitae64ff7
 - Resolves: #1606365 - solve FTBFS - disable debuginfo for rawhide (f29)
 - remove centos conditionals, CentOS Virt SIG gets rhel rebuilds
