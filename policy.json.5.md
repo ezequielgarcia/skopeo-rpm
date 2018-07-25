@@ -3,7 +3,7 @@
 % September 2016
 
 # NAME
-policy.json - Syntax for the Signature Verification Configuration File
+policy.json - syntax for the signature verification policy file
 
 ## DESCRIPTION
 
@@ -274,8 +274,8 @@ selectively allow individual transports and scopes as desired.
     "default": [{"type": "insecureAcceptAnything"}]
 }
 ```
-# SEE ALSO
+## SEE ALSO
   atomic(1)
 
-# HISTORY
+## HISTORY
 September 2016, Originally compiled by Miloslav Trmač <mitr@redhat.com>

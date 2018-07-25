@@ -33,7 +33,7 @@ ExcludeArch: ppc64
 
 Name: %{repo}
 Version: 0.1.31
-Release: 12.dev.git%{shortcommit0}%{?dist}
+Release: 13.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -315,6 +315,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Jul 25 2018 dwalsh <dwalsh@redhat.com> - 0.1.31-13.gite3034e1
+- Update to latest storage.conf file
+- Update to latest man pages
+
 * Wed Jul 25 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.31-12.dev.gite3034e1
 - autobuilt e3034e1
 

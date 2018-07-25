@@ -37,7 +37,7 @@ The `storage` table supports the following options:
   Default directory to store all temporary writable content created by container storage programs
 
 **driver**=""
-  container storage driver (default is "overlay")
+  container storage driver (default: "overlay")
   Default Copy On Write (COW) container storage driver
 
 ### STORAGE OPTIONS TABLE 
@@ -48,13 +48,19 @@ The `storage.options` table supports the following options:
   Paths to additional container image stores. Usually these are read/only and stored on remote network shares.
 
 **size**=""
-  Maximum size of a container image.  Default is 10GB.  This flag can be used to set quota
-  on the size of container images.
+  Maximum size of a container image.   This flag can be used to set quota on the size of container images. (default: 10GB)
 
 **override_kernel_check**=""
   Tell storage drivers to ignore kernel version checks.  Some storage drivers assume that if a kernel is too
   old, the driver is not supported.  But for kernels that have had the drivers backported, this flag
   allows users to override the checks
+
+**mount_program**=""
+  Specifies the path to a custom program to use instead for mounting the file system.
+
+**mountopt**=""
+
+  Comma separated list of default options to be used to mount container images.  Suggested value "nodev".
 
 [storage.options.thinpool]
 
@@ -64,37 +70,37 @@ The `storage.options.thinpool` table supports the following options:
 
 **autoextend_percent**=""
 
-Tells the thinpool driver the amount by which the thinpool needs to be grown. This is specified in terms of % of pool size. So a value of 20 means that when threshold is hit, pool will be grown by 20% of existing pool size. (Default is 20%)
+Tells the thinpool driver the amount by which the thinpool needs to be grown. This is specified in terms of % of pool size. So a value of 20 means that when threshold is hit, pool will be grown by 20% of existing pool size. (default: 20%)
 
 **autoextend_threshold**=""
 
-Tells the driver the thinpool extension threshold in terms of percentage of pool size. For example, if threshold is 60, that means when pool is 60% full, threshold has been hit. (80% is the default)
+Tells the driver the thinpool extension threshold in terms of percentage of pool size. For example, if threshold is 60, that means when pool is 60% full, threshold has been hit. (default: 80%)
 
 **basesize**=""
 
-Specifies the size to use when creating the base device, which limits the size of images and containers. (10g is the default)
+Specifies the size to use when creating the base device, which limits the size of images and containers. (default: 10g)
 
 **blocksize**=""
 
-Specifies a custom blocksize to use for the thin pool. (64k is the default)
+Specifies a custom blocksize to use for the thin pool. (default: 64k)
 
 **directlvm_device**=""
 
-Specifies a custom block storage device to use for the thin pool. Required if you setup devicemapper
+Specifies a custom block storage device to use for the thin pool. Required for using graphdriver `devicemapper`.
 
 **directlvm_device_force**=""
 
-Tells driver to wipe device (directlvm_device) even if device already has a filesystem.  Default is False
+Tells driver to wipe device (directlvm_device) even if device already has a filesystem.  (default: false)
 
 **fs**="xfs"
 
-Specifies the filesystem type to use for the base device. (Default is xfs)
+Specifies the filesystem type to use for the base device. (default: xfs)
 
 **log_level**=""
 
 Sets the log level of devicemapper.
 
-    0: LogLevelSuppress 0 (Default)
+    0: LogLevelSuppress 0 (default)
     2: LogLevelFatal
     3: LogLevelErr
     4: LogLevelWarn
@@ -104,27 +110,29 @@ Sets the log level of devicemapper.
 
 **min_free_space**=""
 
-Specifies the min free space percent in a thin pool require for new device creation to succeed. Valid values are from 0% - 99%. Value 0% disables (10% is the default)
+Specifies the min free space percent in a thin pool required for new device creation to succeed. Valid values are from 0% - 99%. Value 0% disables. (default: 10%)
 
 **mkfsarg**=""
 
 Specifies extra mkfs arguments to be used when creating the base device.
 
-**mountopt**=""
-
-Specifies extra mount options used when mounting the thin devices.
-
 **use_deferred_removal**=""
 
-Marks device for deferred removal.  If the device is in use when it driver attempts to remove it, driver will tell the kernel to remove it as soon as possible.  (Default is true).
+Marks devicemapper block device for deferred removal.  If the device is in use when its driver attempts to remove it, the driver tells the kernel to remove the device as soon as possible.  Note this does not free up the disk space, use deferred deletion to fully remove the thinpool.  (default: true).
 
 **use_deferred_deletion**=""
 
-Marks device for deferred deletion. If the device is in use when it driver attempts to delete it, driver continue to attempt to delete device every 30 seconds, or when it restarts.  (Default is true).
+Marks thinpool device for deferred deletion. If the thinpool is in use when the driver attempts to delete it, the driver will attempt to delete device every 30 seconds until successful, or when it restarts.  Deferred deletion permanently deletes the device and all data stored in the device will be lost. (default: true).
 
 **xfs_nospace_max_retries**=""
 
-Specifies the maximum number of retries XFS should attempt to complete IO when ENOSPC (no space) error is returned by underlying storage device. (Default is 0, which means to try continuously.
+Specifies the maximum number of retries XFS should attempt to complete IO when ENOSPC (no space) error is returned by underlying storage device. (default: 0, which means to try continuously.)
+
+**ostree_repo=""**
+  Tell storage drivers to use the specified OSTree repository.  Some storage drivers, such as overlay, might use
+
+**skip_mount_home=""**
+  Tell storage drivers to not create a PRIVATE bind mount on their home directory.
 
 # HISTORY
 May 2017, Originally compiled by Dan Walsh <dwalsh@redhat.com>
