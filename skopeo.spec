@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 e3034e1d91056b480b28a5ae7c56526e084588cf
+%global commit0 e814f9605abe05a99b692225d458968a796d2843
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -32,8 +32,8 @@
 ExcludeArch: ppc64
 
 Name: %{repo}
-Version: 0.1.31
-Release: 13.dev.git%{shortcommit0}%{?dist}
+Version: 0.1.320.1.32
+Release: 1.dev.git%{shortcommit0}%{?dist}1%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -315,6 +315,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Mon Jul 30 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.320.1.32-1.dev.gite814f961
+- bump to 0.1.32
+- autobuilt e814f96
+
 * Wed Jul 25 2018 dwalsh <dwalsh@redhat.com> - 0.1.31-13.gite3034e1
 - Update to latest storage.conf file
 - Update to latest man pages
