@@ -33,7 +33,7 @@ ExcludeArch: ppc64
 
 Name: %{repo}
 Version: 0.1.320.1.32
-Release: 1.dev.git%{shortcommit0}%{?dist}1%{?dist}
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -315,6 +315,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Jul 31 2018 Florian Weimer <fweimer@redhat.com> - 0.1.320.1.32-2.dev.gite814f961
+- Rebuild with fixed binutils
+
 * Mon Jul 30 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.320.1.32-1.dev.gite814f961
 - bump to 0.1.32
 - autobuilt e814f96
