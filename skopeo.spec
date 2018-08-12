@@ -32,8 +32,11 @@
 ExcludeArch: ppc64
 
 Name: %{repo}
-Version: 0.1.320.1.32
-Release: 2.dev.git%{shortcommit0}%{?dist}
+%if 0%{?fedora} > 28
+Epoch: 1
+%endif
+Version: 0.1.32
+Release: 1.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -63,6 +66,66 @@ BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common = %{version}-%{release}
+
+Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+Provides: bundled(golang(github.com/BurntSushi/toml)) = master
+Provides: bundled(golang(github.com/containerd/continuity)) = d8fb8589b0e8e85b8c8bbaa8840226d0dfeb7371
+Provides: bundled(golang(github.com/containers/image)) = master
+Provides: bundled(golang(github.com/containers/storage)) = master
+Provides: bundled(golang(github.com/davecgh/go-spew)) = master
+Provides: bundled(golang(github.com/docker/distribution)) = master
+Provides: bundled(golang(github.com/docker/docker-credential-helpers)) = d68f9aeca33f5fd3f08eeae5e9d175edf4e731d1
+Provides: bundled(golang(github.com/docker/docker)) = da99009bbb1165d1ac5688b5c81d2f589d418341
+Provides: bundled(golang(github.com/docker/go-connections)) = 7beb39f0b969b075d1325fecb092faf27fd357b6
+Provides: bundled(golang(github.com/docker/go-metrics)) = 399ea8c73916000c64c2c76e8da00ca82f8387ab
+Provides: bundled(golang(github.com/docker/go-units)) = 8a7beacffa3009a9ac66bad506b18ffdd110cf97
+Provides: bundled(golang(github.com/docker/libtrust)) = master
+Provides: bundled(golang(github.com/ghodss/yaml)) = 73d445a93680fa1a78ae23a5839bad48f32ba1ee
+Provides: bundled(golang(github.com/go-check/check)) = v1
+Provides: bundled(golang(github.com/gogo/protobuf)) = fcdc5011193ff531a548e9b0301828d5a5b97fd8
+Provides: bundled(golang(github.com/golang/glog)) = 44145f04b68cf362d9c4df2182967c2275eaefed
+Provides: bundled(golang(github.com/golang/protobuf)) = 8d92cf5fc15a4382f8964b08e1f42a75c0591aa3
+Provides: bundled(golang(github.com/gorilla/context)) = 14f550f51a
+Provides: bundled(golang(github.com/gorilla/mux)) = e444e69cbd
+Provides: bundled(golang(github.com/imdario/mergo)) = 6633656539c1639d9d78127b7d47c622b5d7b6dc
+Provides: bundled(golang(github.com/kr/pretty)) = v0.1.0
+Provides: bundled(golang(github.com/kr/text)) = v0.1.0
+Provides: bundled(golang(github.com/matttproud/golang_protobuf_extensions)) = c12348ce28de40eed0136aa2b644d0ee0650e56c
+Provides: bundled(golang(github.com/mistifyio/go-zfs)) = 22c9b32c84eb0d0c6f4043b6e90fc94073de92fa
+Provides: bundled(golang(github.com/mtrmac/gpgme)) = master
+Provides: bundled(golang(github.com/opencontainers/go-digest)) = master
+Provides: bundled(golang(github.com/opencontainers/image-spec)) = 149252121d044fddff670adcdc67f33148e16226
+Provides: bundled(golang(github.com/opencontainers/image-tools)) = 6d941547fa1df31900990b3fb47ec2468c9c6469
+Provides: bundled(golang(github.com/opencontainers/runc)) = master
+Provides: bundled(golang(github.com/opencontainers/runtime-spec)) = v1.0.0
+Provides: bundled(golang(github.com/opencontainers/selinux)) = master
+Provides: bundled(golang(github.com/ostreedev/ostree-go)) = aeb02c6b6aa2889db3ef62f7855650755befd460
+Provides: bundled(golang(github.com/pborman/uuid)) = v1.0
+Provides: bundled(golang(github.com/pkg/errors)) = master
+Provides: bundled(golang(github.com/pmezard/go-difflib)) = master
+Provides: bundled(golang(github.com/pquerna/ffjson)) = d49c2bc1aa135aad0c6f4fc2056623ec78f5d5ac
+Provides: bundled(golang(github.com/prometheus/client_golang)) = c332b6f63c0658a65eca15c0e5247ded801cf564
+Provides: bundled(golang(github.com/prometheus/client_model)) = 99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c
+Provides: bundled(golang(github.com/prometheus/common)) = 89604d197083d4781071d3c65855d24ecfb0a563
+Provides: bundled(golang(github.com/prometheus/procfs)) = cb4147076ac75738c9a7d279075a253c0cc5acbd
+Provides: bundled(golang(github.com/sirupsen/logrus)) = v1.0.0
+Provides: bundled(golang(github.com/stretchr/testify)) = v1.1.3
+Provides: bundled(golang(github.com/syndtr/gocapability)) = master
+Provides: bundled(golang(github.com/tchap/go-patricia)) = v2.2.6
+Provides: bundled(golang(github.com/ulikunitz/xz)) = v0.5.4
+Provides: bundled(golang(github.com/urfave/cli)) = v1.17.0
+Provides: bundled(golang(github.com/vbatts/tar-split)) = v0.10.2
+Provides: bundled(golang(github.com/xeipuuv/gojsonpointer)) = master
+Provides: bundled(golang(github.com/xeipuuv/gojsonreference)) = master
+Provides: bundled(golang(github.com/xeipuuv/gojsonschema)) = master
+Provides: bundled(golang(go4.org)) = master
+Provides: bundled(golang(golang.org/x/crypto)) = master
+Provides: bundled(golang(golang.org/x/net)) = master
+Provides: bundled(golang(golang.org/x/sys)) = master
+Provides: bundled(golang(golang.org/x/text)) = master
+Provides: bundled(golang(gopkg.in/cheggaaa/pb.v1)) = ad4efe000aa550bb54918c06ebbadc0ff17687b9
+Provides: bundled(golang(gopkg.in/yaml.v2)) = d466437aa4adc35830964cffc5b5f262c63ddcb4
+Provides: bundled(golang(k8s.io/client-go)) = master
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -209,7 +272,8 @@ export GOPATH=$(pwd):%{gopath}
 export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 %endif
 
-make binary-local docs
+%gobuild -o %{name} ./cmd/%{name}
+%{__make} docs
 
 %install
 make DESTDIR=%{buildroot} install
@@ -315,6 +379,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Aug 11 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.32-1.dev.gite814f96
+- bump to v0.1.32-dev
+- built commit e814f96
+- bump Epoch to 1, cause my autobuilder messed up earlier
+- use %%gobuild
+- add bundled Provides
+
 * Tue Jul 31 2018 Florian Weimer <fweimer@redhat.com> - 0.1.320.1.32-2.dev.gite814f961
 - Rebuild with fixed binutils
 
