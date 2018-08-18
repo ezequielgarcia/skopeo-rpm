@@ -36,7 +36,7 @@ Name: %{repo}
 Epoch: 1
 %endif
 Version: 0.1.32
-Release: 1.dev.git%{shortcommit0}%{?dist}
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -65,7 +65,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{version}-%{release}
+Requires: containers-common = %{epoch}:%{version}-%{release}
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Aug 18 2018 Kevin Fenzi <kevin@scrye.com> - 1:0.1.32-2.dev.git.gite814f96
+- Fix containers-common requires to also use Epoch so skopeo is installable again.
+
 * Sat Aug 11 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.32-1.dev.gite814f96
 - bump to v0.1.32-dev
 - built commit e814f96
