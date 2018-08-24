@@ -65,7 +65,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: containers-common = %{?epoch:%{epoch}:}%{version}-%{release}
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
