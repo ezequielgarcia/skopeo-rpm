@@ -35,8 +35,8 @@ Name: %{repo}
 %if 0%{?fedora} > 28
 Epoch: 1
 %endif
-Version: 0.1.32
-Release: 2.dev.git%{shortcommit0}%{?dist}
+Version: 0.1.33
+Release: 1.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -379,6 +379,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Nov 07 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.33-1.dev.git.git5aa217f
+- bump to 0.1.33
+- built commit 5aa217f
+
 * Sat Aug 18 2018 Kevin Fenzi <kevin@scrye.com> - 1:0.1.32-2.dev.git.gite814f96
 - Fix containers-common requires to also use Epoch so skopeo is installable again.
 
