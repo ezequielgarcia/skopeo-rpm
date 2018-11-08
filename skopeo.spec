@@ -18,13 +18,13 @@
 
 %global provider github
 %global provider_tld com
-%global project projectatomic
+%global project containers
 %global repo skopeo
-# https://github.com/projectatomic/skopeo
+# https://github.com/containers/skopeo
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 e814f9605abe05a99b692225d458968a796d2843
+%global commit0 5aa217fe0df51f6875d35ec9d2d1c9b7a3789f46
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -254,7 +254,7 @@ policy under `/etc/containers/`.
 %autosetup -Sgit -n %{name}-%{commit0}
 
 %build
-mkdir -p src/github.com/projectatomic
+mkdir -p src/github.com/containers
 ln -s ../../../ src/%{import_path}
 
 mkdir -p vendor/src
