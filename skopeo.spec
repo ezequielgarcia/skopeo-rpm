@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 05212df1c53da6f9b28b75f7fd47e74220621941
+%global commit0 3e98377bf20dd21b7b778afeeb50d5d26b90ee4b
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -35,7 +35,7 @@ Name: %{repo}
 %if 0%{?fedora} > 28
 Epoch: 1
 %endif
-Version: 0.1.34
+Version: 0.1.35
 Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
@@ -379,6 +379,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Dec 22 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.35-2.dev.git3e98377
+- bump to 0.1.35
+- autobuilt 3e98377
+
 * Thu Dec 20 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.34-2.dev.git05212df
 - bump to 0.1.34
 - autobuilt 05212df
