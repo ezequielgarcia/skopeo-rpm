@@ -34,6 +34,8 @@ ExcludeArch: ppc64
 Name: %{repo}
 %if 0%{?fedora} > 28
 Epoch: 1
+%else
+Epoch: 0
 %endif
 Version: 0.1.35
 Release: 7.dev.git%{shortcommit0}%{?dist}
