@@ -67,7 +67,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: containers-common = 1:%{version}-%{release}
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -245,7 +245,7 @@ Summary: Configuration files for working with image signatures
 Obsoletes: atomic <= 1.13.1-2
 Conflicts: atomic-registries <= 1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = %{epoch}:%{version}-%{release}
+Provides: %{name}-containers = 1:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-2
 
 %description -n containers-common
