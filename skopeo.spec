@@ -38,7 +38,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.35
-Release: 8.dev.git%{shortcommit0}%{?dist}
+Release: 9.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -67,7 +67,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: containers-common = %{epoch}:%{version}-%{release}
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -381,6 +381,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Feb 13 2019 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.35-9.dev.gitb329dd0
+- drop conditional epoch for containers-common, module build seems to fail
+without it
+
 * Wed Feb 13 2019 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.35-8.dev.gitb329dd0
 - Epoch changes for containers-common
 
