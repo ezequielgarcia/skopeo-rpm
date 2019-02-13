@@ -243,8 +243,8 @@ Summary: Configuration files for working with image signatures
 Obsoletes: atomic <= 1.13.1-2
 Conflicts: atomic-registries <= 1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = %{version}-%{release}
-Obsoletes: %{name}-containers <= 0.1.31-2
+Provides: %{name}-containers = %{epoch}:%{version}-%{release}
+Obsoletes: %{name}-containers <= 1:0.1.31-2
 
 %description -n containers-common
 This package installs a default signature store configuration and a default
@@ -260,8 +260,8 @@ ln -s ../../../ src/%{import_path}
 mkdir -p vendor/src
 for v in vendor/*; do
     if test ${v} = vendor/src; then continue; fi
-    if test -d ${v}; then
-	mv ${v} vendor/src/
+    if test -d ${v}; then 
+      mv ${v} vendor/src/
     fi
 done
 
