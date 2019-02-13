@@ -38,7 +38,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.35
-Release: 7.dev.git%{shortcommit0}%{?dist}
+Release: 8.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -381,6 +381,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Feb 13 2019 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.1.35-8.dev.gitb329dd0
+- Epoch changes for containers-common
+
 * Fri Feb 08 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.35-7.dev.gitb329dd0
 - autobuilt b329dd0
 
