@@ -1,39 +1,56 @@
-% registries.conf(5) Container Registries Configuration File
-% Dan Walsh
-% March 2018
+% CONTAINERS-REGISTRIES.CONF(5) System-wide registry configuration file
+% Brent Baude
+% Aug 2017
 
-## NAME
-registries.conf - Syntax of Container Registries configuration file
+# NAME
+containers-registries.conf - Syntax of System Registry Configuration File
 
-## DESCRIPTION
-The REGISTRIES configuration file specifies all of the available container registries for tools using shared container registries, but in a TOML format that can be more easily modified and versioned. `registries.conf` does not support recursive lists of registries. The default location for this configuration file is `/etc/containers/registries.conf`.
+# DESCRIPTION
+The CONTAINERS-REGISTRIES configuration file is a system-wide configuration
+file for container image registries. The file format is TOML. The valid
+categories are: 'registries.search', 'registries.insecure', and
+'registries.block'.
 
-The only valid categories are: `registries.search`, `registries.insecure`, and `registries.block`.
+By default, the configuration file is located at `/etc/containers/registries.conf`.
 
+# FORMAT
+The TOML_format is used to build a simple list format for registries under three
+categories: `registries.search`, `registries.insecure`, and `registries.block`.
+You can list multiple registries using a comma separated list.
 
-## FORMAT
-The [TOML format][toml] is used as the encoding of the configuration file.
-Every option and subtable listed here is nested under a global "registries" table.
-No bare options are used.
+Search registries are used when the caller of a container runtime does not fully specify the
+container image that they want to execute.  These registries are prepended onto the front
+of the specified container image until the named image is found at a registry.
 
-## Examples
-    [registries.search]
-    registries = ['quay.io', 'docker.io', 'registries.unsafe.com', 'registry.fedoraproject.org', 'registry.access.redhat.com']
+Insecure Registries.  By default container runtimes use TLS when retrieving images
+from a registry.  If the registry is not setup with TLS, then the container runtime
+will fail to pull images from the registry. If you add the registry to the list of
+insecure registries then the container runtime will attempt use standard web protocols to
+pull the image.  It also allows you to pull from a registry with self-signed certificates.
+Note insecure registries can be used for any registry, not just the registries listed
+under search.
 
-    # If you need to access insecure registries, add the registry's fully-qualified name.
-    # An insecure registry is one that does not have a valid SSL certificate or only does HTTP.
-    [registries.insecure]
-    registries = ['registries.unsafe.com']
+Block Registries.  The registries in this category are are not pulled from when
+retrieving images.
 
-    # If you need to block push access from a registry, uncomment the section below
-    # and add the registries fully-qualified name.
-    #
-    # Docker only
-    [registries.block]
-    registries = []
+# EXAMPLE
+The following example configuration defines two searchable registries, one
+insecure registry, and two blocked registries.
 
-## Files
-/etc/conainers/registries.conf
+```
+[registries.search]
+registries = ['registry1.com', 'registry2.com']
 
-## HISTORY
-March 2018, Originally compiled by Dan Walsh <dwalsh@redhat.com>
+[registries.insecure]
+registries = ['registry3.com']
+
+[registries.block]
+registries = ['registry.untrusted.com', 'registry.unsafe.com']
+```
+
+# HISTORY
+Aug 2018, Renamed to containers-registries.conf(5) by Valentin Rothberg <vrothberg@suse.com>
+
+Jun 2018, Updated by Tom Sweeney <tsweeney@redhat.com>
+
+Aug 2017, Originally compiled by Brent Baude <bbaude@redhat.com>

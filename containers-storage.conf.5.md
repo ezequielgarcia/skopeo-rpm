@@ -39,8 +39,10 @@ The `storage` table supports the following options:
 **driver**=""
   container storage driver (default: "overlay")
   Default Copy On Write (COW) container storage driver
+  Valid drivers are "overlay", "vfs", "devmapper", "aufs", "btrfs", and "zfs"
+  Some drivers (for example, "zfs", "btrfs", and "aufs") may not work if your kernel lacks support for the filesystem
 
-### STORAGE OPTIONS TABLE 
+### STORAGE OPTIONS TABLE
 
 The `storage.options` table supports the following options:
 
@@ -49,11 +51,6 @@ The `storage.options` table supports the following options:
 
 **size**=""
   Maximum size of a container image.   This flag can be used to set quota on the size of container images. (default: 10GB)
-
-**override_kernel_check**=""
-  Tell storage drivers to ignore kernel version checks.  Some storage drivers assume that if a kernel is too
-  old, the driver is not supported.  But for kernels that have had the drivers backported, this flag
-  allows users to override the checks
 
 **mount_program**=""
   Specifies the path to a custom program to use instead for mounting the file system.

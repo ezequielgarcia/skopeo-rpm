@@ -38,7 +38,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.35
-Release: 12.dev.git%{shortcommit0}%{?dist}
+Release: 13.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -285,6 +285,7 @@ mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/registries.conf.5
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
+mkdir -p %{buildroot}%{_sysconfdir}/containers/certs.d
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
@@ -356,6 +357,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %files -n containers-common
 %dir %{_sysconfdir}/containers
+%dir %{_sysconfdir}/containers/certs.d
 %dir %{_sysconfdir}/containers/registries.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
@@ -381,6 +383,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Fri Mar 1 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.35-13.dev.git932b037
+- Add /etc/containers/certs.d to containers-common
+- Update containers-storage.conf man page to match latest upstream
+- Update registries.conf man page to match latest upstream
+
 * Sat Feb 23 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.35-12.dev.git932b037
 - autobuilt 932b037
 
