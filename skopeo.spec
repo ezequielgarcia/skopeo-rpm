@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 932b037d669b93aae7799850a5e702c09a0320c4
+%global commit0 213420996021eec694e02f4d1eee68fad06b7b94
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -38,7 +38,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.35
-Release: 13.dev.git%{shortcommit0}%{?dist}
+Release: 14.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -383,6 +383,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Mar 02 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.35-14.dev.git2134209
+- autobuilt 2134209
+
 * Fri Mar 1 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.35-13.dev.git932b037
 - Add /etc/containers/certs.d to containers-common
 - Update containers-storage.conf man page to match latest upstream
