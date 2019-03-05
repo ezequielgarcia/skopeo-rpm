@@ -1,3 +1,4 @@
+
 %global with_devel 0
 %global with_bundled 1
 %global with_unit_test 0
@@ -37,8 +38,8 @@ Epoch: 1
 %else
 Epoch: 0
 %endif
-Version: 0.1.35
-Release: 14.dev.git%{shortcommit0}%{?dist}
+Version: 0.1.36
+Release: 1.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -383,6 +384,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Mar 05 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.36-1.dev.git2134209
+- Bump version
+
 * Sat Mar 02 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.35-14.dev.git2134209
 - autobuilt 2134209
 
