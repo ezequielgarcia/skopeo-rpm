@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 5.dev.git%{shortcommit0}%{?dist}
+Release: 6.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -294,7 +294,7 @@ install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
 
 # install secrets patch directory
-install -d -p -m 750 %{buildroot}/%{_datadir}/rhel/secrets
+install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
 # rhbz#1110876 - update symlinks for subscription management
 ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
@@ -384,6 +384,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Mar 19 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.36-6.dev.git2134209
+- make /usr/share/rhel/secrets world searchable.   This will help allow RHEL containers to be built with rootless.
+
 * Thu Mar 14 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.36-5.dev.gitd93a581
 - autobuilt d93a581
 
