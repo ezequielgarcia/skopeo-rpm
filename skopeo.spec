@@ -25,7 +25,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 d93a581fb833932252b3068c3e2e7ea90ef12f20
+%global commit0 097549748afb1a26e912ddc090fa3524869cdc69
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 6.dev.git%{shortcommit0}%{?dist}
+Release: 7.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -384,6 +384,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Mar 26 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.36-7.dev.git0975497
+- autobuilt 0975497
+
 * Tue Mar 19 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.36-6.dev.git2134209
 - make /usr/share/rhel/secrets world searchable.   This will help allow RHEL containers to be built with rootless.
 
