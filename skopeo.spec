@@ -47,7 +47,7 @@ Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1: storage.conf
 Source2: containers-storage.conf.5.md
 Source3: mounts.conf
-Source4: registries.conf.5.md
+Source4: containers-registries.conf.5.md
 Source5: registries.conf
 Source6: policy.json.5.md
 Source7: seccomp.json
@@ -284,7 +284,7 @@ mkdir -p %{buildroot}%{_sysconfdir}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 mkdir -p %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
-go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/registries.conf.5
+go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
 mkdir -p %{buildroot}%{_sysconfdir}/containers/certs.d
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
