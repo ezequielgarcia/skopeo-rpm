@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 9.dev.git%{shortcommit0}%{?dist}
+Release: 10.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -51,6 +51,7 @@ Source4: containers-registries.conf.5.md
 Source5: registries.conf
 Source6: policy.json.5.md
 Source7: seccomp.json
+Source8: containers-mounts.conf.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -288,6 +289,7 @@ go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
 mkdir -p %{buildroot}%{_sysconfdir}/containers/certs.d
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
+go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
@@ -384,6 +386,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Apr 11 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.36-10.dev.gitc73bcba
+- add containers-storage.conf man page
+
 * Tue Apr 09 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.36-9.dev.gitc73bcba
 - autobuilt c73bcba
 

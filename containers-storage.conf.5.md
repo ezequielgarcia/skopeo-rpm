@@ -1,16 +1,16 @@
-% storage.conf(5) Container Storage Configuration File
+% containers-storage.conf(5) Container Storage Configuration File
 % Dan Walsh
 % May 2017
 
 # NAME
 storage.conf - Syntax of Container Storage configuration file
 
-# DESCRIPTION
+## DESCRIPTION
 The STORAGE configuration file specifies all of the available container storage options
 for tools using shared container storage, but in a TOML format that can be more easily modified
 and versioned.
 
-# FORMAT
+## FORMAT
 The [TOML format][toml] is used as the encoding of the configuration file.
 Every option and subtable listed here is nested under a global "storage" table.
 No bare options are used. The format of TOML can be simplified to:
@@ -129,8 +129,35 @@ Specifies the maximum number of retries XFS should attempt to complete IO when E
   Tell storage drivers to use the specified OSTree repository.  Some storage drivers, such as overlay, might use
 
 **skip_mount_home=""**
-  Tell storage drivers to not create a PRIVATE bind mount on their home directory.
+Tell storage drivers to not create a PRIVATE bind mount on their home directory.
 
-# HISTORY
+## SElinux labeling.
+
+When running on an SELinux system, if you move the containers storage graphroot directory, you must make sure the labeling is correct.
+
+Tell SELinux about the new containers storage by setting up an equivalence record.
+This tells SELinux to label content under the new path, as if it was stored
+under `/var/lib/containers/storage`.
+
+```
+semanage fcontext -a -e /var/lib/containers NEWSTORAGEPATH
+restorecon -R -v /src/containers
+```
+
+The semanage command above tells SELinux to setup the default labeling of
+`NEWSTORAGEPATH` to match `/var/lib/containers`.  The `restorecon` command
+tells SELinux to apply the labels to the actual content.
+
+Now all new content created in these directories will automatically be created
+with the correct label.
+
+## SEE ALSO
+`semanage(8)`, `restorecon(8)`
+
+## FILES
+
+Distributions often provide a /usr/share/containers/storage.conf file to define default storage configuration. Administrators can override this file by creating `/etc/containers/storage.conf` to specify their own configuration. The storage.conf file for rootless users is stored in the $HOME/.config/containers/storage.conf file.
+
+## HISTORY
 May 2017, Originally compiled by Dan Walsh <dwalsh@redhat.com>
 Format copied from crio.conf man page created by Aleksa Sarai <asarai@suse.de>
