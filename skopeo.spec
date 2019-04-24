@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 15.dev.git%{shortcommit0}%{?dist}
+Release: 16.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -366,7 +366,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
-%dir %{_sharedstatedir}/atomic/sigstore
+%dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
 %dir %{_datadir}/containers
 %{_datadir}/containers/mounts.conf
@@ -386,6 +386,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed Apr 24 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-16.dev.git0fa335c
+- Fix location of sigstore atomic->containers
+
 * Wed Apr 24 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.36-15.dev.git0fa335c
 - autobuilt 0fa335c
 
