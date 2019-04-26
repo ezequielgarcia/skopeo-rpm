@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 16.dev.git%{shortcommit0}%{?dist}
+Release: 17.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -271,23 +271,26 @@ done
 
 %if ! 0%{?with_bundled}
 rm -rf vendor/
-export GOPATH=$(pwd):%{gopath}
+export GOPATH=$(pwd)
 %else
-export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
+export GOPATH=$(pwd):$(pwd)/vendor
 %endif
 
 %gobuild -o %{name} ./cmd/%{name}
 %{__make} docs
 
 %install
-make DESTDIR=%{buildroot} install
+make \
+   DESTDIR=%{buildroot} \
+   SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
+   install
 mkdir -p %{buildroot}%{_sysconfdir}
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
+mkdir -p %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
 mkdir -p %{buildroot}%{_mandir}/man5
+install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
+install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
-install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
-mkdir -p %{buildroot}%{_sysconfdir}/containers/certs.d
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
 go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
 
@@ -362,6 +365,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/certs.d
 %dir %{_sysconfdir}/containers/registries.d
+%dir %{_sysconfdir}/containers/oci
+%dir %{_sysconfdir}/containers/oci/hooks.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
@@ -386,6 +391,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Fri Apr 26 2019 Lokesh Manvdekar <lsm5@fedoraproject.org> - 1:0.1.36-17.dev.git0fa335c
+- Fixes @openshift/machine-config-operator#669
+- install /etc/containers/oci/hooks.d
+
 * Wed Apr 24 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-16.dev.git0fa335c
 - Fix location of sigstore atomic->containers
 
