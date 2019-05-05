@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 17.dev.git%{shortcommit0}%{?dist}
+Release: 18.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -49,9 +49,13 @@ Source2: containers-storage.conf.5.md
 Source3: mounts.conf
 Source4: containers-registries.conf.5.md
 Source5: registries.conf
-Source6: policy.json.5.md
+Source6: containers-policy.json.5.md
 Source7: seccomp.json
 Source8: containers-mounts.conf.5.md
+Source9: containers-signature.5.md
+Source10: containers-transports.5.md
+Source11: containers-certs.d.5.md
+Source12: containers-registries.d.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -291,8 +295,12 @@ install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
-go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/policy.json.5
+go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
 go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
+go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
+go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
+go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
+go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
@@ -391,6 +399,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sun May 5 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-18.dev.git0fa335c
+- Update man pages and add missing man pages to containers-common.
+
 * Fri Apr 26 2019 Lokesh Manvdekar <lsm5@fedoraproject.org> - 1:0.1.36-17.dev.git0fa335c
 - Fixes @openshift/machine-config-operator#669
 - install /etc/containers/oci/hooks.d
