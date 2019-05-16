@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.36
-Release: 18.dev.git%{shortcommit0}%{?dist}
+Release: 19.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -399,6 +399,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Wed May 15 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-19.dev.git0fa335c
+- Add metacopy=on flag to storage.conf
+
 * Sun May 5 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-18.dev.git0fa335c
 - Update man pages and add missing man pages to containers-common.
 
