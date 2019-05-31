@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.40
-Release: 0.9.dev.git%{shortcommit0}%{?dist}
+Release: 0.10.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -316,6 +316,10 @@ ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pk
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
 ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/rhel7.repo
 
+# shareable directory for containers
+mkdir -p %{buildroot}/var/srv/containers
+mkdir -p %{buildroot}/srv/containers
+
 # source codes for building projects
 %if 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
@@ -373,6 +377,8 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %files -n containers-common
+%dir /var/srv/containers
+%dir /srv/containers
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/certs.d
 %dir %{_sysconfdir}/containers/registries.d
@@ -402,6 +408,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Sep 19 2019 Michael Nguyen <mnguyen@redhat.com> - 1:0.1.40-0.10.dev.git7eb5f39
+- Add /srv/containers and /var/srv/container directories to containers-common
+
 * Wed Sep 18 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.40-0.9.dev.git7eb5f39
 - autobuilt 7eb5f39
 
