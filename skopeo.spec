@@ -25,7 +25,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 0fa335c1499ecad8a50f0d7360cefce6e5ace47d
+%global commit0 565dbf34bd2980a1e240dd7f4e8ce738367e49c1
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -38,8 +38,8 @@ Epoch: 1
 %else
 Epoch: 0
 %endif
-Version: 0.1.36
-Release: 19.dev.git%{shortcommit0}%{?dist}
+Version: 0.1.38
+Release: 1.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -399,6 +399,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Mon Jun 24 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.38-1.dev
+- Bump up to 1:0.1.38
+
 * Wed May 15 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.36-19.dev.git0fa335c
 - Add metacopy=on flag to storage.conf
 
