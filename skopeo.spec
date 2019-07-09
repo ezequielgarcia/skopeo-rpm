@@ -39,7 +39,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.38
-Release: 1.dev.git%{shortcommit0}%{?dist}
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -399,6 +399,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Jul 9 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.38-2.dev
+- Update containers-registries.conf.md man page for mirroring support
+- Update regsitries.conf file to match containers/image
+
 * Mon Jun 24 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.38-1.dev
 - Bump up to 1:0.1.38
 
