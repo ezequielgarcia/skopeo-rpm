@@ -1,4 +1,3 @@
-
 %global with_devel 0
 %global with_bundled 1
 %global with_unit_test 0
@@ -40,7 +39,7 @@ Epoch: 0
 %endif
 Version: 0.1.38
 Release: 2.dev.git%{shortcommit0}%{?dist}
-Summary: Inspect Docker images and repositories on registries
+Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
 Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
@@ -64,7 +63,7 @@ BuildRequires: compiler(go-compiler)
 BuildRequires: git
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires: %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
-BuildRequires: golang-github-cpuguy83-go-md2man
+BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 # Dependencies for containers/storage
