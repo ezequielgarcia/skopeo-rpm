@@ -7,7 +7,7 @@
 %global with_debug 0
 %else
 %global with_debug 1
-%endif # rawhide
+%endif
 
 %if 0%{?with_debug}
 %global _find_debuginfo_dwz_opts %{nil}
