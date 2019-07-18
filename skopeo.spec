@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 565dbf34bd2980a1e240dd7f4e8ce738367e49c1
+%global commit0 5f451126781913c7c72695ad18fe029d2f0e8de8
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -38,7 +38,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.38
-Release: 2.dev.git%{shortcommit0}%{?dist}
+Release: 3.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -398,6 +398,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Thu Jul 18 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.38-3.dev.git5f45112
+- autobuilt 5f45112
+
 * Tue Jul 9 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - 1:0.1.38-2.dev
 - Update containers-registries.conf.md man page for mirroring support
 - Update regsitries.conf file to match containers/image
