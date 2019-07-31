@@ -27,6 +27,10 @@
 %global commit0 8a9641c182f99da06a3279ab0787180833bb98df
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
+# Used for comparing with latest upstream tag
+# to decide whether to autobuild (non-rawhide only)
+%global built_tag v0.1.37
+
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 # manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
 ExcludeArch: ppc64
