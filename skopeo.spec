@@ -24,12 +24,12 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 18f0e1e20c25ca2ba1f6719972d74cd64c5ad27e
+%global commit0 5ae6b16c0f318bf4d14ef0e19e8aa27b6c072670
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild (non-rawhide only)
-%global built_tag v0.1.37
+%global built_tag v0.1.39
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 # manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.40
-Release: 0.7.dev.git%{shortcommit0}%{?dist}
+Release: 0.8.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -402,6 +402,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Sat Sep 07 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.40-0.8.dev.git5ae6b16
+- autobuilt 5ae6b16
+
 * Tue Sep 03 2019 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 1:0.1.40-0.7.dev.git18f0e1e
 - autobuilt 18f0e1e
 
