@@ -261,6 +261,20 @@ Obsoletes: %{name}-containers <= 1:0.1.31-2
 This package installs a default signature store configuration and a default
 policy under `/etc/containers/`.
 
+%package tests
+Summary: Tests for %{name}
+
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: bats
+Requires: gnupg
+Requires: jq
+Requires: podman
+
+%description tests
+%{summary}
+
+This package contains system tests for %{name}
+
 %prep
 %autosetup -Sgit -n %{name}-%{commit0}
 
@@ -315,6 +329,10 @@ install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
 ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
 ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/rhel7.repo
+
+# system tests
+install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
+cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 
 # shareable directory for containers
 mkdir -p %{buildroot}/var/srv/containers
@@ -406,6 +424,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
+
+%files tests
+%license LICENSE
+%{_datadir}/%{name}/test
 
 %changelog
 * Thu Oct 03 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.40-0.13.dev.gitf72e39f
