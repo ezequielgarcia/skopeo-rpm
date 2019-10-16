@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  roles:
+    - role: standard-test-basic
+      tags:
+        - classic
+        - container
+      required_packages:
+        - bats
+        - skopeo
+        - skopeo-tests
+      tests:
+        - root-test:
+            dir: ./
+            run: ./test_skopeo.sh
+            timeout: 15m
