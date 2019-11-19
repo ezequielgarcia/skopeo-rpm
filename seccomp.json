@@ -743,7 +743,9 @@
 			"names": [
 				"settimeofday",
 				"stime",
-				"clock_settime"
+				"clock_settime",
+				"clock_adjtime",
+				"adjtimex"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],

@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 1.dev.git%{shortcommit0}%{?dist}
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Nov 19 2019 Dan Walsh <dwalsh@fedoraproject.org> - - 1:0.1.41-2.dev.git24f4f82
+- add clock_adjtime as valid syscall when CAP_SYS_TIME added
+
 * Fri Nov 8 2019 Dan Walsh (Bot) <dwalsh+bot@fedoraproject.org> - - 1:0.1.41-1.dev.git24f4f82
 - Change default search order on registries.conf.
 - Quay.io should be last to make sure no one is squating on repos that are
