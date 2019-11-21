@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 2.dev.git%{shortcommit0}%{?dist}
+Release: 3.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Nov 21 2019 Dan Walsh <dwalsh@fedoraproject.org> - - 1:0.1.41-2.dev.git24f4f82
+- Update to use new storage.conf configuration files.
+
 * Tue Nov 19 2019 Dan Walsh <dwalsh@fedoraproject.org> - - 1:0.1.41-2.dev.git24f4f82
 - add clock_adjtime as valid syscall when CAP_SYS_TIME added
 
