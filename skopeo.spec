@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 24f4f82c09ac5f253e0d12f18888fc2c457409ad
+%global commit0 39540db1703bf4a8e08d45b37b871cbae13d2098
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 3.dev.git%{shortcommit0}%{?dist}
+Release: 4.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Nov 22 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.41-4.dev.git39540db
+- autobuilt 39540db
+
 * Thu Nov 21 2019 Dan Walsh <dwalsh@fedoraproject.org> - - 1:0.1.41-2.dev.git24f4f82
 - Update to use new storage.conf configuration files.
 
