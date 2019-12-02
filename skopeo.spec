@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 3ed6e83c4a767993c7b27ff39218a84f9ebe8f2a
+%global commit0 9c402f3799493ea5bc01fff6033e1dcebc620d89
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 11.dev.git%{shortcommit0}%{?dist}
+Release: 12.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Dec 02 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.41-12.dev.git9c402f3
+- autobuilt 9c402f3
+
 * Mon Dec 2 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-11.dev.git3ed6e83
 - Update man pages to reflect upstream sources
 - Also update storage.conf to remove skip_mount_home which is no longer
