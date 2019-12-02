@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 10.dev.git%{shortcommit0}%{?dist}
+Release: 11.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Dec 2 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-11.dev.git3ed6e83
+- Update man pages to reflect upstream sources
+- Also update storage.conf to remove skip_mount_home which is no longer
+supported.
+
 * Sat Nov 30 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.41-10.dev.git3ed6e83
 - autobuilt 3ed6e83
 
