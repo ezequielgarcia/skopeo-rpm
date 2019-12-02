@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 13.dev.git%{shortcommit0}%{?dist}
+Release: 14.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,8 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Mon Dec 2 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-13.dev.git3ed6e83
+* Mon Dec 2 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-14.dev.git3ed6e83
 - Change default order of registries.conf to push docker.io to the back.
+- Allo clock_adjtime by default in seccomp.json since it can be used in read/only mode
 
 * Mon Dec 02 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.41-12.dev.git9c402f3
 - autobuilt 9c402f3

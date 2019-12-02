@@ -65,6 +65,7 @@
 				"chmod",
 				"chown",
 				"chown32",
+				"clock_adjtime",
 				"clock_getres",
 				"clock_gettime",
 				"clock_nanosleep",
