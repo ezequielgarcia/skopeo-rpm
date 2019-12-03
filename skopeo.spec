@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 14.dev.git%{shortcommit0}%{?dist}
+Release: 15.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -328,7 +328,7 @@ install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
 # rhbz#1110876 - update symlinks for subscription management
 ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
-ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/rhel7.repo
+ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/redhat.repo
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -413,7 +413,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/containers/seccomp.json
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/etc-pki-entitlement
-%{_datadir}/rhel/secrets/rhel7.repo
+%{_datadir}/rhel/secrets/redhat.repo
 %{_datadir}/rhel/secrets/rhsm
 
 %files
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Dec 04 2019 Dusty Mabe <dusty@dustymabe.com> - 1:0.1.41-15.dev.git3ed6e83
+- mounts: update symlink name from rhel7.repo to redhat.repo
+
 * Mon Dec 2 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-14.dev.git3ed6e83
 - Change default order of registries.conf to push docker.io to the back.
 - Allo clock_adjtime by default in seccomp.json since it can be used in read/only mode
