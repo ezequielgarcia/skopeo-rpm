@@ -24,7 +24,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 9c402f3799493ea5bc01fff6033e1dcebc620d89
+%global commit0 e8d49d60ff22bd349d15636309fcf7f61772723f
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -42,7 +42,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 15.dev.git%{shortcommit0}%{?dist}
+Release: 16.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -430,6 +430,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Sat Dec 07 2019 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.41-16.dev.gite8d49d6
+- autobuilt e8d49d6
+
 * Wed Dec 04 2019 Dusty Mabe <dusty@dustymabe.com> - 1:0.1.41-15.dev.git3ed6e83
 - mounts: update symlink name from rhel7.repo to redhat.repo
 
