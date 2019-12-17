@@ -31,7 +31,7 @@ ExcludeArch: ppc64 %{ix86}
 Name: %{repo}
 Epoch: 1
 Version: 0.1.32
-Release: 5.git%{shortcommit0}%{?dist}
+Release: 6.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -154,6 +154,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
+* Tue Nov 26 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-6.git1715c90
+- rebuild because of CVE-2019-9512 and CVE-2019-9514
+- Resolves: #1772129, #1772134
+
 * Thu Sep 12 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-5.git1715c90
 - Fix CVE-2019-10214 (#1734658).
 
