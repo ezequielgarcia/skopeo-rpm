@@ -3,10 +3,10 @@
 %global with_unit_test 0
 %global with_check 0
 
-%if 0%{?fedora} > 28
-%global with_debug 0
-%else
+%if 0%{?fedora}
 %global with_debug 1
+%else
+%global with_debug 0
 %endif
 
 %if 0%{?with_debug}
@@ -14,6 +14,10 @@
 %global _dwz_low_mem_die_limit 0
 %else
 %global debug_package   %{nil}
+%endif
+
+%if ! 0%{?gobuild:1}
+%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v -x %{?**};
 %endif
 
 %global provider github
