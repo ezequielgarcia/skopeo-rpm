@@ -109,6 +109,26 @@ internet without having to change `Dockerfile`s, or to add redundancy).
 *Note*: Redirection and mirrors are currently processed only when reading images, not when pushing
 to a registry; that may change in the future.
 
+#### Normalization of docker.io references
+
+The Docker Hub `docker.io` is handled in a special way: every push and pull
+operation gets internally normalized with `/library` if no other specific
+namespace is defined (for example on `docker.io/namespace/image`).
+
+(Note that the above-described normalization happens to match the behavior of
+Docker.)
+
+This means that a pull of `docker.io/alpine` will be internally translated to
+`docker.io/library/alpine`. A pull of `docker.io/user/alpine` will not be
+rewritten because this is already the correct remote path.
+
+Therefore, to remap or mirror the `docker.io` images in the (implied) `/library`
+namespace (or that whole namespace), the prefix and location fields in this
+configuration file must explicitly include that `/library` namespace. For
+example `prefix = "docker.io/library/alpine"` and not `prefix =
+"docker.io/alpine"`. The latter would match the `docker.io/alpine/*`
+repositories but not the `docker.io/[library/]alpine` image).
+
 ### EXAMPLE
 
 ```
@@ -167,7 +187,29 @@ registries = ['registry3.com']
 registries = ['registry.untrusted.com', 'registry.unsafe.com']
 ```
 
+## NOTE: RISK OF USING UNQUALIFIED IMAGE NAMES.
+Pulling an image that is not fully qualified, i.e., one that includes the
+image name but does not include the registry or  tag, is not recommended.
+There is a risk that the image being pulled could be spoofed. An example
+of this would be if a user wanted to pull an image named `foobar` from a
+registry and expect it to come from myregistry.com.  If myregistry.com is
+not first in the search list, an attacker could place a different `foobar`
+image at a registry earlier in the search list.  Now you would accidentally
+run the attackers code rather than the intended content. Registries that
+are added to this list should be completely controlled, i.e., not allow
+unknown/arbitrary users being able to create accounts with arbitrary names
+to prevent an image from being spoofed, squatted or otherwise made
+insecure.  If it is necessary to use one of these registries, it should be
+added at the end of the list.
+
+It is recommended to use fully-qualified images for pulling as
+the destination registry is unambiguous. Pulling by digest
+(i.e., quay.io/repository/name@digest) further eliminates the ambiguity of
+tags.
+
 # HISTORY
+Dec 2019, Warning added for unqualified image names by Tom Sweeney <tsweeney@redhat.com>
+
 Mar 2019, Added additional configuration format by Sascha Grunert <sgrunert@suse.com>
 
 Aug 2018, Renamed to containers-registries.conf(5) by Valentin Rothberg <vrothberg@suse.com>

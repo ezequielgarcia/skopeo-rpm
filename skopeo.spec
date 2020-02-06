@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 0
 %endif
 Version: 0.1.41
-Release: 25.dev.git%{shortcommit0}%{?dist}
+Release: 26.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -434,6 +434,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 6 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-26.dev.git7cbb8ad
+- Remove quay.io from list of search registries, removes risk of squatters.
+- Update man pages to match upstream
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:0.1.41-25.dev.git7cbb8ad
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
