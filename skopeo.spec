@@ -43,7 +43,7 @@ Name: %{repo}
 %if 0%{?fedora} > 28
 Epoch: 1
 %else
-Epoch: 0
+Epoch: 2
 %endif
 Version: 0.1.41
 Release: 26.dev.git%{shortcommit0}%{?dist}
