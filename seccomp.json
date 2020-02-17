@@ -527,7 +527,8 @@
 			"names": [
 				"s390_pci_mmio_read",
 				"s390_pci_mmio_write",
-				"s390_runtime_instr"
+		                "s390_runtime_instr",
+			        "clone"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],

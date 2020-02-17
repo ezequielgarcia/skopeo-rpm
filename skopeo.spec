@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.1.41
-Release: 26.dev.git%{shortcommit0}%{?dist}
+Release: 27.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -63,6 +63,8 @@ Source9: containers-signature.5.md
 Source10: containers-transports.5.md
 Source11: containers-certs.d.5.md
 Source12: containers-registries.d.5.md
+Source13: containers.conf
+Source14: containers.conf.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -322,10 +324,12 @@ go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
 go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
+go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
+install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
 
 # install secrets patch directory
 install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
@@ -410,11 +414,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
+%ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
 %dir %{_datadir}/containers
 %{_datadir}/containers/mounts.conf
 %{_datadir}/containers/seccomp.json
+%{_datadir}/containers/containers.conf
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/etc-pki-entitlement
 %{_datadir}/rhel/secrets/redhat.repo
@@ -434,7 +440,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Thu Feb 6 2019 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-26.dev.git7cbb8ad
+* Mon Feb 17 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-27.dev.git7cbb8ad
+- Allow s390x to use clone syscall in seccomp.json
+- Add support for containers.conf and man page
+
+* Thu Feb 6 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.41-26.dev.git7cbb8ad
 - Remove quay.io from list of search registries, removes risk of squatters.
 - Update man pages to match upstream
 
