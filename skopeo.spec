@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.1.42
-Release: 0.3.dev.git%{shortcommit0}%{?dist}
+Release: 0.4.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -342,10 +342,6 @@ ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secret
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
 cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 
-# shareable directory for containers
-mkdir -p %{buildroot}/var/srv/containers
-mkdir -p %{buildroot}/srv/containers
-
 # source codes for building projects
 %if 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
@@ -403,8 +399,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %endif
 
 %files -n containers-common
-%dir /var/srv/containers
-%dir /srv/containers
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/certs.d
 %dir %{_sysconfdir}/containers/registries.d
@@ -440,6 +434,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Mar 17 2020 Jonathan Lebon <jonathan@jlebon.com> - 1:0.1.42-0.2.dev.git7a0a8c2
+- Drop /srv/containers and /var/srv/container from file list
+
 * Thu Mar 19 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.42-0.3.dev.git7170702
 - autobuilt 7170702
 
