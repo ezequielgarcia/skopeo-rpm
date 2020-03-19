@@ -434,7 +434,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Tue Mar 17 2020 Jonathan Lebon <jonathan@jlebon.com> - 1:0.1.42-0.2.dev.git7a0a8c2
+* Thu Mar 19 2020 Jonathan Lebon <jonathan@jlebon.com> - 1:0.1.42-0.4.dev.git7a0a8c2
 - Drop /srv/containers and /var/srv/container from file list
 
 * Thu Mar 19 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.42-0.3.dev.git7170702
