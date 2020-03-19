@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 7170702ee4ffc21569bf87fd0d18105dccb53e83
+%global commit0 12865fdfb81aadbd0fe3e8232a2635307d890ab6
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.1.42
-Release: 0.4.dev.git%{shortcommit0}%{?dist}
+Release: 0.5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -434,6 +434,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Mar 19 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.42-0.5.dev.git12865fd
+- autobuilt 12865fd
+
 * Thu Mar 19 2020 Jonathan Lebon <jonathan@jlebon.com> - 1:0.1.42-0.4.dev.git7a0a8c2
 - Drop /srv/containers and /var/srv/container from file list
 
