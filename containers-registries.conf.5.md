@@ -9,7 +9,7 @@ containers-registries.conf - Syntax of System Registry Configuration File
 The CONTAINERS-REGISTRIES configuration file is a system-wide configuration
 file for container image registries. The file format is TOML.
 
-By default, the configuration file is located at `/etc/containers/registries.conf`.
+Container engines will use the `$HOME/.config/containers/registries.conf` if it exists, otherwise they will use `/etc/containers/registries.conf`
 
 # FORMATS
 
@@ -150,7 +150,7 @@ insecure = true
 Given the above, a pull of `example.com/foo/image:latest` will try:
     1. `example-mirror-0.local/mirror-for-foo/image:latest`
     2. `example-mirror-1.local/mirrors/foo/image:latest`
-    3. `internal-registry-for-example.net/bar/myimage:latest`
+    3. `internal-registry-for-example.net/bar/image:latest`
 
 in order, and use the first one that exists.
 
@@ -187,25 +187,29 @@ registries = ['registry3.com']
 registries = ['registry.untrusted.com', 'registry.unsafe.com']
 ```
 
-## NOTE: RISK OF USING UNQUALIFIED IMAGE NAMES.
-Pulling an image that is not fully qualified, i.e., one that includes the
-image name but does not include the registry or  tag, is not recommended.
-There is a risk that the image being pulled could be spoofed. An example
-of this would be if a user wanted to pull an image named `foobar` from a
-registry and expect it to come from myregistry.com.  If myregistry.com is
-not first in the search list, an attacker could place a different `foobar`
-image at a registry earlier in the search list.  Now you would accidentally
-run the attackers code rather than the intended content. Registries that
-are added to this list should be completely controlled, i.e., not allow
-unknown/arbitrary users being able to create accounts with arbitrary names
-to prevent an image from being spoofed, squatted or otherwise made
-insecure.  If it is necessary to use one of these registries, it should be
-added at the end of the list.
+# NOTE: RISK OF USING UNQUALIFIED IMAGE NAMES
+We recommend always using fully qualified image names including the registry
+server (full dns name), namespace, image name, and tag
+(e.g., registry.redhat.io/ubi8/ubi:latest). When using short names, there is
+always an inherent risk that the image being pulled could be spoofed. For
+example, a user wants to pull an image named `foobar` from a registry and
+expects it to come from myregistry.com. If myregistry.com is not first in the
+search list, an attacker could place a different `foobar` image at a registry
+earlier in the search list. The user would accidentally pull and run the
+attacker's image and code rather than the intended content. We recommend only
+adding registries which are completely trusted, i.e. registries which don't
+allow unknown or anonymous users to create accounts with arbitrary names. This
+will prevent an image from being spoofed, squatted or otherwise made insecure.
+If it is necessary to use one of these registries, it should be added at the
+end of the list.
 
 It is recommended to use fully-qualified images for pulling as
 the destination registry is unambiguous. Pulling by digest
 (i.e., quay.io/repository/name@digest) further eliminates the ambiguity of
 tags.
+
+# SEE ALSO
+  containers-certs.d(5)
 
 # HISTORY
 Dec 2019, Warning added for unqualified image names by Tom Sweeney <tsweeney@redhat.com>

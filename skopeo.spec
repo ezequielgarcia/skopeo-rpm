@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.1.42
-Release: 1.0.dev.git%{shortcommit0}%{?dist}
+Release: 2.0.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -65,6 +65,7 @@ Source11: containers-certs.d.5.md
 Source12: containers-registries.d.5.md
 Source13: containers.conf
 Source14: containers.conf.5.md
+Source15: containers-auth.json.5.md
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -325,6 +326,7 @@ go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
 go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
+go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
@@ -434,6 +436,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Apr 7 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.42-2
+- Update man pages to match upstream
+
 * Tue Apr 7 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.42-1
 - Update containers.conf and containers.conf.5.md to upstream
 
