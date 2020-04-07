@@ -46,13 +46,13 @@ TOML can be simplified to:
 The containers table contains settings pertaining to the OCI runtime that can
 configure and manage the OCI runtime.
 
-**additional_devices**=[]
-  List of additional devices.
+**devices**=[]
+  List of devices.
   Specified as 'device-on-host:device-on-container:permissions',
   for example: "/dev/sdc:/dev/xvdc:rwm".
 
-**additional_volumes**=[]
-  List of additional volumes.
+**volumes**=[]
+  List of volumes.
   Specified as "directory-on-host:directory-in-container:options",
   for example:  "/db:/var/lib/db:ro".
 
@@ -65,10 +65,6 @@ The default profile name is "container-default".
   Options are:
     `private` Create private Cgroup Namespace for the container.
     `host`    Share host Cgroup Namespace with the container.
-
-**cgroup_manager**="systemd"
-  The cgroup management implementation used for the runtime. Supports `cgroupfs`
-and `systemd`.
 
 **default_capabilities**=[]
   List of default capabilities for containers.
@@ -221,8 +217,15 @@ plugins.
 **network_config_dir**="/etc/cni/net.d/"
   Path to the directory where CNI configuration files are located.
 
-## LIBPOD TABLE
-The `libpod` table contains configuration options used to set up a libpod runtime.
+## ENGINE TABLE
+The `engine` table contains configuration options used to set up container engines such as Podman and Buildah.
+
+**cgroup_check**=false
+CgroupCheck indicates the configuration has been rewritten after an upgrade to Fedora 31 to change the default OCI runtime for cgroupsv2.
+
+**cgroup_manager**="systemd"
+  The cgroup management implementation used for the runtime. Supports `cgroupfs`
+and `systemd`.
 
 **conmon_env_vars**=[]
   Environment variables to pass into Conmon.
@@ -254,7 +257,7 @@ Format is a single character `[a-Z]` or a comma separated sequence of
 `a-z`, `@`, `^`, `[`, `\`, `]`, `^` or `_`
 
 **enable_port_reservation**=true
-  Determines whether libpod will reserve ports on the host when they are
+  Determines whether the engine will reserve ports on the host when they are
 forwarded to containers. When enabled, when ports are forwarded to containers,
 they are held open by conmon as long as the container is running, ensuring that
 they cannot be reused by other programs on the host. However, this can cause
@@ -271,10 +274,10 @@ Disabling this can save memory.
 **infra_command**="/pause"
   Command to run the infra container.
 
-**infra_image**="k8s.gcr.io/pause:3.1"
+**infra_image**="k8s.gcr.io/pause:3.2"
   Infra (pause) container image name for pod infra containers.  When running a
 pod, we start a `pause` process in a container to hold open the namespaces
-associated with the  pod.  This container does nothing other then sleep, 
+associated with the  pod.  This container does nothing other then sleep,
 reserving the pods resources for the lifetime of the pod.
 
 **lock_type**="shm"
@@ -285,7 +288,7 @@ faster "shm" lock type.  You may need to run "podman system renumber" after you
 change the lock type.
 
 **namespace**=""
-  Default libpod namespace. If libpod is joined to a namespace, it will see
+  Default engine namespace. If the engine is joined to a namespace, it will see
 only containers and pods that were created in the same namespace, and will
 create new containers and pods in that namespace.  The default namespace is "",
  which corresponds to no namespace. When no namespace is set, all containers
@@ -300,20 +303,33 @@ pod consumes one lock.  The default number available is 2048.  If this is
 changed, a lock renumbering must be performed, using the
 `podman system renumber` command.
 
+**pull_policy**="always"|"missing"|"never"
+Pull image before running or creating a container. The default is **missing**.
+
+- **missing**: attempt to pull the latest image from the registries listed in registries.conf if a local image does not exist. Raise an error if the image is not in any listed registry and is not present locally.
+- **always**: pull the image from the first registry it is found in as listed in registries.conf. Raise an error if not found in the registries, even if the image is present locally.
+- **never**: do not pull the image from the registry, use only the local version. Raise an error if the image is not present locally.
+
 **runtime**="crun"
   Default OCI specific runtime in runtimes that will be used by default. Must
 refer to a member of the runtimes table.
 
-**runtime_supports_json**=["crun", "runc"]
+**runtime_supports_json**=["crun", "runc", "kata"]
   The list of the OCI runtimes that support `--format=json`.
 
 **runtime_supports_nocgroups**=["crun"]
   The list of OCI runtimes that support running containers without CGroups.
 
+**runtime_supports_kvm**=["kata"]
+  The list of OCI runtimes that support running containers with KVM separation.
+
 **static_dir**="/var/lib/containers/storage/libpod"
   Directory for persistent libpod files (database, etc).
 By default this will be configured relative to where containers/storage
 stores containers.
+
+**stop_timeout**=10
+  Number of seconds to wait for container to exit before sending kill signal.
 
 **tmp_dir**="/var/run/libpod"
   The path to a temporary directory to store per-boot container.

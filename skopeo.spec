@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.1.42
-Release: 0.16.dev.git%{shortcommit0}%{?dist}
+Release: 1.0.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -434,6 +434,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Apr 7 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.1.42-1
+- Update containers.conf and containers.conf.5.md to upstream
+
 * Mon Apr 06 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.42-0.16.dev.git8fa3326
 - autobuilt 8fa3326
 
