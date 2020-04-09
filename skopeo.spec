@@ -28,12 +28,12 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 2d91b93ad0b2e33d4d5796797d3bcc7b8950f7a4
+%global commit0 2415f3fa4d2e7a9fb8a48b0ee05675e92793ed96
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild (non-rawhide only)
-%global built_tag v0.1.41
+%global built_tag v0.2.0
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 # manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
@@ -45,8 +45,8 @@ Epoch: 1
 %else
 Epoch: 2
 %endif
-Version: 0.1.42
-Release: 8.0.dev.git%{shortcommit0}%{?dist}
+Version: 0.2.0
+Release: 0.1.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -436,6 +436,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Apr 09 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.2.0-0.1.dev.git2415f3f
+- bump to 0.2.0
+- autobuilt 2415f3f
+
 * Thu Apr 09 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.42-8.0.dev.git2d91b93
 - autobuilt 2d91b93
 
