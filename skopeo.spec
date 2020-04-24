@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.2.0
-Release: 0.1.dev.git%{shortcommit0}%{?dist}
+Release: 0.2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -436,6 +436,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Apr 24 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.2.0-0.2.dev.git2415f3f
+- Update registries.conf to use version 2 definitions
+- Update containers.conf to include latest changes
+- Update seccomp.json to allow a few more syscalls for contaners within containers.
+- Update storage.conf to match upstream
+
 * Thu Apr 09 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.2.0-0.1.dev.git2415f3f
 - bump to 0.2.0
 - autobuilt 2415f3f
