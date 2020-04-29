@@ -13,11 +13,6 @@ Container engines will use the `$HOME/.config/containers/registries.conf` if it 
 
 # FORMATS
 
-## VERSION 2
-VERSION 2 is the latest format of the `registries.conf` and is currently in
-beta. This means in general VERSION 1 should be used in production environments
-for now.
-
 ### GLOBAL SETTINGS
 
 `unqualified-search-registries`
@@ -153,39 +148,6 @@ Given the above, a pull of `example.com/foo/image:latest` will try:
     3. `internal-registry-for-example.net/bar/image:latest`
 
 in order, and use the first one that exists.
-
-## VERSION 1
-VERSION 1 can be used as alternative to the VERSION 2, but it does not support
-using registry mirrors, longest-prefix matches, or location rewriting.
-
-The TOML format is used to build a simple list of registries under three
-categories: `registries.search`, `registries.insecure`, and `registries.block`.
-You can list multiple registries using a comma separated list.
-
-Search registries are used when the caller of a container runtime does not fully specify the
-container image that they want to execute.  These registries are prepended onto the front
-of the specified container image until the named image is found at a registry.
-
-Note that insecure registries can be used for any registry, not just the registries listed
-under search.
-
-The `registries.insecure` and `registries.block` lists have the same meaning as the
-`insecure` and `blocked` fields in VERSION 2.
-
-### EXAMPLE
-The following example configuration defines two searchable registries, one
-insecure registry, and two blocked registries.
-
-```
-[registries.search]
-registries = ['registry1.com', 'registry2.com']
-
-[registries.insecure]
-registries = ['registry3.com']
-
-[registries.block]
-registries = ['registry.untrusted.com', 'registry.unsafe.com']
-```
 
 # NOTE: RISK OF USING UNQUALIFIED IMAGE NAMES
 We recommend always using fully qualified image names including the registry
