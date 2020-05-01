@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.2.0
-Release: 0.4.dev.git%{shortcommit0}%{?dist}
+Release: 0.5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -436,6 +436,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri May 1 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.2.0-0.5.dev.git2415f3f
+- Fix containers-registries.conf.5 man page to match upstream
+
 * Wed Apr 29 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:0.2.0-0.4.dev.git2415f3f
 - Fix registries.conf file to correctly pass the unqualified-search-registries
 
