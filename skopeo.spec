@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.2.0
-Release: 0.8.dev.git%{shortcommit0}%{?dist}
+Release: 4.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -436,6 +436,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Sun May 10 2020 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.2.0-4.dev.git42f68c1
+- bump release tag for smooth upgrade path from f32
+
 * Sat May 09 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.2.0-0.8.dev.git42f68c1
 - autobuilt 42f68c1
 
