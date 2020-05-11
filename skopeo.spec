@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 42f68c1c762a297dec99620d5f525bf967fc36b0
+%global commit0 a6ab2291ba5f43e92f9e54c4a25107b23e4bfabf
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 0.2.0
-Release: 4.dev.git%{shortcommit0}%{?dist}
+Release: 5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -436,6 +436,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon May 11 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.2.0-5.dev.gita6ab229
+- autobuilt a6ab229
+
 * Sun May 10 2020 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:0.2.0-4.dev.git42f68c1
 - bump release tag for smooth upgrade path from f32
 
