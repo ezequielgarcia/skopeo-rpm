@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 6b78619cd1dca9497039f39561085663121268df
+%global commit0 96bd4a06190e112b75ae905e366761c501223726
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -45,8 +45,8 @@ Epoch: 1
 %else
 Epoch: 2
 %endif
-Version: 1.0.1
-Release: 17.dev.git%{shortcommit0}%{?dist}
+Version: 1.1.1
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -438,6 +438,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jun 18 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-2.dev.git96bd4a0
+- bump to 1.1.1
+- autobuilt 96bd4a0
+
 * Thu Jun 18 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.0.1-17.dev.git6b78619
 - autobuilt 6b78619
 
