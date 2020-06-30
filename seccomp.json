@@ -52,6 +52,8 @@
 	"syscalls": [
 		{
 			"names": [
+				"_llseek",
+				"_newselect",
 				"accept",
 				"accept4",
 				"access",
@@ -120,6 +122,8 @@
 				"ftruncate64",
 				"futex",
 				"futimesat",
+				"get_robust_list",
+				"get_thread_area",
 				"getcpu",
 				"getcwd",
 				"getdents",
@@ -145,12 +149,10 @@
 				"getresuid",
 				"getresuid32",
 				"getrlimit",
-				"get_robust_list",
 				"getrusage",
 				"getsid",
 				"getsockname",
 				"getsockopt",
-				"get_thread_area",
 				"gettid",
 				"gettimeofday",
 				"getuid",
@@ -161,15 +163,15 @@
 				"inotify_init1",
 				"inotify_rm_watch",
 				"io_cancel",
-				"ioctl",
 				"io_destroy",
 				"io_getevents",
-				"ioprio_get",
-				"ioprio_set",
 				"io_setup",
 				"io_submit",
+				"ioctl",
+				"ioprio_get",
+				"ioprio_set",
 				"ipc",
-   			        "keyctl",
+				"keyctl",
 				"kill",
 				"lchown",
 				"lchown32",
@@ -179,7 +181,6 @@
 				"listen",
 				"listxattr",
 				"llistxattr",
-				"_llseek",
 				"lremovexattr",
 				"lseek",
 				"lsetxattr",
@@ -197,6 +198,7 @@
 				"mlockall",
 				"mmap",
 				"mmap2",
+				"mount",
 				"mprotect",
 				"mq_getsetattr",
 				"mq_notify",
@@ -213,9 +215,9 @@
 				"munlock",
 				"munlockall",
 				"munmap",
+				"name_to_handle_at",
 				"nanosleep",
 				"newfstatat",
-				"_newselect",
 				"open",
 				"openat",
 				"pause",
@@ -238,6 +240,7 @@
 				"readlink",
 				"readlinkat",
 				"readv",
+				"reboot",
 				"recv",
 				"recvfrom",
 				"recvmmsg",
@@ -257,11 +260,11 @@
 				"rt_sigsuspend",
 				"rt_sigtimedwait",
 				"rt_tgsigqueueinfo",
+				"sched_get_priority_max",
+				"sched_get_priority_min",
 				"sched_getaffinity",
 				"sched_getattr",
 				"sched_getparam",
-				"sched_get_priority_max",
-				"sched_get_priority_min",
 				"sched_getscheduler",
 				"sched_rr_get_interval",
 				"sched_setaffinity",
@@ -281,6 +284,9 @@
 				"sendmmsg",
 				"sendmsg",
 				"sendto",
+				"set_robust_list",
+				"set_thread_area",
+				"set_tid_address",
 				"setfsgid",
 				"setfsgid32",
 				"setfsuid",
@@ -301,11 +307,8 @@
 				"setreuid",
 				"setreuid32",
 				"setrlimit",
-				"set_robust_list",
 				"setsid",
 				"setsockopt",
-				"set_thread_area",
-				"set_tid_address",
 				"setuid",
 				"setuid32",
 				"setxattr",
@@ -339,21 +342,24 @@
 				"time",
 				"timer_create",
 				"timer_delete",
-				"timerfd_create",
-				"timerfd_gettime",
-				"timerfd_settime",
 				"timer_getoverrun",
 				"timer_gettime",
 				"timer_settime",
+				"timerfd_create",
+				"timerfd_gettime",
+				"timerfd_settime",
 				"times",
 				"tkill",
 				"truncate",
 				"truncate64",
 				"ugetrlimit",
 				"umask",
+				"umount",
+				"umount2",
 				"uname",
 				"unlink",
 				"unlinkat",
+				"unshare",
 				"utime",
 				"utimensat",
 				"utimes",
@@ -363,12 +369,7 @@
 				"waitid",
 				"waitpid",
 				"write",
-				"writev",
-				"mount",
-				"umount2",
-				"reboot",
-				"name_to_handle_at",
-				"unshare"
+				"writev"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],
@@ -530,8 +531,7 @@
 			"names": [
 				"s390_pci_mmio_read",
 				"s390_pci_mmio_write",
-		                "s390_runtime_instr",
-			        "clone"
+				"s390_runtime_instr"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],
@@ -748,9 +748,7 @@
 			"names": [
 				"settimeofday",
 				"stime",
-				"clock_settime",
-				"clock_adjtime",
-				"adjtimex"
+				"clock_settime"
 			],
 			"action": "SCMP_ACT_ALLOW",
 			"args": [],
@@ -772,6 +770,111 @@
 			"includes": {
 				"caps": [
 					"CAP_SYS_TTY_CONFIG"
+				]
+			},
+			"excludes": {}
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ERRNO",
+			"args": [
+				{
+					"index": 0,
+					"value": 16,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_EQ"
+				},
+				{
+					"index": 2,
+					"value": 9,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_EQ"
+				}
+			],
+			"comment": "",
+			"includes": {},
+			"excludes": {
+				"caps": [
+					"CAP_AUDIT_WRITE"
+				]
+			},
+			"errnoRet": 22
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ALLOW",
+			"args": [
+				{
+					"index": 2,
+					"value": 9,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_NE"
+				}
+			],
+			"comment": "",
+			"includes": {},
+			"excludes": {
+				"caps": [
+					"CAP_AUDIT_WRITE"
+				]
+			}
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ALLOW",
+			"args": [
+				{
+					"index": 0,
+					"value": 16,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_NE"
+				}
+			],
+			"comment": "",
+			"includes": {},
+			"excludes": {
+				"caps": [
+					"CAP_AUDIT_WRITE"
+				]
+			}
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ALLOW",
+			"args": [
+				{
+					"index": 2,
+					"value": 9,
+					"valueTwo": 0,
+					"op": "SCMP_CMP_NE"
+				}
+			],
+			"comment": "",
+			"includes": {},
+			"excludes": {
+				"caps": [
+					"CAP_AUDIT_WRITE"
+				]
+			}
+		},
+		{
+			"names": [
+				"socket"
+			],
+			"action": "SCMP_ACT_ALLOW",
+			"args": null,
+			"comment": "",
+			"includes": {
+				"caps": [
+					"CAP_AUDIT_WRITE"
 				]
 			},
 			"excludes": {}
