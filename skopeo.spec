@@ -277,6 +277,7 @@ Requires: bats
 Requires: gnupg
 Requires: jq
 Requires: podman
+Requires: httpd-tools
 
 %description tests
 %{summary}
