@@ -31,7 +31,7 @@ ExcludeArch: ppc64 %{ix86}
 Name: %{repo}
 Epoch: 1
 Version: 0.1.32
-Release: 4.git%{shortcommit0}%{?dist}
+Release: 6.git%{shortcommit0}%{?dist}
 Summary: Inspect Docker images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -43,6 +43,7 @@ Source4: registries.conf.5.md
 Source5: registries.conf
 Source6: policy.json.5.md
 Source7: seccomp.json
+Patch0: skopeo-CVE-2019-10214.patch
 BuildRequires: git
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires: %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
@@ -73,7 +74,10 @@ This package installs a default signature store configuration and a default
 policy under `/etc/containers/`.
 
 %prep
-%autosetup -Sgit -n %{name}-%{commit0}
+%setup -q -n %{name}-%{commit0}
+
+# fix CVE-2019-10214
+%patch0 -p2
 
 %build
 mkdir -p src/github.com/containers
@@ -108,7 +112,7 @@ install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
 
 # install secrets patch directory
-install -d -p -m 750 %{buildroot}/%{_datadir}/rhel/secrets
+install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
 # rhbz#1110876 - update symlinks for subscription management
 ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
@@ -150,9 +154,16 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/bash-completion/completions/%{name}
 
 %changelog
-* Thu Nov 28 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-4.git1715c90
+* Tue Nov 26 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-6.git1715c90
 - rebuild because of CVE-2019-9512 and CVE-2019-9514
-- Resolves: #1772130, #1772135
+- Resolves: #1772129, #1772134
+
+* Thu Sep 12 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-5.git1715c90
+- Fix CVE-2019-10214 (#1734658).
+
+* Fri Aug 16 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.32-4.git1715c90
+- fix permissions of rhel/secrets
+  Resolves: #1691543
 
 * Tue Dec 18 2018 Frantisek Kluknavsky <fkluknav@redhat.com> - 1:0.1.32-3.git1715c90
 - rebase
