@@ -21,34 +21,35 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 be6146b0a8471b02e776134119a2c37dfb70d414
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-
-# e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-# manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
-ExcludeArch: ppc64
+%global branch master
 
 Epoch: 1
 Name: %{repo}
-Version: 0.1.40
-Release: 7%{?dist}
+Version: 1.1.0
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
-Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
-Source1: storage.conf
-Source2: containers-storage.conf.5.md
+# Build fails with: No matching package to install: 'golang >= 1.12.12-4' on i686
+ExcludeArch: i686
+Source0: %{git0}/archive/v%{version}.tar.gz
+#Source1: https://raw.githubusercontent.com/containers/storage/%%{branch}/storage.conf
+Source1: https://src.fedoraproject.org/rpms/skopeo/raw/master/f/storage.conf
+Source2: https://raw.githubusercontent.com/containers/storage/%{branch}/docs/containers-storage.conf.5.md
 Source3: mounts.conf
-Source4: containers-registries.conf.5.md
+Source4: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-registries.conf.5.md
 Source5: registries.conf
-Source6: containers-policy.json.5.md
-Source7: seccomp.json
-Source8: containers-mounts.conf.5.md
-Source9: containers-signature.5.md
-Source10: containers-transports.5.md
-Source11: containers-certs.d.5.md
-Source12: containers-registries.d.5.md
-
+Source6: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-policy.json.5.md
+#Source7: https://raw.githubusercontent.com/containers/libpod/%%{branch}/seccomp.json
+Source7: https://src.fedoraproject.org/rpms/skopeo/raw/master/f/seccomp.json
+Source8: https://raw.githubusercontent.com/containers/libpod/%{branch}/docs/source/markdown/containers-mounts.conf.5.md
+Source9: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-signature.5.md
+Source10: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-transports.5.md
+Source11: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-certs.d.5.md
+Source12: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-registries.d.5.md
+Source13: https://raw.githubusercontent.com/containers/common/%{branch}/pkg/config/containers.conf
+Source14: https://raw.githubusercontent.com/containers/common/%{branch}/docs/containers.conf.5.md
+Source15: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-auth.json.5.md
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
@@ -59,66 +60,6 @@ BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common = %{epoch}:%{version}-%{release}
-
-Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
-Provides: bundled(golang(github.com/BurntSushi/toml)) = master
-Provides: bundled(golang(github.com/containerd/continuity)) = d8fb8589b0e8e85b8c8bbaa8840226d0dfeb7371
-Provides: bundled(golang(github.com/containers/image)) = master
-Provides: bundled(golang(github.com/containers/storage)) = master
-Provides: bundled(golang(github.com/davecgh/go-spew)) = master
-Provides: bundled(golang(github.com/docker/distribution)) = master
-Provides: bundled(golang(github.com/docker/docker-credential-helpers)) = d68f9aeca33f5fd3f08eeae5e9d175edf4e731d1
-Provides: bundled(golang(github.com/docker/docker)) = da99009bbb1165d1ac5688b5c81d2f589d418341
-Provides: bundled(golang(github.com/docker/go-connections)) = 7beb39f0b969b075d1325fecb092faf27fd357b6
-Provides: bundled(golang(github.com/docker/go-metrics)) = 399ea8c73916000c64c2c76e8da00ca82f8387ab
-Provides: bundled(golang(github.com/docker/go-units)) = 8a7beacffa3009a9ac66bad506b18ffdd110cf97
-Provides: bundled(golang(github.com/docker/libtrust)) = master
-Provides: bundled(golang(github.com/ghodss/yaml)) = 73d445a93680fa1a78ae23a5839bad48f32ba1ee
-Provides: bundled(golang(github.com/go-check/check)) = v1
-Provides: bundled(golang(github.com/gogo/protobuf)) = fcdc5011193ff531a548e9b0301828d5a5b97fd8
-Provides: bundled(golang(github.com/golang/glog)) = 44145f04b68cf362d9c4df2182967c2275eaefed
-Provides: bundled(golang(github.com/golang/protobuf)) = 8d92cf5fc15a4382f8964b08e1f42a75c0591aa3
-Provides: bundled(golang(github.com/gorilla/context)) = 14f550f51a
-Provides: bundled(golang(github.com/gorilla/mux)) = e444e69cbd
-Provides: bundled(golang(github.com/imdario/mergo)) = 6633656539c1639d9d78127b7d47c622b5d7b6dc
-Provides: bundled(golang(github.com/kr/pretty)) = v0.1.0
-Provides: bundled(golang(github.com/kr/text)) = v0.1.0
-Provides: bundled(golang(github.com/matttproud/golang_protobuf_extensions)) = c12348ce28de40eed0136aa2b644d0ee0650e56c
-Provides: bundled(golang(github.com/mistifyio/go-zfs)) = 22c9b32c84eb0d0c6f4043b6e90fc94073de92fa
-Provides: bundled(golang(github.com/mtrmac/gpgme)) = master
-Provides: bundled(golang(github.com/opencontainers/go-digest)) = master
-Provides: bundled(golang(github.com/opencontainers/image-spec)) = 149252121d044fddff670adcdc67f33148e16226
-Provides: bundled(golang(github.com/opencontainers/image-tools)) = 6d941547fa1df31900990b3fb47ec2468c9c6469
-Provides: bundled(golang(github.com/opencontainers/runc)) = master
-Provides: bundled(golang(github.com/opencontainers/runtime-spec)) = v1.0.0
-Provides: bundled(golang(github.com/opencontainers/selinux)) = master
-Provides: bundled(golang(github.com/ostreedev/ostree-go)) = aeb02c6b6aa2889db3ef62f7855650755befd460
-Provides: bundled(golang(github.com/pborman/uuid)) = v1.0
-Provides: bundled(golang(github.com/pkg/errors)) = master
-Provides: bundled(golang(github.com/pmezard/go-difflib)) = master
-Provides: bundled(golang(github.com/pquerna/ffjson)) = d49c2bc1aa135aad0c6f4fc2056623ec78f5d5ac
-Provides: bundled(golang(github.com/prometheus/client_golang)) = c332b6f63c0658a65eca15c0e5247ded801cf564
-Provides: bundled(golang(github.com/prometheus/client_model)) = 99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c
-Provides: bundled(golang(github.com/prometheus/common)) = 89604d197083d4781071d3c65855d24ecfb0a563
-Provides: bundled(golang(github.com/prometheus/procfs)) = cb4147076ac75738c9a7d279075a253c0cc5acbd
-Provides: bundled(golang(github.com/sirupsen/logrus)) = v1.0.0
-Provides: bundled(golang(github.com/stretchr/testify)) = v1.1.3
-Provides: bundled(golang(github.com/syndtr/gocapability)) = master
-Provides: bundled(golang(github.com/tchap/go-patricia)) = v2.2.6
-Provides: bundled(golang(github.com/ulikunitz/xz)) = v0.5.4
-Provides: bundled(golang(github.com/urfave/cli)) = v1.17.0
-Provides: bundled(golang(github.com/vbatts/tar-split)) = v0.10.2
-Provides: bundled(golang(github.com/xeipuuv/gojsonpointer)) = master
-Provides: bundled(golang(github.com/xeipuuv/gojsonreference)) = master
-Provides: bundled(golang(github.com/xeipuuv/gojsonschema)) = master
-Provides: bundled(golang(go4.org)) = master
-Provides: bundled(golang(golang.org/x/crypto)) = master
-Provides: bundled(golang(golang.org/x/net)) = master
-Provides: bundled(golang(golang.org/x/sys)) = master
-Provides: bundled(golang(golang.org/x/text)) = master
-Provides: bundled(golang(gopkg.in/cheggaaa/pb.v1)) = ad4efe000aa550bb54918c06ebbadc0ff17687b9
-Provides: bundled(golang(gopkg.in/yaml.v2)) = d466437aa4adc35830964cffc5b5f262c63ddcb4
-Provides: bundled(golang(k8s.io/client-go)) = master
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -153,7 +94,7 @@ Requires: podman
 This package contains system tests for %{name}
 
 %prep
-%autosetup -Sgit -n %{name}-%{commit0}
+%autosetup -Sgit
 
 %build
 mkdir -p src/github.com/containers
@@ -191,10 +132,13 @@ go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
 go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
+go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
+go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 
 mkdir -p %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
+install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
 
 # install secrets patch directory
 install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
@@ -227,11 +171,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
+%ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
 %dir %{_datadir}/containers
 %{_datadir}/containers/mounts.conf
 %{_datadir}/containers/seccomp.json
+%{_datadir}/containers/containers.conf
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/*
 
@@ -249,6 +195,37 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Jun 19 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.1.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.1.0
+- Related: #1821193
+
+* Wed Jun 10 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.0.0-2
+- exclude i686 arch
+- Related: #1821193
+
+* Tue May 19 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.0.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.0.0
+- Related: #1821193
+
+* Tue May 12 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.2.0-6
+- synchronize containter-tools 8.3.0 with 8.2.1
+- Related: #1821193
+
+* Mon Apr 06 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-1
+- update to 0.1.41
+- Related: #1821193
+
+* Fri Mar 06 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-10
+- modify registries.conf default configuration to be more secure by default
+- Resolves: #1810053
+
+* Fri Feb 14 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-9
+- Fix CVE-2020-1702.
+- Resolves: #1801922
+
+* Thu Jan 02 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-8
+- change the search order of registries and remove quay.io (#1784267)
+
 * Wed Dec 11 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-7
 - compile in FIPS mode
 - Related: RHELPLAN-25139
