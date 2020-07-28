@@ -1,0 +1,390 @@
+From e92e288c169563b6367c53d55805f0a588e75b64 Mon Sep 17 00:00:00 2001
+From: Valentin Rothberg <rothberg@redhat.com>
+Date: Thu, 6 Feb 2020 12:59:07 +0100
+Subject: [PATCH] [0.1.40] update github.com/containers/image
+
+Note that this includes fixes for
+https://access.redhat.com/security/cve/CVE-2020-1702.
+
+Signed-off-by: Valentin Rothberg <rothberg@redhat.com>
+---
+ go.mod                                        |  2 +-
+ go.sum                                        |  2 +
+ .../image/v5/docker/docker_client.go          |  6 +-
+ .../image/v5/docker/docker_image_dest.go      |  3 +-
+ .../image/v5/docker/docker_image_src.go       | 10 ++--
+ .../image/v5/docker/tarfile/dest.go           |  3 +-
+ .../containers/image/v5/docker/tarfile/src.go |  9 +--
+ .../image/v5/image/docker_schema2.go          |  4 +-
+ .../containers/image/v5/image/oci.go          |  4 +-
+ .../image/v5/internal/iolimits/iolimits.go    | 60 +++++++++++++++++++
+ .../image/v5/openshift/openshift.go           |  4 +-
+ vendor/modules.txt                            |  3 +-
+ 12 files changed, 89 insertions(+), 21 deletions(-)
+ create mode 100644 vendor/github.com/containers/image/v5/internal/iolimits/iolimits.go
+
+diff --git a/go.mod b/go.mod
+index 86a6afba5..788827569 100644
+--- a/go.mod
++++ b/go.mod
+@@ -4,7 +4,7 @@ go 1.12
+ 
+ require (
+ 	github.com/containers/buildah v1.8.4
+-	github.com/containers/image/v5 v5.0.0
++	github.com/containers/image/v5 v5.0.1-0.20200205124631-82291c45f2b0
+ 	github.com/containers/storage v1.13.4
+ 	github.com/docker/docker v0.0.0-20180522102801-da99009bbb11
+ 	github.com/dsnet/compress v0.0.1 // indirect
+diff --git a/go.sum b/go.sum
+index 7ee83f6f7..c04f6f3a2 100644
+--- a/go.sum
++++ b/go.sum
+@@ -19,6 +19,8 @@ github.com/containers/image/v4 v4.0.2-0.20191021195858-69340234bfc6 h1:sFL2cwC0x
+ github.com/containers/image/v4 v4.0.2-0.20191021195858-69340234bfc6/go.mod h1:0ASJH1YgJiX/eqFZObqepgsvIA4XjCgpyfwn9pDGafA=
+ github.com/containers/image/v5 v5.0.0 h1:arnXgbt1ucsC/ndtSpiQY87rA0UjhF+/xQnPzqdBDn4=
+ github.com/containers/image/v5 v5.0.0/go.mod h1:MgiLzCfIeo8lrHi+4Lb8HP+rh513sm0Mlk6RrhjFOLY=
++github.com/containers/image/v5 v5.0.1-0.20200205124631-82291c45f2b0 h1:iV4aHKRoPcHp5BISsuiPMyaCjGJfLKp/FUMAG1NeqvE=
++github.com/containers/image/v5 v5.0.1-0.20200205124631-82291c45f2b0/go.mod h1:MgiLzCfIeo8lrHi+4Lb8HP+rh513sm0Mlk6RrhjFOLY=
+ github.com/containers/libtrust v0.0.0-20190913040956-14b96171aa3b h1:Q8ePgVfHDplZ7U33NwHZkrVELsZP5fYj9pM5WBZB2GE=
+ github.com/containers/libtrust v0.0.0-20190913040956-14b96171aa3b/go.mod h1:9rfv8iPl1ZP7aqh9YA68wnZv2NUDbXdcdPHVz0pFbPY=
+ github.com/containers/storage v1.13.4 h1:j0bBaJDKbUHtAW1MXPFnwXJtqcH+foWeuXK1YaBV5GA=
+diff --git a/vendor/github.com/containers/image/v5/docker/docker_client.go b/vendor/github.com/containers/image/v5/docker/docker_client.go
+index 0b012c703..bff077a40 100644
+--- a/vendor/github.com/containers/image/v5/docker/docker_client.go
++++ b/vendor/github.com/containers/image/v5/docker/docker_client.go
+@@ -6,7 +6,6 @@ import (
+ 	"encoding/json"
+ 	"fmt"
+ 	"io"
+-	"io/ioutil"
+ 	"net/http"
+ 	"net/url"
+ 	"os"
+@@ -17,6 +16,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/pkg/docker/config"
+ 	"github.com/containers/image/v5/pkg/sysregistriesv2"
+ 	"github.com/containers/image/v5/pkg/tlsclientconfig"
+@@ -597,7 +597,7 @@ func (c *dockerClient) getBearerToken(ctx context.Context, challenge challenge,
+ 	default:
+ 		return nil, errors.Errorf("unexpected http code: %d (%s), URL: %s", res.StatusCode, http.StatusText(res.StatusCode), authReq.URL)
+ 	}
+-	tokenBlob, err := ioutil.ReadAll(res.Body)
++	tokenBlob, err := iolimits.ReadAtMost(res.Body, iolimits.MaxAuthTokenBodySize)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -690,7 +690,7 @@ func (c *dockerClient) getExtensionsSignatures(ctx context.Context, ref dockerRe
+ 		return nil, errors.Wrapf(clientLib.HandleErrorResponse(res), "Error downloading signatures for %s in %s", manifestDigest, ref.ref.Name())
+ 	}
+ 
+-	body, err := ioutil.ReadAll(res.Body)
++	body, err := iolimits.ReadAtMost(res.Body, iolimits.MaxSignatureListBodySize)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+diff --git a/vendor/github.com/containers/image/v5/docker/docker_image_dest.go b/vendor/github.com/containers/image/v5/docker/docker_image_dest.go
+index 417d97aec..ce8a1f357 100644
+--- a/vendor/github.com/containers/image/v5/docker/docker_image_dest.go
++++ b/vendor/github.com/containers/image/v5/docker/docker_image_dest.go
+@@ -15,6 +15,7 @@ import (
+ 	"strings"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/pkg/blobinfocache/none"
+ 	"github.com/containers/image/v5/types"
+@@ -620,7 +621,7 @@ sigExists:
+ 		}
+ 		defer res.Body.Close()
+ 		if res.StatusCode != http.StatusCreated {
+-			body, err := ioutil.ReadAll(res.Body)
++			body, err := iolimits.ReadAtMost(res.Body, iolimits.MaxErrorBodySize)
+ 			if err == nil {
+ 				logrus.Debugf("Error body %s", string(body))
+ 			}
+diff --git a/vendor/github.com/containers/image/v5/docker/docker_image_src.go b/vendor/github.com/containers/image/v5/docker/docker_image_src.go
+index 35beb30e5..5436d9b7d 100644
+--- a/vendor/github.com/containers/image/v5/docker/docker_image_src.go
++++ b/vendor/github.com/containers/image/v5/docker/docker_image_src.go
+@@ -12,6 +12,7 @@ import (
+ 	"strconv"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/pkg/sysregistriesv2"
+ 	"github.com/containers/image/v5/types"
+@@ -156,7 +157,8 @@ func (s *dockerImageSource) fetchManifest(ctx context.Context, tagOrDigest strin
+ 	if res.StatusCode != http.StatusOK {
+ 		return nil, "", errors.Wrapf(client.HandleErrorResponse(res), "Error reading manifest %s in %s", tagOrDigest, s.ref.ref.Name())
+ 	}
+-	manblob, err := ioutil.ReadAll(res.Body)
++
++	manblob, err := iolimits.ReadAtMost(res.Body, iolimits.MaxManifestBodySize)
+ 	if err != nil {
+ 		return nil, "", err
+ 	}
+@@ -342,7 +344,7 @@ func (s *dockerImageSource) getOneSignature(ctx context.Context, url *url.URL) (
+ 		} else if res.StatusCode != http.StatusOK {
+ 			return nil, false, errors.Errorf("Error reading signature from %s: status %d (%s)", url.String(), res.StatusCode, http.StatusText(res.StatusCode))
+ 		}
+-		sig, err := ioutil.ReadAll(res.Body)
++		sig, err := iolimits.ReadAtMost(res.Body, iolimits.MaxSignatureBodySize)
+ 		if err != nil {
+ 			return nil, false, err
+ 		}
+@@ -401,7 +403,7 @@ func deleteImage(ctx context.Context, sys *types.SystemContext, ref dockerRefere
+ 		return err
+ 	}
+ 	defer get.Body.Close()
+-	manifestBody, err := ioutil.ReadAll(get.Body)
++	manifestBody, err := iolimits.ReadAtMost(get.Body, iolimits.MaxManifestBodySize)
+ 	if err != nil {
+ 		return err
+ 	}
+@@ -424,7 +426,7 @@ func deleteImage(ctx context.Context, sys *types.SystemContext, ref dockerRefere
+ 	}
+ 	defer delete.Body.Close()
+ 
+-	body, err := ioutil.ReadAll(delete.Body)
++	body, err := iolimits.ReadAtMost(delete.Body, iolimits.MaxErrorBodySize)
+ 	if err != nil {
+ 		return err
+ 	}
+diff --git a/vendor/github.com/containers/image/v5/docker/tarfile/dest.go b/vendor/github.com/containers/image/v5/docker/tarfile/dest.go
+index b02c60bb3..9748ca112 100644
+--- a/vendor/github.com/containers/image/v5/docker/tarfile/dest.go
++++ b/vendor/github.com/containers/image/v5/docker/tarfile/dest.go
+@@ -13,6 +13,7 @@ import (
+ 	"time"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/internal/tmpdir"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/types"
+@@ -135,7 +136,7 @@ func (d *Destination) PutBlob(ctx context.Context, stream io.Reader, inputInfo t
+ 	}
+ 
+ 	if isConfig {
+-		buf, err := ioutil.ReadAll(stream)
++		buf, err := iolimits.ReadAtMost(stream, iolimits.MaxConfigBodySize)
+ 		if err != nil {
+ 			return types.BlobInfo{}, errors.Wrap(err, "Error reading Config file stream")
+ 		}
+diff --git a/vendor/github.com/containers/image/v5/docker/tarfile/src.go b/vendor/github.com/containers/image/v5/docker/tarfile/src.go
+index ad0a3d2cb..bbf604da6 100644
+--- a/vendor/github.com/containers/image/v5/docker/tarfile/src.go
++++ b/vendor/github.com/containers/image/v5/docker/tarfile/src.go
+@@ -11,6 +11,7 @@ import (
+ 	"path"
+ 	"sync"
+ 
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/internal/tmpdir"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/pkg/compression"
+@@ -187,13 +188,13 @@ func findTarComponent(inputFile io.Reader, path string) (*tar.Reader, *tar.Heade
+ }
+ 
+ // readTarComponent returns full contents of componentPath.
+-func (s *Source) readTarComponent(path string) ([]byte, error) {
++func (s *Source) readTarComponent(path string, limit int) ([]byte, error) {
+ 	file, err := s.openTarComponent(path)
+ 	if err != nil {
+ 		return nil, errors.Wrapf(err, "Error loading tar component %s", path)
+ 	}
+ 	defer file.Close()
+-	bytes, err := ioutil.ReadAll(file)
++	bytes, err := iolimits.ReadAtMost(file, limit)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -224,7 +225,7 @@ func (s *Source) ensureCachedDataIsPresentPrivate() error {
+ 	}
+ 
+ 	// Read and parse config.
+-	configBytes, err := s.readTarComponent(tarManifest[0].Config)
++	configBytes, err := s.readTarComponent(tarManifest[0].Config, iolimits.MaxConfigBodySize)
+ 	if err != nil {
+ 		return err
+ 	}
+@@ -250,7 +251,7 @@ func (s *Source) ensureCachedDataIsPresentPrivate() error {
+ // loadTarManifest loads and decodes the manifest.json.
+ func (s *Source) loadTarManifest() ([]ManifestItem, error) {
+ 	// FIXME? Do we need to deal with the legacy format?
+-	bytes, err := s.readTarComponent(manifestFileName)
++	bytes, err := s.readTarComponent(manifestFileName, iolimits.MaxTarFileManifestSize)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+diff --git a/vendor/github.com/containers/image/v5/image/docker_schema2.go b/vendor/github.com/containers/image/v5/image/docker_schema2.go
+index 254c13f78..29c5047d7 100644
+--- a/vendor/github.com/containers/image/v5/image/docker_schema2.go
++++ b/vendor/github.com/containers/image/v5/image/docker_schema2.go
+@@ -7,10 +7,10 @@ import (
+ 	"encoding/hex"
+ 	"encoding/json"
+ 	"fmt"
+-	"io/ioutil"
+ 	"strings"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/pkg/blobinfocache/none"
+ 	"github.com/containers/image/v5/types"
+@@ -102,7 +102,7 @@ func (m *manifestSchema2) ConfigBlob(ctx context.Context) ([]byte, error) {
+ 			return nil, err
+ 		}
+ 		defer stream.Close()
+-		blob, err := ioutil.ReadAll(stream)
++		blob, err := iolimits.ReadAtMost(stream, iolimits.MaxConfigBodySize)
+ 		if err != nil {
+ 			return nil, err
+ 		}
+diff --git a/vendor/github.com/containers/image/v5/image/oci.go b/vendor/github.com/containers/image/v5/image/oci.go
+index 18a38d463..406da262f 100644
+--- a/vendor/github.com/containers/image/v5/image/oci.go
++++ b/vendor/github.com/containers/image/v5/image/oci.go
+@@ -4,9 +4,9 @@ import (
+ 	"context"
+ 	"encoding/json"
+ 	"fmt"
+-	"io/ioutil"
+ 
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/pkg/blobinfocache/none"
+ 	"github.com/containers/image/v5/types"
+@@ -67,7 +67,7 @@ func (m *manifestOCI1) ConfigBlob(ctx context.Context) ([]byte, error) {
+ 			return nil, err
+ 		}
+ 		defer stream.Close()
+-		blob, err := ioutil.ReadAll(stream)
++		blob, err := iolimits.ReadAtMost(stream, iolimits.MaxConfigBodySize)
+ 		if err != nil {
+ 			return nil, err
+ 		}
+diff --git a/vendor/github.com/containers/image/v5/internal/iolimits/iolimits.go b/vendor/github.com/containers/image/v5/internal/iolimits/iolimits.go
+new file mode 100644
+index 000000000..3fed1995c
+--- /dev/null
++++ b/vendor/github.com/containers/image/v5/internal/iolimits/iolimits.go
+@@ -0,0 +1,60 @@
++package iolimits
++
++import (
++	"io"
++	"io/ioutil"
++
++	"github.com/pkg/errors"
++)
++
++// All constants below are intended to be used as limits for `ReadAtMost`. The
++// immediate use-case for limiting the size of in-memory copied data is to
++// protect against OOM DOS attacks as described inCVE-2020-1702. Instead of
++// copying data until running out of memory, we error out after hitting the
++// specified limit.
++const (
++	// megaByte denotes one megabyte and is intended to be used as a limit in
++	// `ReadAtMost`.
++	megaByte = 1 << 20
++	// MaxManifestBodySize is the maximum allowed size of a manifest. The limit
++	// of 4 MB aligns with the one of a Docker registry:
++	// https://github.com/docker/distribution/blob/a8371794149d1d95f1e846744b05c87f2f825e5a/registry/handlers/manifests.go#L30
++	MaxManifestBodySize = 4 * megaByte
++	// MaxAuthTokenBodySize is the maximum allowed size of an auth token.
++	// The limit of 1 MB is considered to be greatly sufficient.
++	MaxAuthTokenBodySize = megaByte
++	// MaxSignatureListBodySize is the maximum allowed size of a signature list.
++	// The limit of 4 MB is considered to be greatly sufficient.
++	MaxSignatureListBodySize = 4 * megaByte
++	// MaxSignatureBodySize is the maximum allowed size of a signature.
++	// The limit of 4 MB is considered to be greatly sufficient.
++	MaxSignatureBodySize = 4 * megaByte
++	// MaxErrorBodySize is the maximum allowed size of an error-response body.
++	// The limit of 1 MB is considered to be greatly sufficient.
++	MaxErrorBodySize = megaByte
++	// MaxConfigBodySize is the maximum allowed size of a config blob.
++	// The limit of 4 MB is considered to be greatly sufficient.
++	MaxConfigBodySize = 4 * megaByte
++	// MaxOpenShiftStatusBody is the maximum allowed size of an OpenShift status body.
++	// The limit of 4 MB is considered to be greatly sufficient.
++	MaxOpenShiftStatusBody = 4 * megaByte
++	// MaxTarFileManifestSize is the maximum allowed size of a (docker save)-like manifest (which may contain multiple images)
++	// The limit of 1 MB is considered to be greatly sufficient.
++	MaxTarFileManifestSize = megaByte
++)
++
++// ReadAtMost reads from reader and errors out if the specified limit (in bytes) is exceeded.
++func ReadAtMost(reader io.Reader, limit int) ([]byte, error) {
++	limitedReader := io.LimitReader(reader, int64(limit+1))
++
++	res, err := ioutil.ReadAll(limitedReader)
++	if err != nil {
++		return nil, err
++	}
++
++	if len(res) > limit {
++		return nil, errors.Errorf("exceeded maximum allowed size of %d bytes", limit)
++	}
++
++	return res, nil
++}
+diff --git a/vendor/github.com/containers/image/v5/openshift/openshift.go b/vendor/github.com/containers/image/v5/openshift/openshift.go
+index 016de4803..c37e1b751 100644
+--- a/vendor/github.com/containers/image/v5/openshift/openshift.go
++++ b/vendor/github.com/containers/image/v5/openshift/openshift.go
+@@ -7,13 +7,13 @@ import (
+ 	"encoding/json"
+ 	"fmt"
+ 	"io"
+-	"io/ioutil"
+ 	"net/http"
+ 	"net/url"
+ 	"strings"
+ 
+ 	"github.com/containers/image/v5/docker"
+ 	"github.com/containers/image/v5/docker/reference"
++	"github.com/containers/image/v5/internal/iolimits"
+ 	"github.com/containers/image/v5/manifest"
+ 	"github.com/containers/image/v5/types"
+ 	"github.com/containers/image/v5/version"
+@@ -102,7 +102,7 @@ func (c *openshiftClient) doRequest(ctx context.Context, method, path string, re
+ 		return nil, err
+ 	}
+ 	defer res.Body.Close()
+-	body, err := ioutil.ReadAll(res.Body)
++	body, err := iolimits.ReadAtMost(res.Body, iolimits.MaxOpenShiftStatusBody)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+diff --git a/vendor/modules.txt b/vendor/modules.txt
+index dee0327e7..013f7f5ec 100644
+--- a/vendor/modules.txt
++++ b/vendor/modules.txt
+@@ -26,7 +26,7 @@ github.com/VividCortex/ewma
+ github.com/containerd/continuity/pathdriver
+ # github.com/containers/buildah v1.8.4
+ github.com/containers/buildah/pkg/unshare
+-# github.com/containers/image/v5 v5.0.0
++# github.com/containers/image/v5 v5.0.1-0.20200205124631-82291c45f2b0
+ github.com/containers/image/v5/copy
+ github.com/containers/image/v5/directory
+ github.com/containers/image/v5/docker
+@@ -42,6 +42,7 @@ github.com/containers/image/v5/transports/alltransports
+ github.com/containers/image/v5/types
+ github.com/containers/image/v5/directory/explicitfilepath
+ github.com/containers/image/v5/docker/policyconfiguration
++github.com/containers/image/v5/internal/iolimits
+ github.com/containers/image/v5/pkg/blobinfocache/none
+ github.com/containers/image/v5/pkg/docker/config
+ github.com/containers/image/v5/pkg/sysregistriesv2

@@ -31,7 +31,7 @@ ExcludeArch: ppc64
 Epoch: 1
 Name: %{repo}
 Version: 0.1.40
-Release: 5%{?dist}
+Release: 9%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -48,6 +48,8 @@ Source9: containers-signature.5.md
 Source10: containers-transports.5.md
 Source11: containers-certs.d.5.md
 Source12: containers-registries.d.5.md
+# https://bugzilla.redhat.com/show_bug.cgi?id=1801928
+Patch0: https://github.com/containers/skopeo/commit/e92e288c169563b6367c53d55805f0a588e75b64.patch
 
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
@@ -249,6 +251,21 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Apr 20 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-9
+- add docker.io into the default registry list
+- Related: #1810053
+
+* Fri Mar 06 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-8
+- modify registries.conf default configuration to be more secure by default
+- Resolves: #1810056
+
+* Mon Feb 17 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-7
+- Fix CVE-2020-1702.
+- Resolves: #1801928
+
+* Thu Jan 02 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-6
+- change the search order of registries and remove quay.io (#1784267)
+
 * Wed Dec 11 2019 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-5
 - compile in FIPS mode
 - Related: RHELPLAN-25139
