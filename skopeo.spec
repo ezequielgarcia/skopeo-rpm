@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.1.1
-Release: 23.dev.git%{shortcommit0}%{?dist}
+Release: 24.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -439,6 +439,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Sun Aug 2 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-23.dev.git62fd5a7
+- Update configuration files in containers-common
+- Update configuration files in containers-storage
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.1.1-23.dev.git62fd5a7
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild

@@ -125,9 +125,6 @@ environment variables to the container.
 **env_host**=false
   Pass all host environment variables into the container.
 
-**hooks_dir**=["/etc/containers/oci/hooks.d", ...]
-  Path to the OCI hooks directories for automatically executed hooks.
-
 **http_proxy**=false
   Default proxy environment variables will be passed into the container.
   The environment variables passed in include:
@@ -194,6 +191,16 @@ than `0`.
 `b` (bytes), `k` (kilobytes), `m`(megabytes), or `g` (gigabytes).
 If you omit the unit, the system uses bytes. If you omit the size entirely,
 the system uses `65536k`.
+
+**tz=**""
+  Set timezone in container. Takes IANA timezones as well as `local`, which sets the timezone in the container to match the host machine.
+  If not set, then containers will run with the time zone specified in the image. 
+  Examples:
+    `tz="local"`
+    `tz="America/New_York"`
+
+**umask**="0022"
+  Sets umask inside the container.
 
 **utsns**="private"
   Default way to to create a UTS namespace for the container.
@@ -271,9 +278,17 @@ they cannot be reused by other programs on the host. However, this can cause
 significant memory usage if a container has many ports forwarded to it.
 Disabling this can save memory.
 
+**env**=[]
+Environment variables to be used when running the container engine (e.g., Podman, Buildah).  For example "http_proxy=internal.proxy.company.com".
+Note these environment variables will not be used within the container. Set the env section under [containers] table,
+if you want to set environment variables for the container.
+
 **events_logger**="journald"
   Default method to use when logging events.
   Valid values: `file`, `journald`, and `none`.
+
+**hooks_dir**=["/etc/containers/oci/hooks.d", ...]
+  Path to the OCI hooks directories for automatically executed hooks.
 
 **image_default_transport**="docker://"
   Default transport method for pulling and pushing images.
@@ -301,6 +316,9 @@ create new containers and pods in that namespace.  The default namespace is "",
  which corresponds to no namespace. When no namespace is set, all containers
 and pods are visible.
 
+**network_cmd_path**=""
+  NetworkCmdPath is the path to the slirp4netns binary.
+
 **no_pivot_root**=false
   Whether to use chroot instead of pivot_root in the runtime.
 
@@ -309,6 +327,24 @@ and pods are visible.
 pod consumes one lock.  The default number available is 2048.  If this is
 changed, a lock renumbering must be performed, using the
 `podman system renumber` command.
+
+**active_service**=""
+  Name of destination for accessing the Podman service.
+
+**[service_destinations]**
+
+**[service_destinations.{name}]**
+  **uri="ssh://user@production.example.com/run/user/1001/podman/podman.sock"**
+
+    Example URIs:
+
+- **rootless local**  - unix://run/user/1000/podman/podman.sock
+- **rootless remote** - ssh://user@engineering.lab.company.com/run/user/1000/podman/podman.sock
+- **rootfull local**  - unix://run/podman/podman.sock
+- **rootfull remote** - ssh://root@10.10.1.136:22/run/podman/podman.sock
+
+  **identity="~/.ssh/id_rsa**
+    Path to file containing ssh identity key
 
 **pull_policy**="always"|"missing"|"never"
 Pull image before running or creating a container. The default is **missing**.
