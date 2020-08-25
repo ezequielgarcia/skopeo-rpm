@@ -286,6 +286,8 @@ This package contains system tests for %{name}
 
 %prep
 %autosetup -Sgit -n %{name}-%{commit0}
+sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
 mkdir -p src/github.com/containers
@@ -306,19 +308,25 @@ export GOPATH=$(pwd)
 export GOPATH=$(pwd):$(pwd)/vendor
 %endif
 
-%gobuild -o %{name} ./cmd/%{name}
-%{__make} docs
+mkdir -p bin
+%gobuild -o bin/%{name} ./cmd/%{name}
+pushd docs
+for file in $(ls | grep 1.md)
+do
+export FILE_OUT=$(echo $file | sed -e 's/\.md//')
+go-md2man -in $file -out $FILE_OUT 
+done
+popd
 
 %install
 make \
-   DESTDIR=%{buildroot} \
-   SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
-   install
-mkdir -p %{buildroot}%{_sysconfdir}
-mkdir -p %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
-mkdir -p %{buildroot}%{_mandir}/man5
+    DESTDIR=%{buildroot} \
+    SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
+    install
+install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
-install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
+install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
+install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
@@ -331,7 +339,7 @@ go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
 
-mkdir -p %{buildroot}%{_datadir}/containers
+install -dp %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
 install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
