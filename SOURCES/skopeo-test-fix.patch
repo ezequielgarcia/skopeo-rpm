@@ -1,0 +1,35 @@
+diff --git a/systemtest/010-inspect.bats b/systemtest/010-inspect.bats
+index 26d8364..dea2c7d 100644
+--- a/systemtest/010-inspect.bats
++++ b/systemtest/010-inspect.bats
+@@ -107,7 +107,7 @@ END_EXPECT
+         remote_image=docker://docker.io/$arch/golang
+         run_skopeo inspect --tls-verify=false --raw $remote_image
+         remote=$(echo "$output" | jq -r '.manifests[0]["platform"]')
+-        expect=$(echo "{\"architecture\":\"$arch\",\"os\":\"linux\"}" | jq)
++        expect=$(echo "{\"architecture\":\"$arch\",\"os\":\"linux\"}" | jq .)
+         expect_output --from="$remote" --substring "$expect" \
+                   "platform arch is not expected"
+     done
+diff --git a/systemtest/helpers.bash b/systemtest/helpers.bash
+index 5e69d0d..765286a 100644
+--- a/systemtest/helpers.bash
++++ b/systemtest/helpers.bash
+@@ -299,7 +299,7 @@ start_registry() {
+         fi
+ 
+         if ! egrep -q "^$testuser:" $AUTHDIR/htpasswd; then
+-            log_and_run $PODMAN run --rm --entrypoint htpasswd registry:2 \
++            log_and_run $PODMAN run --rm --entrypoint htpasswd registry:2.6 \
+                    -Bbn $testuser $testpassword >> $AUTHDIR/htpasswd
+         fi
+ 
+@@ -332,7 +332,7 @@ start_registry() {
+         log_and_run cp $CERT $TESTDIR/client-auth/
+     fi
+ 
+-    log_and_run $PODMAN run -d --name $name "${reg_args[@]}" registry:2
++    log_and_run $PODMAN run -d --name $name "${reg_args[@]}" registry:2.6
+ 
+     # Wait for registry to actually come up
+     timeout=10
