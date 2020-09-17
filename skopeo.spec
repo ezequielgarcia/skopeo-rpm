@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.1.1
-Release: 45.dev.git%{shortcommit0}%{?dist}
+Release: 46.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,6 +447,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Sep 17 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-46.dev.git5d5756c
+- Remove NET_RAW, SYS_CHROOT, MKNOD and AUDIT_WRITE from default list of capabilities
+- Turn on ping for 65k users
+
 * Tue Sep 15 11:13:22 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-45.dev.gitbbd800f
 - autobuilt bbd800f
 
