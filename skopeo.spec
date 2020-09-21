@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.1.1
-Release: 48.dev.git%{shortcommit0}%{?dist}
+Release: 49.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,6 +447,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-49.dev.git5d5756c
+- Add SYS_CHROOT back into default capabilities
+
 * Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-48.dev.git5d5756c
 - Remove fchmodat2 from seccomp.json (This syscall does not exist yet)
 
