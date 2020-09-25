@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.1.1
-Release: 50.dev.git%{shortcommit0}%{?dist}
+Release: 51.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,6 +447,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Sep 25 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-51.dev.git5d5756c
+- Modify the range of groups used in net.ipv4.ping_group_range to be 1 so that
+- it will work more easily with User Namespaces
+- Also turn back on AUDIT_WRITE until seccomp.json file is fixed
+
 * Mon Sep 21 18:12:41 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-50.dev.git8151b89
 - autobuilt 8151b89
 
