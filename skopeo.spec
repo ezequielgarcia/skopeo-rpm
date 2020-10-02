@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 4.dev.git%{shortcommit0}%{?dist}
+Release: 5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,6 +447,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Oct 2 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-5.dev.gitd8bc8b6
+- Add SETFCAP back into default capabilities
+- Remove AUDIT_WRITE from default capabilities
+
 * Fri Oct  2 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-4.dev.gitd8bc8b6
 - autobuilt d8bc8b6
 
