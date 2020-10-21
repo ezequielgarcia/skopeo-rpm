@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 11.dev.git%{shortcommit0}%{?dist}
+Release: 12.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -449,6 +449,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Oct 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-12.dev.gitceaee44
+- Add time64 syscalls to seccomp.json
+
 * Wed Oct 21 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-11.dev.gitceaee44
 - autobuilt ceaee44
 
