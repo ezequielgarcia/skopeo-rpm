@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 12.dev.git%{shortcommit0}%{?dist}
+Release: 13.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -79,7 +79,7 @@ BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 # Dependencies for containers/storage
-%if 0%{?fedora} && ! 0%{?centos} >= 8 && ! 0%{?eln}
+%if 0%{?fedora} && ! 0%{?centos} >= 8 && ! 0%{?rhel}
 BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: pkgconfig(devmapper)
@@ -449,6 +449,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Oct 22 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-13.dev.gitceaee44
+- use %%rhel instead of %%eln
+
 * Wed Oct 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-12.dev.gitceaee44
 - Add time64 syscalls to seccomp.json
 
