@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 362f70b056a1f5d2bd4184527a0ae0d20c4d35d3
+%global commit0 ceaee440a68e53652fb9abb913ff0a251655e800
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 10.dev.git%{shortcommit0}%{?dist}
+Release: 14.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -79,7 +79,7 @@ BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 # Dependencies for containers/storage
-%if 0%{?fedora} && ! 0%{?centos} >= 8 && ! 0%{?eln}
+%if 0%{?fedora} && ! 0%{?centos} >= 8 && ! 0%{?rhel}
 BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: pkgconfig(devmapper)
@@ -449,6 +449,18 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Oct 26 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-14.dev.gitceaee44
+- fix seccomp.json typos
+
+* Thu Oct 22 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-13.dev.gitceaee44
+- use %%rhel instead of %%eln
+
+* Wed Oct 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-12.dev.gitceaee44
+- Add time64 syscalls to seccomp.json
+
+* Wed Oct 21 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-11.dev.gitceaee44
+- autobuilt ceaee44
+
 * Thu Oct 15 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-10.dev.git362f70b
 - autobuilt 362f70b
 
