@@ -227,6 +227,7 @@
 				"openat",
 				"openat2",
 				"pause",
+				"pidfd_getfd",
 				"pipe",
 				"pipe2",
 				"pivot_root",
@@ -760,7 +761,7 @@
 			"names": [
 				"settimeofday",
 				"stime",
-				"clock_settime"
+				"clock_settime",
 				"clock_settime64"
 			],
 			"action": "SCMP_ACT_ALLOW",

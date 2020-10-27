@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 13.dev.git%{shortcommit0}%{?dist}
+Release: 14.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -449,6 +449,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Oct 26 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-14.dev.gitceaee44
+- fix seccomp.json typos
+
 * Thu Oct 22 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-13.dev.gitceaee44
 - use %%rhel instead of %%eln
 
