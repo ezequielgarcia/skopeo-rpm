@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 16.dev.git%{shortcommit0}%{?dist}
+Release: 17.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -449,6 +449,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Nov 9 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-17.dev.git1a3ae14
+- Fix default ping range in containers.conf
+- Allow setting of --remote default in containers.conf
+
 * Sat Nov  7 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-16.dev.git1a3ae14
 - autobuilt 1a3ae14
 

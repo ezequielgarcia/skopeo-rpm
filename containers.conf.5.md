@@ -76,7 +76,7 @@ Determines  whether  the  container will create CGroups.
 Options are:
   `enabled`   Enable cgroup support within container
   `disabled`  Disable cgroup support, will inherit cgroups from parent
-  `no-conmon` Container engine runs run without conmon
+  `no-conmon` Do not create a cgroup dedicated to conmon.
 
 **default_capabilities**=[]
 
@@ -268,6 +268,9 @@ Path to the directory where CNI configuration files are located.
 ## ENGINE TABLE
 The `engine` table contains configuration options used to set up container engines such as Podman and Buildah.
 
+**image_build_format**="oci"
+The default image format to building container images. Valid values are "oci" (default) or "docker".
+
 **cgroup_check**=false
 
 CgroupCheck indicates the configuration has been rewritten after an upgrade to Fedora 31 to change the default OCI runtime for cgroupsv2.
@@ -410,6 +413,10 @@ Pull image before running or creating a container. The default is **missing**.
 - **missing**: attempt to pull the latest image from the registries listed in registries.conf if a local image does not exist. Raise an error if the image is not in any listed registry and is not present locally.
 - **always**: pull the image from the first registry it is found in as listed in registries.conf. Raise an error if not found in the registries, even if the image is present locally.
 - **never**: do not pull the image from the registry, use only the local version. Raise an error if the image is not present locally.
+
+**remote** = false
+Indicates whether the application should be running in remote mode. This flag modifies the
+--remote option on container engines. Setting the flag to true will default `podman --remote=true` for access to the remote Podman service.
 
 **runtime**="crun"
 
