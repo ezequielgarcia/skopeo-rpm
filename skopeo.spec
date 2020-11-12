@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 1a3ae1411e01c4d34a793b24573b5192e4e126eb
+%global commit0 11b4fd39568757a357277b2ca00a6cac64f9adcb
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 17.dev.git%{shortcommit0}%{?dist}
+Release: 18.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -449,6 +449,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Nov 12 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-18.dev.git11b4fd3
+- autobuilt 11b4fd3
+
 * Mon Nov 9 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-17.dev.git1a3ae14
 - Fix default ping range in containers.conf
 - Allow setting of --remote default in containers.conf
