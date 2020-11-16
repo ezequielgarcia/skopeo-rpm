@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 20.dev.git%{shortcommit0}%{?dist}
+Release: 21.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -67,6 +67,7 @@ Source13: containers.conf
 Source14: containers.conf.5.md
 Source15: containers-auth.json.5.md
 Source16: containers-registries.conf.d.5.md
+Source17: shortnames.conf
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -325,9 +326,10 @@ make \
     DESTDIR=%{buildroot} \
     SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
     install
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
+install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
+install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.d/shortnames.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -419,10 +421,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers/registries.d
 %dir %{_sysconfdir}/containers/oci
 %dir %{_sysconfdir}/containers/oci/hooks.d
+%dir %{_sysconfdir}/containers/registries.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.d/shortnames.conf
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
@@ -449,6 +453,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Nov 16 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-21.dev.git1a3ae14
+- Add initial shortnames.conf file for expanding shortnames
+
 * Mon Nov 16 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-20.dev.git1a3ae14
 - Update man pages and storage.conf
 - Add update.sh to make getting man pages and configuration files easier
