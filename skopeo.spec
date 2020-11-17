@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 4ad2c75b52f3d98ffd92da7f70b28607d74ed9f7
+%global commit0 2342171cdfaa8186edc03b470d7882a48c8f7265
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.2.1
-Release: 21.dev.git%{shortcommit0}%{?dist}
+Release: 22.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -453,6 +453,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Nov 17 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-22.dev.git2342171
+- autobuilt 2342171
+
 * Mon Nov 16 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.1-21.dev.git1a3ae14
 - Add initial shortnames.conf file for expanding shortnames
 
