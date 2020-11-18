@@ -20,6 +20,12 @@
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v -x %{?**};
 %endif
 
+%if 0%{?fedora} && ! 0%{?rhel}
+%define conditional_epoch 1
+%else
+%define conditional_epoch 2
+%endif
+
 %global provider github
 %global provider_tld com
 %global project containers
@@ -40,11 +46,7 @@
 ExcludeArch: ppc64
 
 Name: %{repo}
-%if 0%{?fedora} > 28
-Epoch: 1
-%else
-Epoch: 2
-%endif
+Epoch: %{conditional_epoch}
 Version: 1.2.1
 Release: 22.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
@@ -80,14 +82,14 @@ BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 # Dependencies for containers/storage
-%if 0%{?fedora} && ! 0%{?centos} >= 8 && ! 0%{?rhel}
+%if 0%{?fedora} || 0%{?rhel} <= 7
 BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = 1:%{version}-%{release}
+Requires: containers-common = %{epoch}:%{version}-%{release}
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -265,7 +267,7 @@ Summary: Configuration files for working with image signatures
 Obsoletes: atomic <= 1.13.1-2
 Conflicts: atomic-registries <= 1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = 1:%{version}-%{release}
+Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-2
 
 %description -n containers-common
