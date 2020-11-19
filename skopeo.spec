@@ -48,7 +48,7 @@ ExcludeArch: ppc64
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.1
-Release: 23.dev.git%{shortcommit0}%{?dist}
+Release: 24.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -328,10 +328,10 @@ make \
     DESTDIR=%{buildroot} \
     SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
     install
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d}
+install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
-install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.d/shortnames.conf
+install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/shortnames.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -340,7 +340,7 @@ go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf
 go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
 go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
-go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
+go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
 go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
@@ -423,12 +423,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers/registries.d
 %dir %{_sysconfdir}/containers/oci
 %dir %{_sysconfdir}/containers/oci/hooks.d
-%dir %{_sysconfdir}/containers/registries.d
+%dir %{_sysconfdir}/containers/registries.conf.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf 
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.d/shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/shortnames.conf
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
