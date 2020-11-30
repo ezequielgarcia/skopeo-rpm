@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 ae2645401405f0894861ecb23f3058a706d6c9b7
+%global commit0 6dabefa9db30a172d68267d2ed864712d2d25aa1
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -45,8 +45,8 @@ Epoch: 1
 %else
 Epoch: 2
 %endif
-Version: 1.1.1
-Release: 38.dev.git%{shortcommit0}%{?dist}
+Version: 1.2.1
+Release: 3.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,6 +447,58 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Sep 30 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-3.dev.git6dabefa
+- autobuilt 6dabefa
+
+* Fri Sep 25 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-2.dev.git44beab6
+- bump to 1.2.1
+- autobuilt 44beab6
+
+* Fri Sep 25 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-51.dev.git5d5756c
+- Modify the range of groups used in net.ipv4.ping_group_range to be 1 so that
+- it will work more easily with User Namespaces
+- Also turn back on AUDIT_WRITE until seccomp.json file is fixed
+
+* Mon Sep 21 18:12:41 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-50.dev.git8151b89
+- autobuilt 8151b89
+
+* Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-49.dev.git5d5756c
+- Add SYS_CHROOT back into default capabilities
+
+* Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-48.dev.git5d5756c
+- Remove fchmodat2 from seccomp.json (This syscall does not exist yet)
+
+* Fri Sep 18 20:12:04 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-47.dev.git77293ff
+- autobuilt 77293ff
+
+* Thu Sep 17 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-46.dev.git5d5756c
+- Remove NET_RAW, SYS_CHROOT, MKNOD and AUDIT_WRITE from default list of capabilities
+- Turn on ping for 65k users
+
+* Tue Sep 15 11:13:22 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-45.dev.gitbbd800f
+- autobuilt bbd800f
+
+* Mon Sep 14 16:12:20 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-44.dev.git12ab19f
+- autobuilt 12ab19f
+
+* Sat Sep 12 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-43.dev.git5d5756c
+- update man pages
+- Update seccomp rules
+- Update configuration files in containers-common
+- Update configuration files in containers-storage
+
+* Fri Sep 11 19:12:27 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-42.dev.git45a9efb
+- autobuilt 45a9efb
+
+* Wed Sep  9 20:12:20 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-41.dev.git5dd09d7
+- autobuilt 5dd09d7
+
+* Wed Sep  9 09:11:56 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-40.dev.git23cb1b7
+- autobuilt 23cb1b7
+
+* Wed Sep  2 18:10:52 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-39.dev.git662f9ac
+- autobuilt 662f9ac
+
 * Wed Sep  2 17:11:26 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-38.dev.gitae26454
 - autobuilt ae26454
 
