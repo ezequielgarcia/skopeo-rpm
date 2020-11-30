@@ -28,7 +28,7 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 8151b89b8161e4b0d378df2e10a9c8601fed08b2
+%global commit0 77293ff9c42a9c8d3db36a6c02fe26c70b232ec9
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -46,7 +46,7 @@ Epoch: 1
 Epoch: 2
 %endif
 Version: 1.1.1
-Release: 51.dev.git%{shortcommit0}%{?dist}
+Release: 47.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -447,20 +447,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Fri Sep 25 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-51.dev.git5d5756c
-- Modify the range of groups used in net.ipv4.ping_group_range to be 1 so that
-- it will work more easily with User Namespaces
-- Also turn back on AUDIT_WRITE until seccomp.json file is fixed
-
-* Mon Sep 21 18:12:41 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-50.dev.git8151b89
-- autobuilt 8151b89
-
-* Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-49.dev.git5d5756c
-- Add SYS_CHROOT back into default capabilities
-
-* Mon Sep 21 2020 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.1.1-48.dev.git5d5756c
-- Remove fchmodat2 from seccomp.json (This syscall does not exist yet)
-
 * Fri Sep 18 20:12:04 UTC 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.1.1-47.dev.git77293ff
 - autobuilt 77293ff
 
