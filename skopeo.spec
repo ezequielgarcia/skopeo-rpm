@@ -43,7 +43,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.1
-Release: 29.dev.git%{shortcommit0}%{?dist}
+Release: 30.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -460,6 +460,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Sat Dec  5 2020 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.1-30.dev.git5b8fe7f
+- harden cgo binaries
+- Reported-by: Wade Mealing <wmealing@gmail.com>
+
 * Fri Dec  4 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-29.dev.git5b8fe7f
 - autobuilt 5b8fe7f
 
