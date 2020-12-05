@@ -31,19 +31,14 @@
 %global project containers
 %global repo skopeo
 # https://github.com/containers/skopeo
-%global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
-%global import_path %{provider_prefix}
+%global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 %global commit0 5b8fe7ffa535c2d3fc92440ce92e249c6ad8b411
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild (non-rawhide only)
-%global built_tag v0.2.0
-
-# e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-# manually listed arches due https://bugzilla.redhat.com/show_bug.cgi?id=1391932 (removed ppc64)
-ExcludeArch: ppc64
+%global built_tag v1.2.0
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
@@ -297,6 +292,13 @@ sed -i 's/install-docs: docs/install-docs:/' Makefile
 %build
 mkdir -p src/github.com/containers
 ln -s ../../../ src/%{import_path}
+
+export CGO_CFLAGS='-O2 -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -ffat-lto-objects -fexceptions -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64'
+%ifarch x86_64
+export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection"
+%endif
+# These extra flags present in %%{optflags} have been skipped for now as they break the build
+#export CGO_CFLAGS="$CGO_CFLAGS -flto=auto -Wp,D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1"
 
 mkdir -p vendor/src
 for v in vendor/*; do
