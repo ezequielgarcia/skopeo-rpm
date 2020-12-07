@@ -33,7 +33,7 @@
 # https://github.com/containers/skopeo
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
-%global commit0 5b8fe7ffa535c2d3fc92440ce92e249c6ad8b411
+%global commit0 ed321809d3aa5a37d1a66acbc37fbd2e3327861a
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -43,7 +43,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.1
-Release: 30.dev.git%{shortcommit0}%{?dist}
+Release: 31.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -460,6 +460,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Dec  7 2020 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.1-31.dev.gited32180
+- autobuilt ed32180
+
 * Sat Dec  5 2020 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.1-30.dev.git5b8fe7f
 - harden cgo binaries
 - Reported-by: Wade Mealing <wmealing@gmail.com>
