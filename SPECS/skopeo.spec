@@ -31,7 +31,7 @@ ExcludeArch: ppc64
 Epoch: 1
 Name: %{repo}
 Version: 0.1.41
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -252,6 +252,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Oct 08 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-4
+- add docker.io into the default registry list
+- Resolves: #1886443
+
 * Thu Jul 16 2020 Eduardo Santiago <santiago@redhat.com> - 1:0.1.41-3
 - patch broken gating tests: improper 'jq' usage, and use 'registry:2.6'
   (instead of :2) to work around broken image pushed by docker
