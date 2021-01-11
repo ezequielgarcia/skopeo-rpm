@@ -43,7 +43,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.2
-Release: 2.dev.git%{shortcommit0}%{?dist}
+Release: 3.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -460,6 +460,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jan 11 2021 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.2-3.dev.git2e90a8a
+- Update documentaton for containers.conf, seccomp.json and new shortnames.conf
+
 * Mon Jan 11 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.2-2.dev.git2e90a8a
 - bump to 1.2.2
 - autobuilt 2e90a8a
