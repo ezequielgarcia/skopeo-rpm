@@ -43,28 +43,11 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.2
-Release: 3.dev.git%{shortcommit0}%{?dist}
+Release: 4.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
 Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
-Source1: storage.conf
-Source2: containers-storage.conf.5.md
-Source3: mounts.conf
-Source4: containers-registries.conf.5.md
-Source5: registries.conf
-Source6: containers-policy.json.5.md
-Source7: seccomp.json
-Source8: containers-mounts.conf.5.md
-Source9: containers-signature.5.md
-Source10: containers-transports.5.md
-Source11: containers-certs.d.5.md
-Source12: containers-registries.d.5.md
-Source13: containers.conf
-Source14: containers.conf.5.md
-Source15: containers-auth.json.5.md
-Source16: containers-registries.conf.d.5.md
-Source17: shortnames.conf
 
 %if 0%{?fedora}
 BuildRequires: go-srpm-macros
@@ -84,7 +67,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: containers-common >= 3:1-2
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -257,18 +240,6 @@ This package contains unit tests for project
 providing packages with %{import_path} prefix.
 %endif
 
-%package -n containers-common
-Summary: Configuration files for working with image signatures
-Obsoletes: atomic <= 1.13.1-2
-Conflicts: atomic-registries <= 1.22.1-1
-Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-containers <= 1:0.1.31-2
-
-%description -n containers-common
-This package installs a default signature store configuration and a default
-policy under `/etc/containers/`.
-
 %package tests
 Summary: Tests for %{name}
 
@@ -331,36 +302,7 @@ popd
 %install
 make \
     DESTDIR=%{buildroot} \
-    SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
-    install
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.conf.d}
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
-install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
-install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/shortnames.conf
-install -dp %{buildroot}%{_mandir}/man5
-go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
-go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
-go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
-go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
-go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
-go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
-go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
-go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
-go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
-go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
-go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
-
-install -dp %{buildroot}%{_datadir}/containers
-install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
-install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
-install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
-
-# install secrets patch directory
-install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
-# rhbz#1110876 - update symlinks for subscription management
-ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
-ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
-ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/redhat.repo
+    install-binary install-docs install-completions
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -422,30 +364,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %doc README.md
 %endif
 
-%files -n containers-common
-%dir %{_sysconfdir}/containers
-%dir %{_sysconfdir}/containers/certs.d
-%dir %{_sysconfdir}/containers/registries.d
-%dir %{_sysconfdir}/containers/oci
-%dir %{_sysconfdir}/containers/oci/hooks.d
-%dir %{_sysconfdir}/containers/registries.conf.d
-%config(noreplace) %{_sysconfdir}/containers/policy.json
-%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
-%config(noreplace) %{_sysconfdir}/containers/storage.conf 
-%config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/shortnames.conf
-%ghost %{_sysconfdir}/containers/containers.conf
-%dir %{_sharedstatedir}/containers/sigstore
-%{_mandir}/man5/*
-%dir %{_datadir}/containers
-%{_datadir}/containers/mounts.conf
-%{_datadir}/containers/seccomp.json
-%{_datadir}/containers/containers.conf
-%dir %{_datadir}/rhel/secrets
-%{_datadir}/rhel/secrets/etc-pki-entitlement
-%{_datadir}/rhel/secrets/redhat.repo
-%{_datadir}/rhel/secrets/rhsm
-
 %files
 %license LICENSE
 %doc README.md
@@ -460,6 +378,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jan 12 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.2-4.dev.git2e90a8a
+- depend on standalone containers-common package
+
 * Mon Jan 11 2021 Dan Walsh <dwalsh@fedoraproject.org> - 1:1.2.2-3.dev.git2e90a8a
 - Update documentaton for containers.conf, seccomp.json and new shortnames.conf
 
