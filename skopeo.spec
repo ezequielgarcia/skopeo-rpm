@@ -53,7 +53,7 @@ Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 BuildRequires: go-srpm-macros
 BuildRequires: compiler(go-compiler)
 %endif
-BuildRequires: git
+BuildRequires: git-core
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires: %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires: go-md2man
