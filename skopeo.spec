@@ -38,12 +38,12 @@
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild (non-rawhide only)
-%global built_tag v1.2.0
+%global built_tag v1.2.1
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.2
-Release: 4.dev.git%{shortcommit0}%{?dist}
+Release: 5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -67,7 +67,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common >= 3:1-2
+Requires: containers-common >= 4:0.33.0-1
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -378,6 +378,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jan 12 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.2-5.dev.git2e90a8a
+- depend on containers-common >= 4:0.33.0-1
+
 * Tue Jan 12 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.2-4.dev.git2e90a8a
 - depend on standalone containers-common package
 
