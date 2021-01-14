@@ -1,18 +1,13 @@
-%global with_debug 1
 %global with_check 0
 
-%if 0%{?with_debug}
 %global _find_debuginfo_dwz_opts %{nil}
 %global _dwz_low_mem_die_limit 0
-%else
-%global debug_package %{nil}
-%endif
 
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
-go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v -x %{?**};
+go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
 %else
-%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v -x %{?**};
+%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
 %global import_path github.com/containers/skopeo
@@ -22,22 +17,26 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # These vendored components must have the same version. If it is not the case,
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
-%global podman_branch v2.2
-%global image_branch  v5.6.0
-%global common_branch v0.22.0
-%global storage_branch v1.23.5
-%global commit0 2b4097bc13e7ba1d16a5225e2292a5cf88072f63
+%global podman_branch master
+%global image_branch  v5.9.0
+%global common_branch v0.33.0
+%global storage_branch v1.24.5
+%global shortnames_branch main
+%global commit0 bdb117ded6d37f0a6b0a2e28ba3213c20264ab43
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.2.0
-Release: 6%{?dist}
+Version: 1.2.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
-# Build fails with: No matching package to install: 'golang >= 1.12.12-4' on i686
-ExcludeArch: i686
+# https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
+#ExclusiveArch: %%{go_arches}
+# still use arch exclude as the macro above still refers %%{ix86} in RHEL8.4:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1905383
+ExcludeArch: %{ix86}
 %if 0%{?branch:1}
 Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
 %else
@@ -60,6 +59,8 @@ Source13: https://raw.githubusercontent.com/containers/common/%{common_branch}/p
 Source14: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers.conf.5.md
 Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-auth.json.5.md
 Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
+Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
+Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
@@ -138,9 +139,10 @@ make \
    DESTDIR=%{buildroot} \
    SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
    install
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
+install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
+install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/shortnames.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -150,6 +152,7 @@ go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
 go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
+go-md2man -in %{SOURCE18} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
 go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
@@ -165,6 +168,19 @@ install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
 ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
 ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
 ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/redhat.repo
+
+# ship preconfigured /etc/containers/registries.d/ files with containers-common - #1903813
+cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.access.redhat.com.yaml
+docker:
+     registry.access.redhat.com:
+         sigstore: https://access.redhat.com/webassets/docker/content/sigstore
+EOF
+
+cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.redhat.io.yaml
+docker:
+     registry.redhat.io:
+         sigstore: https://registry.redhat.io/containers/sigstore
+EOF
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -186,10 +202,13 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers/registries.d
 %dir %{_sysconfdir}/containers/oci
 %dir %{_sysconfdir}/containers/oci/hooks.d
+%dir %{_sysconfdir}/containers/registries.conf.d
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
 %{_mandir}/man5/*
@@ -214,6 +233,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jan 14 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-1
+- ship preconfigured /etc/containers/registries.d/ files with containers-common
+
 * Tue Dec 01 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-6
 - unify vendored branches
 - add validation script
