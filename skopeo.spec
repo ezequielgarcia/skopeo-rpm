@@ -28,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -61,6 +61,7 @@ Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/doc
 Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
 Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
 Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
+Source19: rhel-shortnames.conf
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
@@ -143,6 +144,7 @@ install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registrie
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/shortnames.conf
+install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -208,6 +210,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf.d/shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
@@ -233,6 +236,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jan 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-2
+- fix rhel-shortnames.conf generation (avoid duplicates and records
+  with invalid URL)
+- Related: #1883490
+
 * Thu Jan 14 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-1
 - ship preconfigured /etc/containers/registries.d/ files with containers-common
 
