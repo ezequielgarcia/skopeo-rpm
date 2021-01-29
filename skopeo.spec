@@ -28,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -86,7 +86,7 @@ Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-3
 Recommends: fuse-overlayfs
 Recommends: slirp4netns
-Recommends: subscription-manager
+Suggests: subscription-manager
 
 %description -n containers-common
 This package installs a default signature store configuration and a default
@@ -236,6 +236,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Jan 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-3
+- convert subscription-manager from weak dep to a hint
+
 * Tue Jan 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-2
 - fix rhel-shortnames.conf generation (avoid duplicates and records
   with invalid URL)
