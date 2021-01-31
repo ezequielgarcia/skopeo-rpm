@@ -11,24 +11,24 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-#%%global branch release-1.2
+%global branch release-1.2
 # Bellow definitions are used to deliver config files from a particular branch
 # of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
 # These vendored components must have the same version. If it is not the case,
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
-%global podman_branch master
+%global podman_branch v3.0
 %global image_branch  v5.9.0
 %global common_branch v0.33.0
 %global storage_branch v1.24.5
 %global shortnames_branch main
-%global commit0 bdb117ded6d37f0a6b0a2e28ba3213c20264ab43
+%global commit0 2e90a8af5a3aad76a3567d3bb84fbb07034ec1fd
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -236,6 +236,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Sun Jan 31 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-4
+- define 8.4.0 branch for podman (v3.0)
+- remove redundant source file
+
 * Fri Jan 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-3
 - convert subscription-manager from weak dep to a hint
 
