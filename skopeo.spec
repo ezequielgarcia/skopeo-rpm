@@ -22,13 +22,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %global common_branch v0.33.0
 %global storage_branch v1.24.5
 %global shortnames_branch main
-%global commit0 2e90a8af5a3aad76a3567d3bb84fbb07034ec1fd
+%global commit0 a05ddb8d1de6d8e4220c936850308f4c595eba66
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -236,6 +236,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Feb 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-5
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
+  (https://github.com/containers/skopeo/commit/a05ddb8)
+
 * Sun Jan 31 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-4
 - define 8.4.0 branch for podman (v3.0)
 - remove redundant source file
