@@ -1,3 +1,4 @@
+%global _lto_cflags %{nil}
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -28,7 +29,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -236,6 +237,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Feb 03 2021 Jeff Law <law@redhat.com> - 1:1.2.1-6
+- Disable LTO
+
 * Tue Feb 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-5
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
   (https://github.com/containers/skopeo/commit/a05ddb8)
