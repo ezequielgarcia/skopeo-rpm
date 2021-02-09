@@ -43,7 +43,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.2.2
-Release: 20.dev.git%{shortcommit0}%{?dist}
+Release: 21.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -67,7 +67,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common >= 4:0.33.0-2
+Requires: containers-common >= 4:1-6
 
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
@@ -301,7 +301,7 @@ popd
 
 %install
 make \
-    DESTDIR=%{buildroot} \
+    PREFIX=%{_prefix} DESTDIR=%{buildroot} \
     install-binary install-docs install-completions
 
 # system tests
@@ -378,6 +378,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Feb 09 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.2.2-21.dev.git1c4b0fc
+- fix build and update containers-common dependency
+
 * Mon Feb 08 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.2-20.dev.git1c4b0fc
 - autobuilt 1c4b0fc
 
