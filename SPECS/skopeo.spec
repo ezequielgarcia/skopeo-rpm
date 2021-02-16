@@ -1,55 +1,62 @@
-%global with_debug 1
 %global with_check 0
 
-%if 0%{?with_debug}
 %global _find_debuginfo_dwz_opts %{nil}
 %global _dwz_low_mem_die_limit 0
-%else
-%global debug_package %{nil}
-%endif
 
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
-go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v -x %{?**};
+go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
+%else
+%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
-%global provider github
-%global provider_tld com
-%global project containers
-%global repo skopeo
-# https://github.com/containers/skopeo
-%global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
-%global import_path %{provider_prefix}
-%global git0 https://%{import_path}
-%global branch master
+%global import_path github.com/containers/skopeo
+%global branch release-1.2
+# Bellow definitions are used to deliver config files from a particular branch
+# of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
+# These vendored components must have the same version. If it is not the case,
+# pick the oldest version on c/image, c/common, c/storage vendored in
+# podman/skopeo/podman.
+%global podman_branch v2.2.1-rhel
+%global image_branch  v5.6.0
+%global common_branch v0.22.0
+%global storage_branch v1.23.5
+%global fedora_branch f32
+%global commit0 2b4097bc13e7ba1d16a5225e2292a5cf88072f63
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
-Name: %{repo}
-Version: 1.1.1
-Release: 3%{?dist}
+Name: skopeo
+Version: 1.2.0
+Release: 9%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
 # Build fails with: No matching package to install: 'golang >= 1.12.12-4' on i686
 ExcludeArch: i686
-Source0: %{git0}/archive/v%{version}.tar.gz
-#Source1: https://raw.githubusercontent.com/containers/storage/%%{branch}/storage.conf
-Source1: https://src.fedoraproject.org/rpms/skopeo/raw/master/f/storage.conf
-Source2: https://raw.githubusercontent.com/containers/storage/%{branch}/docs/containers-storage.conf.5.md
+%if 0%{?branch:1}
+Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
+%else
+Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+%endif
+#Source1: https://raw.githubusercontent.com/containers/storage/%%{storage_branch}/storage.conf
+Source1: https://src.fedoraproject.org/rpms/skopeo/raw/%{fedora_branch}/f/storage.conf
+Source2: https://raw.githubusercontent.com/containers/storage/%{storage_branch}/docs/containers-storage.conf.5.md
 Source3: mounts.conf
-Source4: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-registries.conf.5.md
+Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
 Source5: registries.conf
-Source6: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-policy.json.5.md
-#Source7: https://raw.githubusercontent.com/containers/libpod/%%{branch}/seccomp.json
-Source7: https://src.fedoraproject.org/rpms/skopeo/raw/master/f/seccomp.json
-Source8: https://raw.githubusercontent.com/containers/libpod/%{branch}/docs/source/markdown/containers-mounts.conf.5.md
-Source9: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-signature.5.md
-Source10: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-transports.5.md
-Source11: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-certs.d.5.md
-Source12: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-registries.d.5.md
-Source13: https://raw.githubusercontent.com/containers/common/%{branch}/pkg/config/containers.conf
-Source14: https://raw.githubusercontent.com/containers/common/%{branch}/docs/containers.conf.5.md
-Source15: https://raw.githubusercontent.com/containers/image/%{branch}/docs/containers-auth.json.5.md
+Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
+#Source7: https://raw.githubusercontent.com/containers/podman/%%{podman_branch}/seccomp.json
+Source7: https://src.fedoraproject.org/rpms/skopeo/raw/%{fedora_branch}/f/seccomp.json
+Source8: https://raw.githubusercontent.com/containers/podman/%{podman_branch}/docs/source/markdown/containers-mounts.conf.5.md
+Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
+Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
+Source11: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-certs.d.5.md
+Source12: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.d.5.md
+Source13: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/config/containers.conf
+Source14: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers.conf.5.md
+Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-auth.json.5.md
+Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
@@ -95,7 +102,13 @@ Requires: httpd-tools
 This package contains system tests for %{name}
 
 %prep
-%autosetup -Sgit
+%if 0%{?branch:1}
+%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+%else
+%autosetup -Sgit -n %{name}-%{commit0}
+%endif
+sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
 mkdir -p src/github.com/containers
@@ -113,7 +126,8 @@ export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh) $(hack/ostree_tag.sh)"
-%gobuild -o %{name} ./cmd/%{name}
+mkdir -p bin
+%gobuild -o bin/%{name} ./cmd/%{name}
 %{__make} docs
 
 %install
@@ -121,11 +135,10 @@ make \
    DESTDIR=%{buildroot} \
    SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
    install
-mkdir -p %{buildroot}%{_sysconfdir}
-mkdir -p %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
-mkdir -p %{buildroot}%{_mandir}/man5
+install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
-install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/
+install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
+install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
 go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
@@ -136,8 +149,9 @@ go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
 go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
+go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
 
-mkdir -p %{buildroot}%{_datadir}/containers
+install -dp %{buildroot}%{_datadir}/containers
 install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
 install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
 install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
@@ -197,6 +211,50 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jan 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-9
+- upload proper source tarball
+- Related: #1888571
+
+* Mon Jan 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-8
+- revert back to version aimed at 8.3.1 - skopeo-1.2.0
+- also downgrade versions of vendored libraries
+- Related: #1888571
+
+* Mon Jan 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-1
+- update vendored component versions
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
+  (https://github.com/containers/skopeo/commit/2e90a8a)
+- Related: #1888571
+
+* Fri Jan 08 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-6
+- always build with debuginfo
+- use less verbose output when compiling
+- Related: #1888571
+
+* Thu Jan 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-5
+- re-sync config files
+- assure events_logger = "file"
+- Related: #1888571
+
+* Thu Nov 05 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-4
+- change default logging mechanism to use for container engine events
+  in containers.conf to be events_logger = "file" - it should fix
+  RHEL gating tests for podman nonroot (thanks to Dan Walsh)
+- Related: #1888571
+
+* Thu Nov 05 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-3
+- simplify spec file
+- use short commit ID in tarball name
+- Related: #1888571
+
+* Fri Oct 23 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-2
+- use shortcommit ID in branch tarball name
+- Related: #1888571
+
+* Thu Oct 22 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.2.0-1
+- synchronize with stream-container-tools-rhel8-rhel-8.4.0
+- Related: #1888571
+
 * Tue Aug 11 2020 Jindrich Novy <jnovy@redhat.com> - 1:1.1.1-3
 - propagate proper CFLAGS to CGO_CFLAGS to assure code hardening and optimization
 - Related: #1821193
