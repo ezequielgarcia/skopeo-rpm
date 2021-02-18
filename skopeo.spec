@@ -1,4 +1,3 @@
-%global _lto_cflags %{nil}
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -29,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -144,7 +143,7 @@ make \
 install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
-install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/shortnames.conf
+install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
 install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
@@ -210,7 +209,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
 %ghost %{_sysconfdir}/containers/containers.conf
@@ -237,6 +236,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-10
+- rename shortnames.conf to 000-shortnames.conf to assure evaluation order
+- Related: #1883490
+
 * Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-9
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
   (https://github.com/containers/skopeo/commit/3abb778)
