@@ -1,3 +1,4 @@
+%global _lto_cflags %{nil}
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -28,7 +29,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -236,6 +237,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-11
+- disable LTO
+
 * Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-10
 - rename shortnames.conf to 000-shortnames.conf to assure evaluation order
 - Related: #1883490
