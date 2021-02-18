@@ -12,3 +12,10 @@ then
   sed -i '/^default_capabilities/a \
     "NET_RAW",' containers.conf
 fi
+if ! grep ^short-name-mode.*= registries.conf
+then
+  echo "# Enforcing mode for short names is default for RHEL9." >> registries.conf
+  echo 'short-name-mode = "enforcing"' >> registries.conf
+else
+  sed -i 's/^short-name-mode.*=.*/short-name-mode = "enforcing"/'
+fi
