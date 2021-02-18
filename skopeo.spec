@@ -29,15 +29,12 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
-#ExclusiveArch: %%{go_arches}
-# still use arch exclude as the macro above still refers %%{ix86} in RHEL8.4:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1905383
-ExcludeArch: %{ix86}
+ExclusiveArch: %{go_arches}
 %if 0%{?branch:1}
 Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
 %else
@@ -237,6 +234,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-13
+- use %%go_arches again
+- Related: #1926597
+
 * Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-12
 - configure short-name-mode = "enforcing" for RHEL9
 
