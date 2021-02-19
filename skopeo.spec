@@ -29,7 +29,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -234,6 +234,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-14
+- add missing file in sed expression
+
 * Thu Feb 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-13
 - use %%go_arches again
 - Related: #1926597
