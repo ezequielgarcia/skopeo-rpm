@@ -23,13 +23,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %global common_branch v0.33.0
 %global storage_branch v1.24.5
 %global shortnames_branch main
-%global commit0 3abb778b4d4d1ae4d9c2403bf2d679c878efc575
+%global commit0 e72dd9c5c834f3cd7fb8b1aab4021d9d4412f305
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.2.1
-Release: 14%{?dist}
+Version: 1.2.2
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -234,6 +234,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
+  (https://github.com/containers/skopeo/commit/e72dd9c)
+
 * Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.1-14
 - add missing file in sed expression
 
