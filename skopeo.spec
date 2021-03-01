@@ -249,6 +249,7 @@ Requires: gnupg
 Requires: jq
 Requires: podman
 Requires: httpd-tools
+Requires: openssl
 
 %description tests
 %{summary}
