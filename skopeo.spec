@@ -38,7 +38,7 @@
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild and set download url (non-rawhide only)
-%global built_tag v1.2.2
+%define built_tag v1.2.2
 %define built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %define download_url %{git0}/archive/%{built_tag}.tar.gz
 
