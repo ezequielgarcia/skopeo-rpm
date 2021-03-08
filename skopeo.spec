@@ -1,3 +1,4 @@
+%global _lto_cflags %{nil}
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -28,7 +29,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -233,6 +234,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Mar 08 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-3
+- disable LTO again
+
 * Wed Mar 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-2
 - use rhel-shortnames only from trusted registries
 - sync with config files from current versions of vendored projects
