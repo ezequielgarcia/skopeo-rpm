@@ -21,7 +21,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path %{provider_prefix}
 %global git0 https://%{import_path}
-%global commit0 be6146b0a8471b02e776134119a2c37dfb70d414
+%global commit0 7d080caaa32327ca063276f477a64af0fd4617ba
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
@@ -30,11 +30,13 @@ ExcludeArch: ppc64
 
 Epoch: 1
 Name: %{repo}
-Version: 0.1.40
-Release: 9%{?dist}
+Version: 0.1.41
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
+# Build fails with: No matching package to install: 'golang >= 1.12.12-4' on i686
+ExcludeArch: i686
 Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 Source1: storage.conf
 Source2: containers-storage.conf.5.md
@@ -48,8 +50,7 @@ Source9: containers-signature.5.md
 Source10: containers-transports.5.md
 Source11: containers-certs.d.5.md
 Source12: containers-registries.d.5.md
-# https://bugzilla.redhat.com/show_bug.cgi?id=1801928
-Patch0: https://github.com/containers/skopeo/commit/e92e288c169563b6367c53d55805f0a588e75b64.patch
+Patch0: skopeo-test-fix.patch
 
 BuildRequires: git
 BuildRequires: golang >= 1.12.12-4
@@ -251,9 +252,21 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Mon Apr 20 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-9
+* Tue Jan 12 2021 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-4
 - add docker.io into the default registry list
-- Related: #1810053
+- Resolves: #1883324
+
+* Thu Jul 16 2020 Eduardo Santiago <santiago@redhat.com> - 1:0.1.41-3
+- patch broken gating tests: improper 'jq' usage, and use 'registry:2.6'
+  (instead of :2) to work around broken image pushed by docker
+
+* Thu Jul 16 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-2
+- exclude i686 arch
+- Related: #1821193
+
+* Mon Apr 06 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-1
+- update to 0.1.41
+- Related: #1821193
 
 * Fri Mar 06 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.40-8
 - modify registries.conf default configuration to be more secure by default
