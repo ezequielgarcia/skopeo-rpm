@@ -27,29 +27,28 @@ No bare options are used. The format of TOML can be simplified to:
 The `storage` table supports the following options:
 
 **driver**=""
-  container storage driver (default: "overlay")
+  container storage driver
   Default Copy On Write (COW) container storage driver. Valid drivers are "overlay", "vfs", "devmapper", "aufs", "btrfs", and "zfs". Some drivers (for example, "zfs", "btrfs", and "aufs") may not work if your kernel lacks support for the filesystem.
+  This field is requiered to guarantee proper operation.
 
 **graphroot**=""
   container storage graph dir (default: "/var/lib/containers/storage")
   Default directory to store all writable content created by container storage programs.
+  The rootless graphroot path supports environment variable substitutions (ie. `$HOME/containers/storage`)
 
 **rootless_storage_path**="$HOME/.local/share/containers/storage"
   Storage path for rootless users. By default the graphroot for rootless users
-is set to `$XDG_DATA_HOME/containers/storage`, if XDG_DATA_HOME is set.
-Otherwise `$HOME/.local/share/containers/storage` is used.  This field can
-be used if administrators need to change the storage location for all users.
-
-    The rootless storage path supports three substations:
-    * `$HOME` => Replaced by the users home directory.
-    * `$UID`  => Replaced by the users UID
-    * `$USER` => Replaced by the users name
+  is set to `$XDG_DATA_HOME/containers/storage`, if XDG_DATA_HOME is set.
+  Otherwise `$HOME/.local/share/containers/storage` is used.  This field can
+  be used if administrators need to change the storage location for all users.
+  The rootless storage path supports environment variable substitutions (ie. `$HOME/containers/storage`)
 
   A common use case for this field is to provide a local storage directory when user home directories are NFS-mounted (podman does not support container storage over NFS).
 
 **runroot**=""
-  container storage run dir (default: "/var/run/containers/storage")
+  container storage run dir (default: "/run/containers/storage")
   Default directory to store all temporary writable content created by container storage programs.
+  The rootless runroot path supports environment variable substitutions (ie. `$HOME/containers/storage`)
 
 ### STORAGE OPTIONS TABLE
 
@@ -77,7 +76,7 @@ The `storage.options` table supports the following options:
      remap-group = "containers"
 
 **root-auto-userns-user**=""
-  Root-auto-userns-user is a user name which can be used to look up one or more UID/GID ranges in the /etc/subuid and /etc/subgid file.  These ranges will be partioned to containers configured to create automatically a user namespace.  Containers configured to automatically create a user namespace can still overlap with containers having an explicit mapping set.  This setting is ignored when running as rootless.
+  Root-auto-userns-user is a user name which can be used to look up one or more UID/GID ranges in the /etc/subuid and /etc/subgid file.  These ranges will be partitioned to containers configured to create automatically a user namespace.  Containers configured to automatically create a user namespace can still overlap with containers having an explicit mapping set.  This setting is ignored when running as rootless.
 
 **auto-userns-min-size**=1024
   Auto-userns-min-size is the minimum size for a user namespace created automatically.
@@ -138,6 +137,9 @@ The `storage.options.thinpool` table supports the following options for the `dev
     6: LogLevelInfo
     7: LogLevelDebug
 
+**metadata_size**=""
+  metadata_size is used to set the `pvcreate --metadatasize` options when creating thin devices. (Default 128k)
+
 **min_free_space**=""
   Specifies the min free space percent in a thin pool required for new device creation to succeed. Valid values are from 0% - 99%. Value 0% disables. (default: 10%)
 
@@ -148,7 +150,7 @@ The `storage.options.thinpool` table supports the following options for the `dev
   Comma separated list of default options to be used to mount container images.  Suggested value "nodev". Mount options are documented in the mount(8) man page.
 
 **size**=""
-  Maximum size of a container image.   This flag can be used to set quota on the size of container images. (format: <number>[<unit>], where unit = b (bytes), k (kilobytes), m (megabytes), or g (gigabytes))
+  Maximum size of a container image.  This flag can be used to set quota on the size of container images. (format: <number>[<unit>], where unit = b (bytes), k (kilobytes), m (megabytes), or g (gigabytes))
 
 **use_deferred_deletion**=""
   Marks thinpool device for deferred deletion. If the thinpool is in use when the driver attempts to delete it, the driver will attempt to delete device every 30 seconds until successful, or when it restarts.  Deferred deletion permanently deletes the device and all data stored in the device will be lost. (default: true).
@@ -165,6 +167,39 @@ The `storage.options.overlay` table supports the following options:
 
 **ignore_chown_errors** = "false"
   ignore_chown_errors can be set to allow a non privileged user running with a  single UID within a user namespace to run containers. The user can pull and use any image even those with multiple uids.  Note multiple UIDs will be squashed down to the default uid in the container.  These images will have no separation between the users in the container. (default: false)
+
+**force_mask** = "0000|shared|private"
+  ForceMask specifies the permissions mask that is used for new files and
+directories.
+The values "shared" and "private" are accepted.  (default: ""). Octal permission
+masks are also accepted.
+
+  ``: Not set
+     All files/directories, get set with the permissions identified within the
+image.
+
+  `private`: it is equivalent to 0700.
+     All files/directories get set with 0700 permissions.  The owner has rwx
+access to the files. No other users on the system can access the files.
+This setting could be used with networked based home directories.
+
+  `shared`: it is equivalent to 0755.
+     The owner has rwx access to the files and everyone else can read, access
+and execute them. This setting is useful for sharing containers storage
+with other users.  For instance, a storage owned by root could be shared
+to rootless users as an additional store.
+NOTE:  All files within the image are made readable and executable by any
+user on the system. Even /etc/shadow within your image is now readable by
+any user.
+
+  `OCTAL`: Users can experiment with other OCTAL Permissions.
+
+Note: The force_mask Flag is an experimental feature, it could change in the
+future.  When "force_mask" is set the original permission mask is stored in the
+"user.containers.override_stat" xattr and the "mount_program" option must be
+specified. Mount programs like "/usr/bin/fuse-overlayfs" present the extended
+attribute permissions to processes within containers rather then the
+"force_mask"  permissions.
 
 **mount_program**=""
   Specifies the path to a custom program to use instead of using kernel defaults
@@ -220,7 +255,7 @@ The semanage command above tells SELinux to setup the default labeling of `NEWST
 Now all new content created in these directories will automatically be created with the correct label.
 
 ## SEE ALSO
-`semanage(8)`, `restorecon(8)`, `mount(8)`
+`semanage(8)`, `restorecon(8)`, `mount(8)`, `fuse-overlayfs(1)`
 
 ## FILES
 
