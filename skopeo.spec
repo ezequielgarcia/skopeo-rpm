@@ -29,7 +29,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -234,6 +234,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Apr 16 2021 Mohan Boddu <mboddu@redhat.com> - 1:1.2.2-4
+- Rebuilt for RHEL 9 BETA on Apr 15th 2021. Related: rhbz#1947937
+
 * Mon Mar 08 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-3
 - disable LTO again
 
