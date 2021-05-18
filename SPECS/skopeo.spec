@@ -252,9 +252,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Thu Oct 08 2020 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-4
+* Tue Jan 12 2021 Jindrich Novy <jnovy@redhat.com> - 1:0.1.41-4
 - add docker.io into the default registry list
-- Resolves: #1886443
+- Resolves: #1883324
 
 * Thu Jul 16 2020 Eduardo Santiago <santiago@redhat.com> - 1:0.1.41-3
 - patch broken gating tests: improper 'jq' usage, and use 'registry:2.6'
