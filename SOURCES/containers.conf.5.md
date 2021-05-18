@@ -50,12 +50,14 @@ configure and manage the OCI runtime.
 
 List of devices.
 Specified as 'device-on-host:device-on-container:permissions'.
+
 Example: "/dev/sdc:/dev/xvdc:rwm".
 
 **volumes**=[]
 
 List of volumes.
 Specified as "directory-on-host:directory-in-container:options".
+
 Example:  "/db:/var/lib/db:ro".
 
 **apparmor_profile**="container-default"
@@ -76,7 +78,7 @@ Determines  whether  the  container will create CGroups.
 Options are:
   `enabled`   Enable cgroup support within container
   `disabled`  Disable cgroup support, will inherit cgroups from parent
-  `no-conmon` Container engine runs run without conmon
+  `no-conmon` Do not create a cgroup dedicated to conmon.
 
 **default_capabilities**=[]
 
@@ -105,12 +107,14 @@ default_capabilities = [
 
 A list of sysctls to be set in containers by default,
 specified as "name=value".
+
 Example:"net.ipv4.ping_group_range=0 1000".
 
 **default_ulimits**=[]
 
 A list of ulimits to be set in containers by default,
 specified as "name=soft-limit:hard-limit".
+
 Example: "nofile=1024:2048".
 
 **dns_options**=[]
@@ -138,7 +142,7 @@ environment variables to the container.
 
 Pass all host environment variables into the container.
 
-**http_proxy**=false
+**http_proxy**=true
 
 Default proxy environment variables will be passed into the container.
 The environment variables passed in include:
@@ -164,9 +168,14 @@ Options are:
   `private` Create private IPC Namespace for the container.
   `host`    Share host IPC Namespace with the container.
 
+**keyring**=true
+
+Indicates whether the container engines create a kernel keyring for use within
+the container.
+
 **label**=true
 
-Indicates whether the container engines use MAC(SELinux) container separation via via labeling. Flag is ignored on disabled systems.
+Indicates whether the container engine uses MAC(SELinux) container separation via labeling. This option is ignored on disabled systems.
 
 **log_driver**="k8s-file"
 
@@ -222,6 +231,7 @@ the system uses `65536k`.
 
 Set timezone in container. Takes IANA timezones as well as `local`, which sets the timezone in the container to match the host machine.
 If not set, then containers will run with the time zone specified in the image.
+
 Examples:
   `tz="local"`
   `tz="America/New_York"`
@@ -267,6 +277,9 @@ Path to the directory where CNI configuration files are located.
 
 ## ENGINE TABLE
 The `engine` table contains configuration options used to set up container engines such as Podman and Buildah.
+
+**image_build_format**="oci"
+The default image format to building container images. Valid values are "oci" (default) or "docker".
 
 **cgroup_check**=false
 
@@ -372,6 +385,12 @@ and pods are visible.
 
 Path to the slirp4netns binary.
 
+**network_cmd_options**=[]
+
+Default options to pass to the slirp4netns binary.
+
+Example "allow_host_loopback=true"
+
 **no_pivot_root**=false
 
 Whether to use chroot instead of pivot_root in the runtime.
@@ -390,6 +409,7 @@ Name of destination for accessing the Podman service.
 **[service_destinations]**
 
 **[service_destinations.{name}]**
+
 **uri="ssh://user@production.example.com/run/user/1001/podman/podman.sock"**
 
   Example URIs:
@@ -411,10 +431,15 @@ Pull image before running or creating a container. The default is **missing**.
 - **always**: pull the image from the first registry it is found in as listed in registries.conf. Raise an error if not found in the registries, even if the image is present locally.
 - **never**: do not pull the image from the registry, use only the local version. Raise an error if the image is not present locally.
 
-**runtime**="crun"
+**remote** = false
+Indicates whether the application should be running in remote mode. This flag modifies the
+--remote option on container engines. Setting the flag to true will default `podman --remote=true` for access to the remote Podman service.
+
+**runtime**=""
 
 Default OCI specific runtime in runtimes that will be used by default. Must
-refer to a member of the runtimes table.
+refer to a member of the runtimes table. Default runtime will be searched for
+on the system using the priority: "crun", "runc", "kata".
 
 **runtime_supports_json**=["crun", "runc", "kata"]
 
@@ -438,7 +463,7 @@ stores containers.
 
 Number of seconds to wait for container to exit before sending kill signal.
 
-**tmp_dir**="/var/run/libpod"
+**tmp_dir**="/run/libpod"
 
 The path to a temporary directory to store per-boot container.
 Must be a tmpfs (wiped after reboot).
@@ -450,6 +475,13 @@ driver.
 By default this will be configured relative to where containers/storage store
 containers. This convention is followed by the default volume driver, but may
 not be by other drivers.
+
+**[engine.volume_plugins]**
+
+A table of all the enabled volume plugins on the system. Volume plugins can be
+used as the backend for Podman named volumes. Individual plugins are specified
+below, as a map of the plugin name (what the plugin will be called) to its path
+(filepath of the plugin's unix socket).
 
 # FILES
 
