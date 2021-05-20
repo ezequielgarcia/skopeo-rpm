@@ -33,19 +33,19 @@
 # https://github.com/containers/skopeo
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
-%global commit0 4e57679c9a85973f8a6115bfc0ccd9940c011b5e
+%global commit0 5af5f8a0e7520a93c736a03bf58c26ea006f9ec6
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild and set download url (non-rawhide only)
-%define built_tag v1.2.3
+%define built_tag v1.3.0
 %define built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %define download_url %{git0}/archive/%{built_tag}.tar.gz
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.2.4
-Release: 10.dev.git%{shortcommit0}%{?dist}
+Version: 1.3.1
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -379,6 +379,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu May 20 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.3.1-2.dev.git5af5f8a
+- bump to 1.3.1
+- autobuilt 5af5f8a
+
 * Sat May 15 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.2.4-10.dev.git4e57679
 - autobuilt 4e57679
 
