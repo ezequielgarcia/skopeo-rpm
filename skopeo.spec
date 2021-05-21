@@ -302,7 +302,7 @@ popd
 
 %install
 make \
-    PREFIX=%{_prefix} DESTDIR=%{buildroot} \
+    PREFIX=%{buildroot}%{_prefix} \
     install-binary install-docs install-completions
 
 # system tests
