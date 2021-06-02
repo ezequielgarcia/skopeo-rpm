@@ -33,7 +33,7 @@
 # https://github.com/containers/skopeo
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
-%global commit0 714ffe1b606bdcfd18b3cf746df4c3eaf5006f1b
+%global commit0 b9661b2a056e4fa0835488b28e488b6968c9ec57
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -45,7 +45,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.3.1
-Release: 4.dev.git%{shortcommit0}%{?dist}
+Release: 5.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Jun 02 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.3.1-5.dev.gitb9661b2
+- autobuilt b9661b2
+
 * Thu May 27 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.3.1-4.dev.git714ffe1
 - autobuilt 714ffe1
 
