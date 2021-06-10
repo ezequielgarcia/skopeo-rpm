@@ -28,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.2
-Release: 8%{?dist}
+Release: 10%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -58,14 +58,18 @@ Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/doc
 Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
 Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
 Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
-Source19: rhel-shortnames.conf
-BuildRequires: git
+Source19: 001-rhel-shortnames-pyxis.conf
+Source20: 002-rhel-shortnames-overrides.conf
+# scripts used for synchronization with upstream and shortname generation
+Source100: update.sh
+Source101: update-vendored.sh
+Source102: pyxis.sh
+BuildRequires: git-core
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
-BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common = %{epoch}:%{version}-%{release}
@@ -81,6 +85,7 @@ Conflicts: atomic-registries <= 1:1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-3
+Requires: crun
 Recommends: fuse-overlayfs
 Recommends: slirp4netns
 Suggests: subscription-manager
@@ -97,6 +102,7 @@ Requires: gnupg
 Requires: jq
 Requires: podman
 Requires: httpd-tools
+Requires: openssl
 
 %description tests
 %{summary}
@@ -127,7 +133,7 @@ done
 export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
-export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh) $(hack/ostree_tag.sh)"
+export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
 mkdir -p bin
 %gobuild -o bin/%{name} ./cmd/%{name}
 %{__make} docs
@@ -141,7 +147,8 @@ install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registrie
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
+install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
+install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -206,8 +213,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/*.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
@@ -233,6 +239,27 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu May 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
+- re-enable release-1.2 branch
+- Related: #1954702
+
+* Thu May 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-9
+- revert back to state of 3.0-8.4.0
+- sync shortnames with pyxis
+- improve shortnames
+- Related: #1954702
+
+* Tue May 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-2
+- update vendored components versions
+- sync shortnames with pyxis
+- Related: #1954702
+
+* Thu Apr 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-1
+- assure runc is set as default runtime in RHEL8
+- update shortnames from upstream
+- sync vendored component versions with upstream
+- Related: #1954702
+
 * Tue Apr 06 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-8
 - use runc as default OCI runtime in RHEL8
 - Resolves: #1940854

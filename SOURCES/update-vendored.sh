@@ -1,0 +1,28 @@
+#!/bin/bash
+# This script assures we always deliver the current documentation/configs
+# for the c/storage, c/image and c/common vendored in podman, skopeo, buildah
+# For questions reach to Jindrich Novy <jnovy@redhat.com>
+set -xe
+rm -f /tmp/ver_image /tmp/ver_common /tmp/ver_storage
+B=`rhpkg switch-branch | grep ^* | cut -d\  -f2`
+echo $B
+for P in podman skopeo buildah; do
+  rm -rf $P
+  rhpkg clone $P
+  cd $P
+  rhpkg switch-branch $B
+  rhpkg prep
+  DIR=`ls -d -- */ | grep -v ^tests | head -n1`
+  grep github.com/containers/image $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_image
+  grep github.com/containers/common $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_common
+  grep github.com/containers/storage $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_storage
+  cd -
+done
+IMAGE_VER=`sort -n /tmp/ver_image | head -n1`
+COMMON_VER=`sort -n /tmp/ver_common | head -n1`
+STORAGE_VER=`sort -n /tmp/ver_storage | head -n1`
+sed -i "s,^%global.*image_branch.*,%global image_branch $IMAGE_VER," skopeo.spec
+sed -i "s,^%global.*common_branch.*,%global common_branch $COMMON_VER," skopeo.spec
+sed -i "s,^%global.*storage_branch.*,%global storage_branch $STORAGE_VER," skopeo.spec
+rm -f /tmp/ver_image /tmp/ver_common /tmp/ver_storage
+rm -rf podman skopeo buildah
