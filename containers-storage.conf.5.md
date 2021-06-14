@@ -29,7 +29,10 @@ The `storage` table supports the following options:
 **driver**=""
   container storage driver
   Default Copy On Write (COW) container storage driver. Valid drivers are "overlay", "vfs", "devmapper", "aufs", "btrfs", and "zfs". Some drivers (for example, "zfs", "btrfs", and "aufs") may not work if your kernel lacks support for the filesystem.
-  This field is requiered to guarantee proper operation.
+  This field is required to guarantee proper operation.
+  Valid rootless drivers are "btrfs", "overlay", and "vfs".
+  Rootless users default to the driver defined in the system configuration when possible.
+  When the system configuration uses an unsupported rootless driver, rootless users default to "overlay" if available, otherwise "vfs".
 
 **graphroot**=""
   container storage graph dir (default: "/var/lib/containers/storage")
@@ -83,6 +86,9 @@ The `storage.options` table supports the following options:
 
 **auto-userns-max-size**=65536
   Auto-userns-max-size is the maximum size for a user namespace created automatically.
+
+**disable-volatile**=true
+  If disable-volatile is set, then the "volatile" mount optimization is disabled for all the containers.
 
 ### STORAGE OPTIONS FOR AUFS TABLE
 

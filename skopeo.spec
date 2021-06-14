@@ -1,4 +1,5 @@
 %global _lto_cflags %{nil}
+
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -19,17 +20,17 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
 %global podman_branch master
-%global image_branch  v5.10.2
-%global common_branch v0.33.4
-%global storage_branch v1.24.6
+%global image_branch v5.12.0
+%global common_branch v0.38.4
+%global storage_branch v1.31.1
 %global shortnames_branch main
-%global commit0 e72dd9c5c834f3cd7fb8b1aab4021d9d4412f305
+%global commit0 c35944bec010fe9b534881aca153ef5964f5a010
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.2.2
-Release: 4%{?dist}
+Version: 1.3.0
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -48,7 +49,7 @@ Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs
 Source5: registries.conf
 Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
 Source7: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/seccomp/seccomp.json
-Source8: https://raw.githubusercontent.com/containers/podman/%{podman_branch}/docs/source/markdown/containers-mounts.conf.5.md
+Source8: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers-mounts.conf.5.md
 Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
 Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
 Source11: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-certs.d.5.md
@@ -59,14 +60,18 @@ Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/doc
 Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
 Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
 Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
-Source19: rhel-shortnames.conf
-BuildRequires: git
+Source19: 001-rhel-shortnames-pyxis.conf
+Source20: 002-rhel-shortnames-overrides.conf
+# scripts used for synchronization with upstream and shortname generation
+Source100: update.sh
+Source101: update-vendored.sh
+Source102: pyxis.sh
+BuildRequires: git-core
 BuildRequires: golang >= 1.12.12-4
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
-BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common = %{epoch}:%{version}-%{release}
@@ -82,6 +87,7 @@ Conflicts: atomic-registries <= 1:1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-3
+Requires: crun >= 0.19
 Recommends: fuse-overlayfs
 Recommends: slirp4netns
 Suggests: subscription-manager
@@ -98,6 +104,7 @@ Requires: gnupg
 Requires: jq
 Requires: podman
 Requires: httpd-tools
+Requires: openssl
 
 %description tests
 %{summary}
@@ -128,7 +135,7 @@ done
 export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
-export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh) $(hack/ostree_tag.sh)"
+export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
 mkdir -p bin
 %gobuild -o bin/%{name} ./cmd/%{name}
 %{__make} docs
@@ -136,13 +143,16 @@ mkdir -p bin
 %install
 make \
    DESTDIR=%{buildroot} \
-   SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
+   PREFIX=%{buildroot}%{_prefix} \
    install
 install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
+install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
+install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
+
+# for containers-common
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -207,8 +217,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/rhel-shortnames.conf
+%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/*.conf
 %config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
 %ghost %{_sysconfdir}/containers/containers.conf
 %dir %{_sharedstatedir}/containers/sigstore
@@ -234,6 +243,14 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jun 14 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-3
+- update to new versions of vendored components
+- fail is there is an issue in communication with Pyxis API
+- understand devel branch in update.sh script, use pkg wrapper
+- sync with Pyxis
+- use containers-mounts.conf.5.md from containers/common
+- Related: #1970747
+
 * Fri Apr 16 2021 Mohan Boddu <mboddu@redhat.com> - 1:1.2.2-4
 - Rebuilt for RHEL 9 BETA on Apr 15th 2021. Related: rhbz#1947937
 
