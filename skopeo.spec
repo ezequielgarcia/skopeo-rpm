@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -59,7 +59,6 @@ Source14: https://raw.githubusercontent.com/containers/common/%{common_branch}/d
 Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-auth.json.5.md
 Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
 Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
-Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
 Source19: 001-rhel-shortnames-pyxis.conf
 Source20: 002-rhel-shortnames-overrides.conf
 # scripts used for synchronization with upstream and shortname generation
@@ -162,7 +161,6 @@ go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
 go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
 go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
 go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
-go-md2man -in %{SOURCE18} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
 go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
 go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
 go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
@@ -243,6 +241,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jun 14 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-4
+- add missing containers-mounts.conf.5.md file to git
+- don't list/install the same doc twice
+- Related: #1970747
+
 * Mon Jun 14 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-3
 - update to new versions of vendored components
 - fail is there is an issue in communication with Pyxis API
