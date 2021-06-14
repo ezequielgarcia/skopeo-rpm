@@ -45,25 +45,20 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.3.1
-Release: 8.dev.git%{shortcommit0}%{?dist}
+Release: 9.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
 Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
 %if 0%{?fedora}
-BuildRequires: go-srpm-macros
-BuildRequires: compiler(go-compiler)
+BuildRequires: go-rpm-macros
+BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: git-core
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
-BuildRequires: %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
-# Dependencies for containers/storage
-%if 0%{?fedora} || 0%{?rhel} <= 7
-BuildRequires: btrfs-progs-devel
-%endif
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
@@ -379,6 +374,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jun 14 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.3.1-9.dev.gitdde3e75
+- update dependencies
+
 * Sat Jun 12 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.3.1-8.dev.gitdde3e75
 - autobuilt dde3e75
 
