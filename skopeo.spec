@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jun 22 2021 Mohan Boddu <mboddu@redhat.com> - 1:1.3.0-7
+- Rebuilt for RHEL 9 BETA for openssl 3.0
+  Related: rhbz#1971065
+
 * Tue Jun 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-6
 - set short-names-mode = "enforcing" in registries.conf
 - Resolves: #1971752
