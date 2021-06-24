@@ -33,7 +33,7 @@
 # https://github.com/containers/skopeo
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
-%global commit0 8a1214a07b1a60768ef231b3ba071fb84aec569d
+%global commit0 28080c8d5f7ac21434948601639ab26ab7aa40bb
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Used for comparing with latest upstream tag
@@ -44,8 +44,8 @@
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.3.1
-Release: 14.dev.git%{shortcommit0}%{?dist}
+Version: 0.1.30
+Release: 2.dev.git%{shortcommit0}%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -374,6 +374,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jun 24 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.30-2.dev.git28080c8
+- bump to 0.1.30
+- autobuilt 28080c8
+
 * Wed Jun 23 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.3.1-14.dev.git8a1214a
 - autobuilt 8a1214a
 
@@ -1397,19 +1401,19 @@ without it
 - bump to 0.1.31
 - autobuilt f9baaa6
 
-* Tue May 22 2018 dwalsh <dwalsh@redhat.com> - 0.1.30-14.git0b8ab9
+* Tue May 22 2018 dwalsh <dwalsh@redhat.com> - 0.1.30-1.dev.git28080c84.git0b8ab9
 - Add devicemapper support
 
-* Wed May 16 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-13.git7e9a664
+* Wed May 16 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-1.dev.git28080c83.git7e9a664
 - autobuilt 7e9a664
 
-* Tue May 15 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-12.git2d04db9
+* Tue May 15 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-1.dev.git28080c82.git2d04db9
 - autobuilt 2d04db9
 
-* Sat May 12 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-11.git79225f2
+* Sat May 12 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-1.dev.git28080c81.git79225f2
 - autobuilt 79225f2
 
-* Fri May 11 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-10.gitc4808f0
+* Fri May 11 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-1.dev.git28080c80.gitc4808f0
 - autobuilt c4808f0
 
 * Tue May 08 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-9.git1f11b8b
@@ -1436,7 +1440,7 @@ without it
 * Mon Apr 16 2018 Lokesh Mandvekar (Bot) <lsm5+bot@fedoraproject.org> - 0.1.30-2.gitab2bc6e
 - autobuilt commit ab2bc6e
 
-* Sun Apr 08 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.30-1.git28080c8
+* Sun Apr 08 2018 Lokesh Mandvekar <lsm5@fedoraproject.org> - 0.1.30-1.dev.git28080c8.git28080c8
 - bump to 0.1.30
 - autobuilt commit 28080c8
 * Tue Apr 03 2018 baude <bbaude@redhat.com> - 0.1.29-5.git7add6fc
