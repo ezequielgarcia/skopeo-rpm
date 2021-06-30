@@ -33,23 +33,19 @@
 # https://github.com/containers/skopeo
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
-%global commit0 28080c8d5f7ac21434948601639ab26ab7aa40bb
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
-# Used for comparing with latest upstream tag
-# to decide whether to autobuild and set download url (non-rawhide only)
-%define built_tag v1.3.0
+%define built_tag v1.3.1
 %define built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %define download_url %{git0}/archive/%{built_tag}.tar.gz
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 0.1.30
-Release: 2.dev.git%{shortcommit0}%{?dist}
+Version: 1.3.1
+Release: 15%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
-Source0: %{git0}/archive/%{commit0}/%{name}-%{shortcommit0}.tar.gz
+Source0: %{download_url}
 %if 0%{?fedora}
 BuildRequires: go-rpm-macros
 BuildRequires: btrfs-progs-devel
@@ -63,7 +59,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common >= 4:1-17
+Requires: containers-common >= 4:1-21
 Provides: bundled(golang(github.com/beorn7/perks)) = 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 Provides: bundled(golang(github.com/BurntSushi/toml)) = master
 Provides: bundled(golang(github.com/containerd/continuity)) = d8fb8589b0e8e85b8c8bbaa8840226d0dfeb7371
@@ -252,7 +248,7 @@ Requires: openssl
 This package contains system tests for %{name}
 
 %prep
-%autosetup -Sgit -n %{name}-%{commit0}
+%autosetup -Sgit -n %{name}-%{built_tag_strip}
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
@@ -374,6 +370,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Jun 30 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.3.1-15
+- built tag v1.3.1
+
 * Thu Jun 24 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:0.1.30-2.dev.git28080c8
 - bump to 0.1.30
 - autobuilt 28080c8
