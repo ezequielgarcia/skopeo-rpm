@@ -13,7 +13,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-#%%global branch release-1.2
+%global branch release-1.3
 # Bellow definitions are used to deliver config files from a particular branch
 # of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
 # These vendored components must have the same version. If it is not the case,
@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-2
+- consume content from the release-1.3 upstream branch
+- Related: #1970747
+
 * Wed Jun 30 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.3.1
 - Related: #1970747
