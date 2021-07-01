@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-3
+- update registries.conf to be consistent with upstream
+- Related: #1970747
+
 * Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-2
 - consume content from the release-1.3 upstream branch
 - Related: #1970747
