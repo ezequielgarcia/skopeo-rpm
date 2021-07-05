@@ -5,13 +5,17 @@
 set -xe
 rm -f /tmp/ver_image /tmp/ver_common /tmp/ver_storage
 B=`pkg switch-branch | grep ^* | cut -d\  -f2`
+git branch | grep c9s > /dev/null
+if [ $? == 0 ]; then
+  B=c9s
+fi
 echo $B
 for P in podman skopeo buildah; do
   BRN=`pwd | sed 's,^.*/,,'`
   rm -rf $P
   pkg clone $P
   cd $P
-  pkg switch-branch $B
+  [ $B != c9s ] && pkg switch-branch $B
   if [ $BRN != stream-container-tools-rhel8 ]; then
     pkg prep
   else

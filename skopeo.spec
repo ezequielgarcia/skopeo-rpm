@@ -21,8 +21,8 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # podman/skopeo/podman.
 %global podman_branch master
 %global image_branch v5.12.0
-%global common_branch v0.38.4
-%global storage_branch v1.31.1
+%global common_branch v0.38.12
+%global storage_branch v1.31.3
 %global shortnames_branch main
 %global commit0 038f70e6f52ca354534b2d38ce9611b8fc5537c4
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-5
+- handle CentOS Stream while updating vendored components
+- Related: #1970747
+
 * Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-4
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.3
   (https://github.com/containers/skopeo/commit/038f70e)
