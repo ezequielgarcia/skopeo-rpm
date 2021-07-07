@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Jul 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-6
+- correct name of the option is "short-name-mode" not "short-names-mode"
+- Related: #1970747
+
 * Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-5
 - handle CentOS Stream while updating vendored components
 - Related: #1970747

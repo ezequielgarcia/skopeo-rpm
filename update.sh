@@ -24,7 +24,7 @@ spectool -f -g skopeo.spec
 ensure storage.conf    driver                        \"overlay\"
 ensure storage.conf    mountopt                      \"nodev,metacopy=on\"
 ensure registries.conf unqualified-search-registries [\"registry.fedoraproject.org\",\ \"registry.access.redhat.com\",\ \"registry.centos.org\",\ \"quay.io\",\ \"docker.io\"]
-ensure registries.conf short-names-mode              \"enforcing\"
+ensure registries.conf short-name-mode               \"enforcing\"
 ensure containers.conf events_logger                 \"file\"
 ensure containers.conf infra_image                   \"registry.access.redhat.com/ubi9/pause\"
 ensure containers.conf runtime                       \"crun\"
