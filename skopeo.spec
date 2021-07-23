@@ -41,7 +41,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.3.1
-Release: 15%{?dist}
+Release: 16%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -370,6 +370,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.3.1-16
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Wed Jun 30 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.3.1-15
 - built tag v1.3.1
 
