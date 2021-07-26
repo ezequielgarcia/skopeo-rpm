@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -241,6 +241,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jul 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-8
+- update seccomp.json from Fedora to allow clone3 to pass
+- Related: #1970747
+
 * Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-7
 - update shortnames from Pyxis
 - put RHEL9/UBI9 images into overrides
