@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.3.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -48,7 +48,7 @@ Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs
 #Source5: https://raw.githubusercontent.com/containers/image/%%{image_branch}/registries.conf
 Source5: registries.conf
 Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
-Source7: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/seccomp/seccomp.json
+Source7: https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
 Source8: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers-mounts.conf.5.md
 Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
 Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
@@ -61,6 +61,12 @@ Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/doc
 Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
 Source19: 001-rhel-shortnames-pyxis.conf
 Source20: 002-rhel-shortnames-overrides.conf
+Source21: RPM-GPG-KEY-redhat-release
+Source22: registry.access.redhat.com.yaml
+Source23: registry.redhat.io.yaml
+#Source24: https://raw.githubusercontent.com/containers/skopeo/%{branch}/default-policy.json
+Source24: default-policy.json
+Source25: https://raw.githubusercontent.com/containers/skopeo/%{branch}/default.yaml
 # scripts used for synchronization with upstream and shortname generation
 Source100: update.sh
 Source101: update-vendored.sh
@@ -151,6 +157,16 @@ install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
 install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
 
+# for signature verification
+install -dp %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+install -m0644 %{SOURCE21} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+install -dp %{buildroot}%{_sysconfdir}/containers/registries.d
+install -m0644 %{SOURCE22} %{buildroot}%{_sysconfdir}/containers/registries.d
+install -m0644 %{SOURCE23} %{buildroot}%{_sysconfdir}/containers/registries.d
+install -m0644 %{SOURCE24} %{buildroot}%{_sysconfdir}/containers/policy.json
+install -dp %{buildroot}%{_sharedstatedir}/containers/sigstore
+install -m0644 %{SOURCE25} %{buildroot}%{_sysconfdir}/containers/registries.d/default.yaml
+
 # for containers-common
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
@@ -208,9 +224,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers
 %dir %{_sysconfdir}/containers/certs.d
 %dir %{_sysconfdir}/containers/registries.d
+%{_sysconfdir}/containers/registries.d/registry.redhat.io.yaml
+%{_sysconfdir}/containers/registries.d/registry.access.redhat.com.yaml
 %dir %{_sysconfdir}/containers/oci
 %dir %{_sysconfdir}/containers/oci/hooks.d
 %dir %{_sysconfdir}/containers/registries.conf.d
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
@@ -227,6 +246,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_datadir}/rhel/secrets
 %{_datadir}/rhel/secrets/*
 
+
 %files
 %license LICENSE
 %doc README.md
@@ -241,6 +261,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jul 27 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-9
+- Add support for signed RHEL images, enabled by default
+- Related: #1970747
+
 * Mon Jul 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-8
 - update seccomp.json from Fedora to allow clone3 to pass
 - Related: #1970747
