@@ -13,7 +13,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-%global branch release-1.3
+%global branch main
 # Bellow definitions are used to deliver config files from a particular branch
 # of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
 # These vendored components must have the same version. If it is not the case,
@@ -24,13 +24,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %global common_branch v0.38.12
 %global storage_branch v1.31.3
 %global shortnames_branch main
-%global commit0 038f70e6f52ca354534b2d38ce9611b8fc5537c4
+%global commit0 64dc748e5e871da30e50edc496911094e3fe0114
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.3.1
-Release: 9%{?dist}
+Version: 1.4.0
+Release: 0.1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -64,7 +64,7 @@ Source20: 002-rhel-shortnames-overrides.conf
 Source21: RPM-GPG-KEY-redhat-release
 Source22: registry.access.redhat.com.yaml
 Source23: registry.redhat.io.yaml
-#Source24: https://raw.githubusercontent.com/containers/skopeo/%{branch}/default-policy.json
+#Source24: https://raw.githubusercontent.com/containers/skopeo/%%{branch}/default-policy.json
 Source24: default-policy.json
 Source25: https://raw.githubusercontent.com/containers/skopeo/%{branch}/default.yaml
 # scripts used for synchronization with upstream and shortname generation
@@ -146,10 +146,7 @@ mkdir -p bin
 %{__make} docs
 
 %install
-make \
-   DESTDIR=%{buildroot} \
-   PREFIX=%{buildroot}%{_prefix} \
-   install
+make install DESTDIR=%{buildroot} PREFIX=%{_prefix}
 install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
 install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
@@ -261,6 +258,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jul 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-0.1
+- switch to the main branch of skopeo
+- Related: #1970747
+
 * Tue Jul 27 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-9
 - Add support for signed RHEL images, enabled by default
 - Related: #1970747
