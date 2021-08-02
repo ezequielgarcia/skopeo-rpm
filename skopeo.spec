@@ -20,17 +20,17 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
 %global podman_branch master
-%global image_branch v5.12.0
-%global common_branch v0.38.12
-%global storage_branch v1.31.3
+%global image_branch v5.14.0
+%global common_branch v0.41.0
+%global storage_branch v1.33.0
 %global shortnames_branch main
-%global commit0 64dc748e5e871da30e50edc496911094e3fe0114
+%global commit0 caf1469b1d6d1a7a23716a8fc797563d75e81902
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.4.0
-Release: 0.1%{?dist}
+Release: 0.2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -80,6 +80,7 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: system-release
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -155,8 +156,10 @@ install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
 
 # for signature verification
+%if !0%{?rhel} || 0%{?centos}
 install -dp %{buildroot}%{_sysconfdir}/pki/rpm-gpg
 install -m0644 %{SOURCE21} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+%endif
 install -dp %{buildroot}%{_sysconfdir}/containers/registries.d
 install -m0644 %{SOURCE22} %{buildroot}%{_sysconfdir}/containers/registries.d
 install -m0644 %{SOURCE23} %{buildroot}%{_sysconfdir}/containers/registries.d
@@ -226,7 +229,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_sysconfdir}/containers/oci
 %dir %{_sysconfdir}/containers/oci/hooks.d
 %dir %{_sysconfdir}/containers/registries.conf.d
+%if !0%{?rhel} || 0%{?centos}
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+%endif
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 %config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
 %config(noreplace) %{_sysconfdir}/containers/storage.conf
@@ -258,6 +263,12 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Aug 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-0.2
+- update vendored components
+- ship /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release only on non-RHEL and
+  CentOS distros
+- Related: #1970747
+
 * Thu Jul 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-0.1
 - switch to the main branch of skopeo
 - Related: #1970747

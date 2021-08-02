@@ -22,9 +22,9 @@ for P in podman skopeo buildah; do
     pkg --release rhel-8 prep
   fi
   DIR=`ls -d -- */ | grep -v ^tests | head -n1`
-  grep github.com/containers/image $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_image
-  grep github.com/containers/common $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_common
-  grep github.com/containers/storage $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_storage
+  grep github.com/containers/image $DIR/go.mod | grep -v - | cut -d\  -f2 >> /tmp/ver_image
+  grep github.com/containers/common $DIR/go.mod | grep -v - | cut -d\  -f2 >> /tmp/ver_common
+  grep github.com/containers/storage $DIR/go.mod | grep -v - | cut -d\  -f2 >> /tmp/ver_storage
   cd -
 done
 IMAGE_VER=`sort -n /tmp/ver_image | head -n1`
