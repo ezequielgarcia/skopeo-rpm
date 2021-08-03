@@ -34,24 +34,24 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%define built_tag v1.3.1
+%define built_tag v1.4.0
 %define built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %define download_url %{git0}/archive/%{built_tag}.tar.gz
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.3.1
-Release: 16%{?dist}
+Version: 1.4.0
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
-Source0: %{download_url}
+Source0: %{git0}/archive/%{built_tag}.tar.gz
 %if 0%{?fedora}
 BuildRequires: go-rpm-macros
 BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: git-core
-# If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
+BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
@@ -370,6 +370,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Aug 03 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.4.0-1
+- bump to v1.4.0
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.3.1-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
