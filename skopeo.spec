@@ -20,7 +20,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
 %global podman_branch v3.3
-%global image_branch v5.14.0
+%global image_branch v5.15.0
 %global common_branch v0.41.0
 %global storage_branch v1.33.0
 %global shortnames_branch main
