@@ -13,13 +13,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-%global branch main
+%global branch release-1.4
 # Bellow definitions are used to deliver config files from a particular branch
 # of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
 # These vendored components must have the same version. If it is not the case,
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
-%global podman_branch master
+%global podman_branch v3.3
 %global image_branch v5.14.0
 %global common_branch v0.41.0
 %global storage_branch v1.33.0
@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.4.0
-Release: 0.2%{?dist}
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -263,6 +263,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Aug 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-1
+- update to 1.4.0 release and switch to the release-1.4 maint branch
+- Related: #1970747
+
 * Mon Aug 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-0.2
 - update vendored components
 - ship /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release only on non-RHEL and

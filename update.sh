@@ -18,8 +18,8 @@ $2 = $3" $1
   fi
 }
 
-./pyxis.sh
-./update-vendored.sh
+#./pyxis.sh
+#./update-vendored.sh
 spectool -f -g skopeo.spec
 ensure storage.conf    driver                        \"overlay\"
 ensure storage.conf    mountopt                      \"nodev,metacopy=on\"
