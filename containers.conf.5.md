@@ -219,6 +219,10 @@ Options are:
 Maximum number of processes allowed in a container. 0 indicates that no limit
 is imposed.
 
+**prepare_volume_on_create**=false
+
+Copy the content from the underlying image into the newly created volume when the container is created instead of when it is started. If `false`, the container engine will not copy the content until the container is started. Setting it to `true` may have negative performance implications.
+
 **rootless_networking**="slirp4netns"
 
 Set type of networking rootless containers should use.  Valid options are `slirp4netns`
@@ -493,6 +497,11 @@ driver.
 By default this will be configured relative to where containers/storage store
 containers. This convention is followed by the default volume driver, but may
 not be by other drivers.
+
+**chown_copied_files**=true
+
+Determines whether file copied into a container will have changed ownership to
+the primary uid/gid of the container.
 
 ## SERVICE DESTINATION TABLE
 The `service_destinations` table contains configuration options used to set up remote connections to the podman service for the podman API.

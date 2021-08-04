@@ -21,8 +21,8 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # podman/skopeo/podman.
 %global podman_branch v3.3
 %global image_branch v5.15.0
-%global common_branch v0.41.0
-%global storage_branch v1.33.0
+%global common_branch v0.42.0
+%global storage_branch v1.33.1
 %global shortnames_branch main
 %global commit0 a44da449d35e4621e9993f406d5a4f98dd89965e
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.4.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -93,7 +93,11 @@ Conflicts: atomic-registries <= 1:1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-3
+%if 0%{?rhel} >= 9 || 0%{?fedora}
 Requires: crun >= 0.19
+%else
+Requires: runc
+%endif
 Recommends: fuse-overlayfs
 Recommends: slirp4netns
 Suggests: subscription-manager
@@ -263,6 +267,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Aug 04 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-3
+- update vendored components
+- always require runc on RHEL8 or lesser
+- Related: #1970747
+
 * Wed Aug 04 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-2
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
   (https://github.com/containers/skopeo/commit/a44da44)
