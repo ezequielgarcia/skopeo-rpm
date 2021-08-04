@@ -23,11 +23,19 @@ $2 = $3" $1
 spectool -f -g skopeo.spec
 ensure storage.conf    driver                        \"overlay\"
 ensure storage.conf    mountopt                      \"nodev,metacopy=on\"
+ensure containers.conf events_logger                 \"file\"
+if pwd | grep rhel-8 > /dev/null
+then
+ensure registries.conf unqualified-search-registries [\"registry.fedoraproject.org\",\ \"registry.access.redhat.com\",\ \"registry.centos.org\",\ \"docker.io\"]
+ensure registries.conf short-name-mode               \"disabled\"
+ensure containers.conf infra_image                   \"registry.access.redhat.com/ubi8/pause\"
+ensure containers.conf runtime                       \"runc\"
+else
 ensure registries.conf unqualified-search-registries [\"registry.fedoraproject.org\",\ \"registry.access.redhat.com\",\ \"registry.centos.org\",\ \"quay.io\",\ \"docker.io\"]
 ensure registries.conf short-name-mode               \"enforcing\"
-ensure containers.conf events_logger                 \"file\"
 ensure containers.conf infra_image                   \"registry.access.redhat.com/ubi9/pause\"
 ensure containers.conf runtime                       \"crun\"
+fi
 [ `grep "keyctl" seccomp.json | wc -l` == 0 ] && sed -i '/\"kill\",/i \
 				"keyctl",' seccomp.json
 sed -i '/\"socketcall\",/i \
