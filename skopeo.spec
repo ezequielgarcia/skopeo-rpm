@@ -47,12 +47,12 @@ License: ASL 2.0
 URL: %{git0}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
 %if 0%{?fedora}
-BuildRequires: go-rpm-macros
 BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
+BuildRequires: go-rpm-macros
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
