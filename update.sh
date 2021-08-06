@@ -27,6 +27,7 @@ ensure containers.conf events_logger                 \"file\"
 if pwd | grep rhel-8 > /dev/null
 then
 ensure registries.conf unqualified-search-registries [\"registry.fedoraproject.org\",\ \"registry.access.redhat.com\",\ \"registry.centos.org\",\ \"docker.io\"]
+ensure registries.conf short-name-mode               \"permissive\"
 ensure containers.conf infra_image                   \"registry.access.redhat.com/ubi8/pause\"
 ensure containers.conf runtime                       \"runc\"
 else
