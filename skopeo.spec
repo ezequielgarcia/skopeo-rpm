@@ -40,7 +40,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -369,6 +369,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Aug 09 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.4.0-2
+- rebuild
+
 * Tue Aug 03 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.4.0-1
 - bump to v1.4.0
 
