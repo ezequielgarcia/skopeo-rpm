@@ -34,9 +34,8 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%define built_tag v1.4.0
-%define built_tag_strip %(b=%{built_tag}; echo ${b:1})
-%define download_url %{git0}/archive/%{built_tag}.tar.gz
+%global built_tag v1.4.0
+%global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
