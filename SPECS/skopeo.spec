@@ -1,3 +1,5 @@
+%global _lto_cflags %{nil}
+
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -11,24 +13,24 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-%global branch release-1.2
+%global branch release-1.3
 # Bellow definitions are used to deliver config files from a particular branch
 # of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
 # These vendored components must have the same version. If it is not the case,
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
-%global podman_branch v3.0.1-rhel
-%global image_branch v5.10.5
-%global common_branch v0.33.4
-%global storage_branch v1.24.8
+%global podman_branch v3.2
+%global image_branch v5.12.0
+%global common_branch v0.38.12
+%global storage_branch v1.31.3
 %global shortnames_branch main
-%global commit0 e7880c4a8991966f16e367f085d42375ad70197e
+%global commit0 038f70e6f52ca354534b2d38ce9611b8fc5537c4
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.2.2
-Release: 10%{?dist}
+Version: 1.3.1
+Release: 5%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -47,7 +49,7 @@ Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs
 Source5: registries.conf
 Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
 Source7: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/seccomp/seccomp.json
-Source8: https://raw.githubusercontent.com/containers/podman/%{podman_branch}/docs/source/markdown/containers-mounts.conf.5.md
+Source8: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers-mounts.conf.5.md
 Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
 Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
 Source11: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-certs.d.5.md
@@ -85,7 +87,7 @@ Conflicts: atomic-registries <= 1:1.22.1-1
 Obsoletes: docker-rhsubscription <= 2:1.13.1-31
 Provides: %{name}-containers = %{epoch}:%{version}-%{release}
 Obsoletes: %{name}-containers <= 1:0.1.31-3
-Requires: crun
+Requires: runc
 Recommends: fuse-overlayfs
 Recommends: slirp4netns
 Suggests: subscription-manager
@@ -141,7 +143,7 @@ mkdir -p bin
 %install
 make \
    DESTDIR=%{buildroot} \
-   SIGSTOREDIR=%{buildroot}%{_sharedstatedir}/containers/sigstore \
+   PREFIX=%{buildroot}%{_prefix} \
    install
 install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
 install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
@@ -149,6 +151,8 @@ install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
 install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
 install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
 install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
+
+# for containers-common
 install -dp %{buildroot}%{_mandir}/man5
 go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
 go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
@@ -239,6 +243,41 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jul 27 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-5
+- move unqualified-search-registries to [registries.search]
+- Related: #1954702
+
+* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-4
+- update shortnames from Pyxis
+- Related: #1954702
+
+* Wed Jul 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-3
+- add direct runc dependency to avoid situation when runc is listed
+  as default runtime but only crun is present in RHEL8
+- Related: #1954702
+
+* Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-2
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.3
+  (https://github.com/containers/skopeo/commit/038f70e)
+- Related: #1954702
+
+* Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-1
+- sync with 8.5.0 branch
+- Related: #1954702
+
+* Wed Jun 23 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-13
+- put back ubi8/buildah and ubi8/skopeo as it was released in 8.4
+  (only ubi8/podman was not)
+- Related: #1972700
+
+* Tue Jun 22 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-12
+- remove all ubi8 references for 8.4 in 002-rhel-shortnames-overrides.conf
+- Related: #1972700
+
+* Wed Jun 16 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-11
+- update shortnames
+- Related: #1972700
+
 * Thu May 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
 - re-enable release-1.2 branch
 - Related: #1954702

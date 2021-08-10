@@ -7,11 +7,16 @@ rm -f /tmp/ver_image /tmp/ver_common /tmp/ver_storage
 B=`rhpkg switch-branch | grep ^* | cut -d\  -f2`
 echo $B
 for P in podman skopeo buildah; do
+  BRN=`pwd | sed 's,^.*/,,'`
   rm -rf $P
   rhpkg clone $P
   cd $P
   rhpkg switch-branch $B
-  rhpkg prep
+  if [ $BRN != stream-container-tools-rhel8 ]; then
+    rhpkg prep
+  else
+    rhpkg --release rhel-8 prep
+  fi
   DIR=`ls -d -- */ | grep -v ^tests | head -n1`
   grep github.com/containers/image $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_image
   grep github.com/containers/common $DIR/go.mod | cut -d\  -f2 >> /tmp/ver_common

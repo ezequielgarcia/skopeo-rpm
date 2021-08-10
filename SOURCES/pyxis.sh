@@ -1,7 +1,11 @@
 #!/bin/bash
-#set -x
-#rm -f /tmp/pyxis*.json
+#set -e
+rm -f /tmp/pyxis*.json
 TOTAL=`curl -s --negotiate -u: -H 'Content-Type: application/json' -H 'Accept: application/json' -X GET "https://pyxis.engineering.redhat.com/v1/repositories?page_size=1" | jq .total`
+if [ "$TOTAL" == "null" ]; then
+  echo "Error comunicating with Pyxis API."
+  exit 1
+fi
 PAGES=$(($TOTAL/500))
 for P in `seq 0 $PAGES`; do
   curl -s --negotiate -u: -H 'Content-Type: application/json' -H 'Accept: application/json' -X GET "https://pyxis.engineering.redhat.com/v1/repositories?page_size=500&page=$P" > /tmp/pyxis$P.json
