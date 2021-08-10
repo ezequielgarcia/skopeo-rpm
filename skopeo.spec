@@ -30,7 +30,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.4.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -267,6 +267,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Aug 10 2021 Mohan Boddu <mboddu@redhat.com> - 1:1.4.0-7
+- Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
+  Related: rhbz#1991688
+
 * Fri Aug 06 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-6
 - be sure short-name-mode is permissive in RHEL8
 - Related: #1970747
