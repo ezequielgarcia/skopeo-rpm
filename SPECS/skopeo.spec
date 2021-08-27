@@ -13,25 +13,24 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-#%%global branch release-1.4
-#%%global commit0 ea32394313d673932b62520ae47a2b7c3956e572
-#%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
+%global branch release-1.4
+%global commit0 130f32f047b7bf9b1fb4f95c4c5b1da6255e4829
+%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.4.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://github.com/containers/skopeo
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
-#%%if 0%%{?branch:1}
-#Source0: https://%%{import_path}/tarball/%%{commit0}/%%{branch}-%%{shortcommit0}.tar.gz
-#%%else
-#Source0: https://%%{import_path}/archive/%%{commit0}/%%{name}-%%{version}-%%{shortcommit0}.tar.gz
-#%%endif
-Source0: %{url}/archive/v%{version}.tar.gz
+%if 0%{?branch:1}
+Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
+%else
+Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+%endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
@@ -62,12 +61,11 @@ Requires: openssl
 This package contains system tests for %{name}
 
 %prep
-#%%if 0%{?branch:1}
-#%%autosetup -Sgit -n containers-%%{name}-%%{shortcommit0}
-#%%else
-#%%autosetup -Sgit -n %%{name}-%%{commit0}
-#%%endif
-%autosetup -Sgit -n %{name}-%{version}
+%if 0%{?branch:1}
+%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+%else
+%autosetup -Sgit -n %{name}-%{commit0}
+%endif
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
@@ -126,6 +124,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Aug 25 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-2
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
+  (https://github.com/containers/skopeo/commit/130f32f)
+- Related: #1934415
+
 * Fri Aug 20 2021 Lokesh Mandvekar <lsm5@redhat.com> - 1:1.4.1-1
 - update to v1.4.1
 - Related: #1934415
