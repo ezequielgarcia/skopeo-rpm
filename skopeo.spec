@@ -12,102 +12,43 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
-%global import_path github.com/containers/skopeo
-%global branch release-1.4
-# Bellow definitions are used to deliver config files from a particular branch
-# of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
-# These vendored components must have the same version. If it is not the case,
-# pick the oldest version on c/image, c/common, c/storage vendored in
-# podman/skopeo/podman.
-%global podman_branch v3.3
-%global image_branch v5.15.0
-%global common_branch v0.42.0
-%global storage_branch v1.33.1
-%global shortnames_branch main
-%global commit0 a44da449d35e4621e9993f406d5a4f98dd89965e
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+%global import_path github.com/containers/%{name}
+#%%global branch release-1.4
+#%%global commit0 a44da449d35e4621e9993f406d5a4f98dd89965e
+#%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.4.0
-Release: 7%{?dist}
+Version: 1.4.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
-URL: %{git0}
+URL: https://%{import_path}
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
-%if 0%{?branch:1}
-Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
-%else
-Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
-%endif
-Source1: https://raw.githubusercontent.com/containers/storage/%{storage_branch}/storage.conf
-Source2: https://raw.githubusercontent.com/containers/storage/%{storage_branch}/docs/containers-storage.conf.5.md
-Source3: mounts.conf
-Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
-#Source5: https://raw.githubusercontent.com/containers/image/%%{image_branch}/registries.conf
-Source5: registries.conf
-Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
-Source7: https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
-Source8: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers-mounts.conf.5.md
-Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
-Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
-Source11: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-certs.d.5.md
-Source12: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.d.5.md
-Source13: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/config/containers.conf
-Source14: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers.conf.5.md
-Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-auth.json.5.md
-Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
-Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
-Source19: 001-rhel-shortnames-pyxis.conf
-Source20: 002-rhel-shortnames-overrides.conf
-Source21: RPM-GPG-KEY-redhat-release
-Source22: registry.access.redhat.com.yaml
-Source23: registry.redhat.io.yaml
-#Source24: https://raw.githubusercontent.com/containers/skopeo/%%{branch}/default-policy.json
-Source24: default-policy.json
-Source25: https://raw.githubusercontent.com/containers/skopeo/%{branch}/default.yaml
-# scripts used for synchronization with upstream and shortname generation
-Source100: update.sh
-Source101: update-vendored.sh
-Source102: pyxis.sh
+#%%if 0%%{?branch:1}
+#Source0: https://%%{import_path}/tarball/%%{commit0}/%%{branch}-%%{shortcommit0}.tar.gz
+#%%else
+#Source0: https://%%{import_path}/archive/%%{commit0}/%%{name}-%%{version}-%%{shortcommit0}.tar.gz
+#%%endif
+Source0: %{url}/archive/v%{version}.tar.gz
 BuildRequires: git-core
-BuildRequires: golang >= 1.12.12-4
+BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: containers-common >= 2:1-2
 Requires: system-release
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
 
-%package -n containers-common
-Summary: Configuration files for working with image signatures
-Obsoletes: atomic <= 1:1.13.1-2
-Conflicts: atomic-registries <= 1:1.22.1-1
-Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-containers <= 1:0.1.31-3
-%if 0%{?rhel} >= 9 || 0%{?fedora}
-Requires: crun >= 0.19
-%else
-Requires: runc
-%endif
-Recommends: fuse-overlayfs
-Recommends: slirp4netns
-Suggests: subscription-manager
-
-%description -n containers-common
-This package installs a default signature store configuration and a default
-policy under `/etc/containers/`.
-
 %package tests
-Summary:         Tests for %{name}
+Summary: Tests for %{name}
 Requires: %{name} = %{epoch}:%{version}-%{release}
 #Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
 Requires: gnupg
@@ -122,11 +63,12 @@ Requires: openssl
 This package contains system tests for %{name}
 
 %prep
-%if 0%{?branch:1}
-%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
-%else
-%autosetup -Sgit -n %{name}-%{commit0}
-%endif
+#%%if 0%{?branch:1}
+#%%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+#%%else
+#%%autosetup -Sgit -n %{name}-%{commit0}
+#%%endif
+%autosetup -Sgit -n %{name}-%{version}
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
@@ -142,7 +84,7 @@ for v in vendor/*; do
     fi
 done
 
-export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
+export GOPATH=$(pwd):$(pwd)/vendor
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
@@ -151,64 +93,7 @@ mkdir -p bin
 %{__make} docs
 
 %install
-make install DESTDIR=%{buildroot} PREFIX=%{_prefix}
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
-install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
-install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
-install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
-
-# for signature verification
-%if !0%{?rhel} || 0%{?centos}
-install -dp %{buildroot}%{_sysconfdir}/pki/rpm-gpg
-install -m0644 %{SOURCE21} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
-%endif
-install -dp %{buildroot}%{_sysconfdir}/containers/registries.d
-install -m0644 %{SOURCE22} %{buildroot}%{_sysconfdir}/containers/registries.d
-install -m0644 %{SOURCE23} %{buildroot}%{_sysconfdir}/containers/registries.d
-install -m0644 %{SOURCE24} %{buildroot}%{_sysconfdir}/containers/policy.json
-install -dp %{buildroot}%{_sharedstatedir}/containers/sigstore
-install -m0644 %{SOURCE25} %{buildroot}%{_sysconfdir}/containers/registries.d/default.yaml
-
-# for containers-common
-install -dp %{buildroot}%{_mandir}/man5
-go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
-go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
-go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
-go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
-go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
-go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
-go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
-go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
-go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
-go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
-go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
-
-install -dp %{buildroot}%{_datadir}/containers
-install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
-install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
-install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
-
-# install secrets patch directory
-install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
-# rhbz#1110876 - update symlinks for subscription management
-ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
-ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
-ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/redhat.repo
-
-# ship preconfigured /etc/containers/registries.d/ files with containers-common - #1903813
-cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.access.redhat.com.yaml
-docker:
-     registry.access.redhat.com:
-         sigstore: https://access.redhat.com/webassets/docker/content/sigstore
-EOF
-
-cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.redhat.io.yaml
-docker:
-     registry.redhat.io:
-         sigstore: https://registry.redhat.io/containers/sigstore
-EOF
+make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -224,35 +109,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
 
-%files -n containers-common
-%dir %{_sysconfdir}/containers
-%dir %{_sysconfdir}/containers/certs.d
-%dir %{_sysconfdir}/containers/registries.d
-%{_sysconfdir}/containers/registries.d/registry.redhat.io.yaml
-%{_sysconfdir}/containers/registries.d/registry.access.redhat.com.yaml
-%dir %{_sysconfdir}/containers/oci
-%dir %{_sysconfdir}/containers/oci/hooks.d
-%dir %{_sysconfdir}/containers/registries.conf.d
-%if !0%{?rhel} || 0%{?centos}
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-%endif
-%config(noreplace) %{_sysconfdir}/containers/policy.json
-%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
-%config(noreplace) %{_sysconfdir}/containers/storage.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/*.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
-%ghost %{_sysconfdir}/containers/containers.conf
-%dir %{_sharedstatedir}/containers/sigstore
-%{_mandir}/man5/*
-%dir %{_datadir}/containers
-%{_datadir}/containers/mounts.conf
-%{_datadir}/containers/seccomp.json
-%{_datadir}/containers/containers.conf
-%dir %{_datadir}/rhel/secrets
-%{_datadir}/rhel/secrets/*
-
-
 %files
 %license LICENSE
 %doc README.md
@@ -267,6 +123,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Sep 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-1
+- rebuild with containers-common dep fixed
+- Related: #2000051
+
 * Tue Aug 10 2021 Mohan Boddu <mboddu@redhat.com> - 1:1.4.0-7
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
