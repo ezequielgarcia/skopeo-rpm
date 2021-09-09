@@ -13,25 +13,24 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-#%%global branch release-1.4
-#%%global commit0 a44da449d35e4621e9993f406d5a4f98dd89965e
-#%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
+%global branch main
+%global commit0 47b808275d0e41d1506b6993d497b9f28864bb88
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.4.1
-Release: 1%{?dist}
+Release: 0.1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
-#%%if 0%%{?branch:1}
-#Source0: https://%%{import_path}/tarball/%%{commit0}/%%{branch}-%%{shortcommit0}.tar.gz
-#%%else
-#Source0: https://%%{import_path}/archive/%%{commit0}/%%{name}-%%{version}-%%{shortcommit0}.tar.gz
-#%%endif
-Source0: %{url}/archive/v%{version}.tar.gz
+%if 0%{?branch:1}
+Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
+%else
+Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+%endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
@@ -63,12 +62,11 @@ Requires: openssl
 This package contains system tests for %{name}
 
 %prep
-#%%if 0%{?branch:1}
-#%%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
-#%%else
-#%%autosetup -Sgit -n %{name}-%{commit0}
-#%%endif
-%autosetup -Sgit -n %{name}-%{version}
+%if 0%{?branch:1}
+%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+%else
+%autosetup -Sgit -n %{name}-%{commit0}
+%endif
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
@@ -123,6 +121,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Sep 09 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/47b8082)
+- Related: #2000051
+
 * Fri Sep 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-1
 - rebuild with containers-common dep fixed
 - Related: #2000051
