@@ -1,5 +1,3 @@
-%global _lto_cflags %{nil}
-
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -12,18 +10,18 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
-%global import_path github.com/containers/skopeo
-%global branch release-1.4
-%global commit0 01e51ce610e3cfe1230a10af982e962c4ad1c990
-%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
+%global import_path github.com/containers/%{name}
+%global branch main
+%global commit0 25d3e7b46ddbaf9ced8912c88248ec7f91cfd944
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.4.2
-Release: 0.1%{?dist}
+Version: 1.4.1
+Release: 0.7%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
-URL: https://github.com/containers/skopeo
+URL: https://%{import_path}
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
 %if 0%{?branch:1}
@@ -40,13 +38,14 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common >= 2:1-2
+Requires: system-release
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
 
 %package tests
-Summary:         Tests for %{name}
+Summary: Tests for %{name}
 Requires: %{name} = %{epoch}:%{version}-%{release}
 #Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
 Requires: gnupg
@@ -81,7 +80,7 @@ for v in vendor/*; do
     fi
 done
 
-export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
+export GOPATH=$(pwd):$(pwd)/vendor
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
@@ -91,10 +90,6 @@ mkdir -p bin
 
 %install
 make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
-
-# remove bits which are parts of containers-common
-rm -f %{buildroot}/%{_sysconfdir}/containers/policy.json
-rm -f %{buildroot}/%{_sysconfdir}/containers/registries.d/default.yaml
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -124,6 +119,36 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Sep 23 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.7
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/25d3e7b)
+- Related: #2001445
+
+* Wed Sep 22 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.6
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/c5a5199)
+- Related: #2001445
+
+* Tue Sep 21 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.5
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/db1e814)
+- Related: #2001445
+
+* Fri Sep 17 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.4
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/31b8981)
+- Related: #2001445
+
+* Wed Sep 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.3
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/177443f)
+- Related: #2001445
+
+* Fri Sep 10 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.2
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/47b8082)
+- Related: #2001445
+
 * Thu Aug 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.2-0.1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
   (https://github.com/containers/skopeo/commit/01e51ce)
