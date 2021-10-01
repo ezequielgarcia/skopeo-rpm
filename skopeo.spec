@@ -14,13 +14,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 %global branch main
-%global commit0 86fa758ad85c05484a4ba26e046abc437d90964d
+%global commit0 53cf287e376f04211e9291767ceb239f89a97362
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
 Version: 1.4.1
-Release: 0.10%{?dist}
+Release: 0.11%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,6 +121,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Oct 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.11
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/53cf287)
+- Related: #2000051
+
 * Wed Sep 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.10
 - add gating.yaml
 - Related: #2000051
