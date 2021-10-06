@@ -34,12 +34,12 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%global built_tag v1.4.1
+%global built_tag v1.5.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.4.1
+Version: 1.5.0
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
@@ -369,6 +369,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Oct 06 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.5.0-1
+- autobuilt v1.5.0
+
 * Wed Aug 25 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.4.1-1
 - autobuilt v1.4.1
 
