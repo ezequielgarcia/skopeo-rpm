@@ -18,9 +18,9 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
 %global podman_branch v3.0
-%global image_branch  v5.9.0
-%global common_branch v0.33.0
-%global storage_branch v1.24.5
+%global image_branch v5.10.2
+%global common_branch v0.33.4
+%global storage_branch v1.24.6
 %global shortnames_branch main
 %global commit0 e72dd9c5c834f3cd7fb8b1aab4021d9d4412f305
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
@@ -28,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.2
-Release: 2%{?dist}
+Release: 10%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -233,9 +233,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Tue Mar 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-2
-- update rhel-shortnames.conf to include only trusted registries
-- Resolves: #1931785
+* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
+- update shortnames from Pyxis
+- sync with the vendored versions in 3.0-8.5.0
+- bump release to assure upgrade path from 3.0-8.4.0
+- Related: #1934415
 
 * Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
