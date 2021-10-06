@@ -34,6 +34,8 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
+# Used for comparing with latest upstream tag
+# to decide whether to autobuild
 %global built_tag v1.5.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
