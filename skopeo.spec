@@ -288,7 +288,7 @@ export GOPATH=$(pwd):$(pwd)/vendor
 %endif
 
 mkdir -p bin
-%if 0%{?centos} >= 8
+%if 0%{?rhel} >= 8
 export BUILDTAGS='exclude_graphdriver_btrfs btrfs_noversion'
 %endif
 %gobuild -o bin/%{name} ./cmd/%{name}
