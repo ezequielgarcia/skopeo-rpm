@@ -42,10 +42,11 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
+ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
 %if 0%{?fedora}
 BuildRequires: btrfs-progs-devel
@@ -371,6 +372,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Oct 07 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.5.0-2
+- Drop i686 support for RHEL >= 9
+- RHEL 9 does not have i686 support for golang
+
 * Wed Oct 06 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.5.0-1
 - autobuilt v1.5.0
 
