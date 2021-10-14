@@ -255,15 +255,22 @@ sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
+%set_build_flags
+export CGO_CFLAGS=$CFLAGS
+# These extra flags present in $CFLAGS have been skipped for now as they break the build
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-flto=auto//g')
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-Wp,D_GLIBCXX_ASSERTIONS//g')
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-specs=\/usr\/lib\/rpm\/redhat\/redhat-annobin-cc1//g')
+
+%ifarch x86_64
+export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
+%endif
+
+# unset LDFLAGS earlier set from set_build_flags
+LDFLAGS=''
+
 mkdir -p src/github.com/containers
 ln -s ../../../ src/%{import_path}
-
-export CGO_CFLAGS='-O2 -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -ffat-lto-objects -fexceptions -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64'
-%ifarch x86_64
-export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection"
-%endif
-# These extra flags present in %%{optflags} have been skipped for now as they break the build
-#export CGO_CFLAGS="$CGO_CFLAGS -flto=auto -Wp,D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1"
 
 mkdir -p vendor/src
 for v in vendor/*; do
