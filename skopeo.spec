@@ -14,13 +14,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 %global branch main
-%global commit0 9c9a9f3a1f6f61e4ab2f20370d80db05b96fcdcc
+%global commit0 8182255d221c41fc6176f6560469ce3010760028
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
 Version: 1.5.1
-Release: 0.4%{?dist}
+Release: 0.5%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,6 +121,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Oct 18 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.1-0.5
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/8182255)
+- Related: #2000051
+
 * Fri Oct 15 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.1-0.4
 - bump Epoch to preserve upgrade patch from RHEL8
 - Related: #2000051
