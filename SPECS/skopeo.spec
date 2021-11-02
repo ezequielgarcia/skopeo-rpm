@@ -28,7 +28,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 1
 Name: skopeo
 Version: 1.2.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -233,6 +233,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-8
+- update shortnames from Pyxis
+- Related: #1954702
+
 * Wed Apr 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-7
 - use runc as default OCI runtime in RHEL8
 - Resolves: #1940854
