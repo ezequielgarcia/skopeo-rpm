@@ -36,13 +36,13 @@
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild
-%global built_tag v1.5.0
+%global built_tag v1.5.1
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.5.0
-Release: 2%{?dist}
+Version: 1.5.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Nov 04 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.5.1-1
+- autobuilt v1.5.1
+
 * Thu Oct 07 2021 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.5.0-2
 - Drop i686 support for RHEL >= 9
 - RHEL 9 does not have i686 support for golang
