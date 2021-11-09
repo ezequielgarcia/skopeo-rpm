@@ -13,27 +13,17 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/skopeo
-%global branch release-1.3
-# Bellow definitions are used to deliver config files from a particular branch
-# of c/image, c/common, c/storage vendored in all podman, skopeo, buildah.
-# These vendored components must have the same version. If it is not the case,
-# pick the oldest version on c/image, c/common, c/storage vendored in
-# podman/skopeo/podman.
-%global podman_branch v3.2
-%global image_branch v5.12.0
-%global common_branch v0.38.12
-%global storage_branch v1.31.3
-%global shortnames_branch main
-%global commit0 038f70e6f52ca354534b2d38ce9611b8fc5537c4
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+%global branch release-1.4
+%global commit0 01e51ce610e3cfe1230a10af982e962c4ad1c990
+%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.3.1
-Release: 5%{?dist}
+Version: 1.4.2
+Release: 0.1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
-URL: %{git0}
+URL: https://github.com/containers/skopeo
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
 %if 0%{?branch:1}
@@ -41,60 +31,19 @@ Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar
 %else
 Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
 %endif
-Source1: https://raw.githubusercontent.com/containers/storage/%{storage_branch}/storage.conf
-Source2: https://raw.githubusercontent.com/containers/storage/%{storage_branch}/docs/containers-storage.conf.5.md
-Source3: mounts.conf
-Source4: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
-#Source5: https://raw.githubusercontent.com/containers/image/%%{image_branch}/registries.conf
-Source5: registries.conf
-Source6: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-policy.json.5.md
-Source7: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/seccomp/seccomp.json
-Source8: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers-mounts.conf.5.md
-Source9: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-signature.5.md
-Source10: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-transports.5.md
-Source11: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-certs.d.5.md
-Source12: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.d.5.md
-Source13: https://raw.githubusercontent.com/containers/common/%{common_branch}/pkg/config/containers.conf
-Source14: https://raw.githubusercontent.com/containers/common/%{common_branch}/docs/containers.conf.5.md
-Source15: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-auth.json.5.md
-Source16: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.d.5.md
-Source17: https://raw.githubusercontent.com/containers/shortnames/%{shortnames_branch}/shortnames.conf
-Source18: https://raw.githubusercontent.com/containers/image/%{image_branch}/docs/containers-registries.conf.5.md
-Source19: 001-rhel-shortnames-pyxis.conf
-Source20: 002-rhel-shortnames-overrides.conf
-# scripts used for synchronization with upstream and shortname generation
-Source100: update.sh
-Source101: update-vendored.sh
-Source102: pyxis.sh
 BuildRequires: git-core
-BuildRequires: golang >= 1.12.12-4
+BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common = %{epoch}:%{version}-%{release}
+Requires: containers-common >= 2:1-2
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
-
-%package -n containers-common
-Summary: Configuration files for working with image signatures
-Obsoletes: atomic <= 1:1.13.1-2
-Conflicts: atomic-registries <= 1:1.22.1-1
-Obsoletes: docker-rhsubscription <= 2:1.13.1-31
-Provides: %{name}-containers = %{epoch}:%{version}-%{release}
-Obsoletes: %{name}-containers <= 1:0.1.31-3
-Requires: runc
-Recommends: fuse-overlayfs
-Recommends: slirp4netns
-Suggests: subscription-manager
-
-%description -n containers-common
-This package installs a default signature store configuration and a default
-policy under `/etc/containers/`.
 
 %package tests
 Summary:         Tests for %{name}
@@ -141,56 +90,11 @@ mkdir -p bin
 %{__make} docs
 
 %install
-make \
-   DESTDIR=%{buildroot} \
-   PREFIX=%{buildroot}%{_prefix} \
-   install
-install -dp %{buildroot}%{_sysconfdir}/containers/{certs.d,oci/hooks.d,registries.d,registries.conf.d}
-install -m0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/containers/storage.conf
-install -m0644 %{SOURCE5} %{buildroot}%{_sysconfdir}/containers/registries.conf
-install -m0644 %{SOURCE17} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/000-shortnames.conf
-install -m0644 %{SOURCE19} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/001-rhel-shortnames.conf
-install -m0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/containers/registries.conf.d/002-rhel-shortnames-overrides.conf
+make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
 
-# for containers-common
-install -dp %{buildroot}%{_mandir}/man5
-go-md2man -in %{SOURCE2} -out %{buildroot}%{_mandir}/man5/containers-storage.conf.5
-go-md2man -in %{SOURCE4} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.5
-go-md2man -in %{SOURCE6} -out %{buildroot}%{_mandir}/man5/containers-policy.json.5
-go-md2man -in %{SOURCE8} -out %{buildroot}%{_mandir}/man5/containers-mounts.conf.5
-go-md2man -in %{SOURCE9} -out %{buildroot}%{_mandir}/man5/containers-signature.5
-go-md2man -in %{SOURCE10} -out %{buildroot}%{_mandir}/man5/containers-transports.5
-go-md2man -in %{SOURCE11} -out %{buildroot}%{_mandir}/man5/containers-certs.d.5
-go-md2man -in %{SOURCE12} -out %{buildroot}%{_mandir}/man5/containers-registries.d.5
-go-md2man -in %{SOURCE18} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
-go-md2man -in %{SOURCE14} -out %{buildroot}%{_mandir}/man5/containers.conf.5
-go-md2man -in %{SOURCE15} -out %{buildroot}%{_mandir}/man5/containers-auth.json.5
-go-md2man -in %{SOURCE16} -out %{buildroot}%{_mandir}/man5/containers-registries.conf.d.5
-
-install -dp %{buildroot}%{_datadir}/containers
-install -m0644 %{SOURCE3} %{buildroot}%{_datadir}/containers/mounts.conf
-install -m0644 %{SOURCE7} %{buildroot}%{_datadir}/containers/seccomp.json
-install -m0644 %{SOURCE13} %{buildroot}%{_datadir}/containers/containers.conf
-
-# install secrets patch directory
-install -d -p -m 755 %{buildroot}/%{_datadir}/rhel/secrets
-# rhbz#1110876 - update symlinks for subscription management
-ln -s %{_sysconfdir}/pki/entitlement %{buildroot}%{_datadir}/rhel/secrets/etc-pki-entitlement
-ln -s %{_sysconfdir}/rhsm %{buildroot}%{_datadir}/rhel/secrets/rhsm
-ln -s %{_sysconfdir}/yum.repos.d/redhat.repo %{buildroot}%{_datadir}/rhel/secrets/redhat.repo
-
-# ship preconfigured /etc/containers/registries.d/ files with containers-common - #1903813
-cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.access.redhat.com.yaml
-docker:
-     registry.access.redhat.com:
-         sigstore: https://access.redhat.com/webassets/docker/content/sigstore
-EOF
-
-cat <<EOF > %{buildroot}%{_sysconfdir}/containers/registries.d/registry.redhat.io.yaml
-docker:
-     registry.redhat.io:
-         sigstore: https://registry.redhat.io/containers/sigstore
-EOF
+# remove bits which are parts of containers-common
+rm -f %{buildroot}/%{_sysconfdir}/containers/policy.json
+rm -f %{buildroot}/%{_sysconfdir}/containers/registries.d/default.yaml
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -206,29 +110,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
 
-%files -n containers-common
-%dir %{_sysconfdir}/containers
-%dir %{_sysconfdir}/containers/certs.d
-%dir %{_sysconfdir}/containers/registries.d
-%dir %{_sysconfdir}/containers/oci
-%dir %{_sysconfdir}/containers/oci/hooks.d
-%dir %{_sysconfdir}/containers/registries.conf.d
-%config(noreplace) %{_sysconfdir}/containers/policy.json
-%config(noreplace) %{_sysconfdir}/containers/registries.d/default.yaml
-%config(noreplace) %{_sysconfdir}/containers/storage.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.conf.d/*.conf
-%config(noreplace) %{_sysconfdir}/containers/registries.d/*.yaml
-%ghost %{_sysconfdir}/containers/containers.conf
-%dir %{_sharedstatedir}/containers/sigstore
-%{_mandir}/man5/*
-%dir %{_datadir}/containers
-%{_datadir}/containers/mounts.conf
-%{_datadir}/containers/seccomp.json
-%{_datadir}/containers/containers.conf
-%dir %{_datadir}/rhel/secrets
-%{_datadir}/rhel/secrets/*
-
 %files
 %license LICENSE
 %doc README.md
@@ -243,92 +124,148 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Tue Jul 27 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-5
+* Thu Aug 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.2-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
+  (https://github.com/containers/skopeo/commit/01e51ce)
+- Related: #1934415
+
+* Wed Aug 25 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-2
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
+  (https://github.com/containers/skopeo/commit/130f32f)
+- Related: #1934415
+
+* Fri Aug 20 2021 Lokesh Mandvekar <lsm5@redhat.com> - 1:1.4.1-1
+- update to v1.4.1
+- Related: #1934415
+
+* Tue Aug 17 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-7
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
+  (https://github.com/containers/skopeo/commit/ea32394)
+- Related: #1934415
+
+* Wed Aug 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-6
+- carve away containers-common - it's now a separate package
+- Related: #1934415
+
+* Fri Aug 06 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-5
+- be sure short-name-mode is permissive in RHEL8
+- Related: #1934415
+
+* Wed Aug 04 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-4
+- don't define short-name-mode in RHEL8
+- Related: #1934415
+
+* Tue Aug 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-3
+- re-add Requires: runc
+- Related: #1934415
+
+* Tue Aug 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-2
+- update to 1.4.0 release and switch to the release-1.4 maint branch
+- Related: #1934415
+
+* Mon Aug 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.0-1
+- update vendored components
+- ship /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release only on non-RHEL and
+  CentOS distros
+- Related: #1934415
+
+* Wed Jul 21 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-7
+- switch to "main" branch of podman
+- Related: #1934415
+
+* Wed Jul 21 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-6
 - move unqualified-search-registries to [registries.search]
-- Related: #1954702
+- Resolves: #1977280
 
-* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-4
+* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-5
 - update shortnames from Pyxis
-- Related: #1954702
+- Related: #1934415
 
-* Wed Jul 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-3
+* Wed Jul 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-4
 - add direct runc dependency to avoid situation when runc is listed
   as default runtime but only crun is present in RHEL8
-- Related: #1954702
+- Related: #1934415
 
-* Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-2
+* Mon Jul 05 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-3
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.3
   (https://github.com/containers/skopeo/commit/038f70e)
-- Related: #1954702
+- Related: #1934415
+
+* Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-2
+- use v3.2 branch for podman and update vendored branches
+- Related: #1934415
 
 * Thu Jul 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.1-1
-- sync with 8.5.0 branch
-- Related: #1954702
+- update to https://github.com/containers/skopeo/releases/tag/v1.3.1
+- Related: #1934415
 
-* Wed Jun 23 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-13
-- put back ubi8/buildah and ubi8/skopeo as it was released in 8.4
-  (only ubi8/podman was not)
-- Related: #1972700
+* Mon Jun 28 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-5
+- update shortname overrides
+- Related: #1952204
 
-* Tue Jun 22 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-12
-- remove all ubi8 references for 8.4 in 002-rhel-shortnames-overrides.conf
-- Related: #1972700
+* Thu Jun 10 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-4
+- sync with Pyxis
+- use containers-mounts.conf.5.md from containers/common
+- Related: #1934415
 
-* Wed Jun 16 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-11
-- update shortnames
-- Related: #1972700
+* Mon May 24 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-3
+- update to new versions of vendored components
+- fail is there is an issue in communication with Pyxis API
+- understand devel branch in update.sh script
+- Related: #1934415
 
-* Thu May 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
-- re-enable release-1.2 branch
-- Related: #1954702
+* Fri May 21 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-2
+- fix filelist with the new upstream release
+- Related: #1934415
 
-* Thu May 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-9
-- revert back to state of 3.0-8.4.0
-- sync shortnames with pyxis
-- improve shortnames
-- Related: #1954702
+* Thu May 20 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.3.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.3.0
+- Related: #1934415
 
-* Tue May 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-2
+* Tue May 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-3
 - update vendored components versions
 - sync shortnames with pyxis
-- Related: #1954702
+- Related: #1934415
 
-* Thu Apr 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-1
+* Mon Apr 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-2
 - assure runc is set as default runtime in RHEL8
 - update shortnames from upstream
 - sync vendored component versions with upstream
-- Related: #1954702
+- Related: #1934415
 
-* Tue Apr 06 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-8
-- use runc as default OCI runtime in RHEL8
-- Resolves: #1940854
+* Mon Apr 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.3-1
+- update to skopeo-1.2.3
+- sync with Fedora deps
+- fix typo in upstream Makefile
+- Related: #1934415
 
-* Thu Mar 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-7
-- update documentation and configs according to the current
-  versions of vendored projects
-- Related: #1938234
+* Thu Apr 22 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-6
+- add update-vendored.sh, pyxis.sh and amend the shortname generation
+- Related: #1934415
 
-* Thu Mar 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-6
-- update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
-  (https://github.com/containers/skopeo/commit/e7880c4)
-- Related: #1938234
+* Wed Apr 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-5
+- require crun >= 0.19 and set it as default OCI runtime
+- add ensure() function to update.sh so that configuration statements
+  can be easily amended/reviewed
+- Related: #1934415
 
-* Mon Mar 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-5
-- use infra_image = registry.redhat.io/ubi8/pause in contiainers.conf
+* Mon Mar 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-4
+- use infra_image = "registry.redhat.io/ubi8/pause" in containers.conf
   (unlike previous one ubi8/pause doesn't require authentication)
-- Related: #1934947
+- Related: #1934415
 
-* Fri Mar 12 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-4
-- quote infra_image registry, otherwise it can't be parsed
-- Related: #1934947
+* Fri Mar 12 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-3
+- use infra_image = "registry.redhat.io/rhel8/pause" in contiainers.conf
+- add update-vendored.sh script which will always assure we ship
+  documentation/configs for versions vendored in podman, buildah and
+  skopeo
+- Related: #1934415
 
-* Thu Mar 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-3
-- use infra_image = registry.redhat.io/rhel8/pause in contiainers.conf
-- Resolves: #1934947
-
-* Tue Mar 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-2
-- update rhel-shortnames.conf to include only trusted registries
-- Resolves: #1931785
+* Wed Mar 03 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-2
+- use rhel-shortnames only from trusted registries
+- sync with config files from current versions of vendored projects
+- Resolves: #1933775
+- Resolves: #1933776
 
 * Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
