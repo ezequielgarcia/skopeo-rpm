@@ -36,12 +36,12 @@
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild
-%global built_tag v1.5.1
+%global built_tag v1.5.2
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.5.1
+Version: 1.5.2
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Nov 26 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.5.2-1
+- autobuilt v1.5.2
+
 * Thu Nov 04 2021 RH Container Bot <rhcontainerbot@fedoraproject.org> - 1:1.5.1-1
 - autobuilt v1.5.1
 
