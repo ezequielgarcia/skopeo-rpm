@@ -8,9 +8,9 @@
 %endif
 
 %if 0%{?fedora} && ! 0%{?rhel}
-%define conditional_epoch 1
+%global conditional_epoch 1
 %else
-%define conditional_epoch 2
+%global conditional_epoch 2
 %endif
 
 %global provider github
