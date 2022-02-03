@@ -21,7 +21,7 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%global built_tag v1.5.2
+%global built_tag v1.6.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
@@ -48,25 +48,24 @@ BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common >= 4:1-21
-# awk '{print "Provides: bundled(golang("$1")) = "$2}' go.mod | sort | uniq | sed -e 's/-/_/g'
-Provides: bundled(golang(github.com/containers/common)) = v0.46.1_0.20211026130826_7abfd453c86f
-Provides: bundled(golang(github.com/containers/image/v5)) = v5.17.0
+# awk '{print "Provides: bundled(golang("$1")) = "$2}' go.mod | sort | uniq | sed -e 's/-/_/g' -e '/bundled(golang())/d' -e '/bundled(golang(go\|module\|replace\|require))/d'
+# vendored libraries
+Provides: bundled(golang(github.com/containers/common)) = v0.47.3
+Provides: bundled(golang(github.com/containers/image/v5)) = v5.19.1
 Provides: bundled(golang(github.com/containers/ocicrypt)) = v1.1.2
-Provides: bundled(golang(github.com/containers/storage)) = v1.37.0
-Provides: bundled(golang(github.com/docker/docker)) = v20.10.11+incompatible
+Provides: bundled(golang(github.com/containers/storage)) = v1.38.2
+Provides: bundled(golang(github.com/docker/docker)) = v20.10.12+incompatible
 Provides: bundled(golang(github.com/dsnet/compress)) = v0.0.2_0.20210315054119_f66993602bf5
 Provides: bundled(golang(github.com/opencontainers/go_digest)) = v1.0.0
-Provides: bundled(golang(github.com/opencontainers/image_spec)) = v1.0.2_0.20210819154149_5ad6f50d6283
+Provides: bundled(golang(github.com/opencontainers/image_spec)) = v1.0.3_0.20211202193544_a5463b7f9c84
 Provides: bundled(golang(github.com/opencontainers/image_tools)) = v1.0.0_rc3
 Provides: bundled(golang(github.com/pkg/errors)) = v0.9.1
 Provides: bundled(golang(github.com/russross/blackfriday)) = v2.0.0+incompatible
 Provides: bundled(golang(github.com/sirupsen/logrus)) = v1.8.1
-Provides: bundled(golang(github.com/spf13/cobra)) = v1.2.1
+Provides: bundled(golang(github.com/spf13/cobra)) = v1.3.0
 Provides: bundled(golang(github.com/spf13/pflag)) = v1.0.5
 Provides: bundled(golang(github.com/stretchr/testify)) = v1.7.0
 Provides: bundled(golang(github.com/syndtr/gocapability)) = v0.0.0_20200815063812_42c35b437635
-Provides: bundled(golang(gopkg.in/check.v1)) = v1.0.0_20201130134442_10cb98267c6c
-Provides: bundled(golang(gopkg.in/yaml.v2)) = v2.4.0
 
 %description
 Command line utility to inspect images and repositories directly on Docker
