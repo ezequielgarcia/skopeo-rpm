@@ -28,7 +28,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: %{gen_version}
-Release: 1%{?dist}
+Release: %autorelease
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
