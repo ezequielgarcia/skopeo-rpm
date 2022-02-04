@@ -23,10 +23,11 @@
 
 %global built_tag v1.6.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
+%global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.6.0
+Version: %{gen_version}
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0 and BSD and ISC and MIT
