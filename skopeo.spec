@@ -32,6 +32,7 @@ License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
 ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
+BuildRequires: btrfs-progs-devel
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
