@@ -89,6 +89,7 @@ sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
 %set_build_flags
+export GOPATH=$(pwd)/_build:$(pwd)
 export CGO_CFLAGS=$CFLAGS
 # These extra flags present in $CFLAGS have been skipped for now as they break the build
 CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-flto=auto//g')
@@ -102,20 +103,17 @@ export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 # unset LDFLAGS earlier set from set_build_flags
 LDFLAGS=''
 
+mkdir _build
+pushd _build
+mkdir -p src/%{provider}.%{provider_tld}/%{project}
+ln -s $(dirs +1 -l) src/%{import_path}
+popd
+
+mv vendor src
+
 mkdir -p src/github.com/containers
 ln -s ../../../ src/%{import_path}
 
-mkdir -p vendor/src
-for v in vendor/*; do
-    if test ${v} = vendor/src; then continue; fi
-    if test -d ${v}; then 
-      mv ${v} vendor/src/
-    fi
-done
-
-export GOPATH=$(pwd):$(pwd)/vendor
-
-mkdir -p bin
 %gobuild -o bin/%{name} ./cmd/%{name}
 pushd docs
 for file in $(ls | grep 1.md)
