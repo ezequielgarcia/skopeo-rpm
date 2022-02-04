@@ -22,7 +22,7 @@
 Name: %{repo}
 #%%if 0%%{?fedora} && ! 0%%{?rhel}
 #Epoch: 1
-%%else
+#%%else
 Epoch: 2
 #%%endif
 Version: %{gen_version}
