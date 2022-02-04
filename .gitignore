@@ -32,6 +32,7 @@
 /skopeo-79225f2.tar.gz
 /skopeo-2d04db9.tar.gz
 /skopeo-7e9a664.tar.gz
+/skopeo.spec
 /skopeo-ca3bff6.tar.gz
 /skopeo-5c61108.tar.gz
 /skopeo-f9baaa6.tar.gz
@@ -295,4 +296,3 @@
 /v1.5.0.tar.gz
 /v1.5.1.tar.gz
 /v1.5.2.tar.gz
-/v1.6.0.tar.gz
