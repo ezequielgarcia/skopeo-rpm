@@ -7,12 +7,6 @@
 %global debug_package   %{nil}
 %endif
 
-%if 0%{?fedora} && ! 0%{?rhel}
-%global conditional_epoch 1
-%else
-%global conditional_epoch 2
-%endif
-
 %global provider github
 %global provider_tld com
 %global project containers
@@ -26,7 +20,11 @@
 %global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
 Name: %{repo}
-Epoch: %{conditional_epoch}
+%if 0%{?fedora} && ! 0%{?rhel}
+Epoch: 1
+%else
+Epoch: 2
+%endif
 Version: %{gen_version}
 Release: %autorelease
 Summary: Inspect container images and repositories on registries
