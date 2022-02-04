@@ -21,8 +21,6 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-# Used for comparing with latest upstream tag
-# to decide whether to autobuild
 %global built_tag v1.6.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
@@ -95,6 +93,7 @@ sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
 %set_build_flags
+export GOPATH=$(pwd)/_build:$(pwd)
 export CGO_CFLAGS=$CFLAGS
 # These extra flags present in $CFLAGS have been skipped for now as they break the build
 CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-flto=auto//g')
@@ -108,36 +107,16 @@ export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 # unset LDFLAGS earlier set from set_build_flags
 LDFLAGS=''
 
-mkdir -p src/github.com/containers
-ln -s ../../../ src/%{import_path}
-
-mkdir -p vendor/src
-for v in vendor/*; do
-    if test ${v} = vendor/src; then continue; fi
-    if test -d ${v}; then 
-      mv ${v} vendor/src/
-    fi
-done
-
-%if ! 0%{?with_bundled}
-rm -rf vendor/
-export GOPATH=$(pwd)
-%else
-export GOPATH=$(pwd):$(pwd)/vendor
-%endif
-
-mkdir -p bin
-%if 0%{?rhel} >= 8
-export BUILDTAGS='exclude_graphdriver_btrfs btrfs_noversion'
-%endif
-%gobuild -o bin/%{name} ./cmd/%{name}
-pushd docs
-for file in $(ls | grep 1.md)
-do
-export FILE_OUT=$(echo $file | sed -e 's/\.md//')
-go-md2man -in $file -out $FILE_OUT 
-done
+mkdir _build
+pushd _build
+mkdir -p src/%{provider}.%{provider_tld}/%{project}
+ln -s $(dirs +1 -l) src/%{import_path}
 popd
+
+mv vendor src
+
+%gobuild -o bin/%{name} %{import_path}/cmd/%{name}
+%{__make} docs
 
 %install
 make \
