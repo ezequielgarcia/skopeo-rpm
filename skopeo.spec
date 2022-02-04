@@ -4,7 +4,7 @@
 %global _find_debuginfo_dwz_opts %{nil}
 %global _dwz_low_mem_die_limit 0
 %else
-%global debug_package   %{nil}
+%global debug_package %{nil}
 %endif
 
 %if 0%{?fedora} && ! 0%{?rhel}
@@ -34,9 +34,7 @@ License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
 ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
-%if 0%{?fedora}
 BuildRequires: btrfs-progs-devel
-%endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
