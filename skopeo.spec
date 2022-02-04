@@ -30,7 +30,6 @@ Release: %autorelease
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
-ExclusiveArch: %{golang_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
 BuildRequires: btrfs-progs-devel
 BuildRequires: git-core
