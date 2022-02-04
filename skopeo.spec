@@ -32,9 +32,6 @@ License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
 ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
-%if 0%{?fedora}
-BuildRequires: btrfs-progs-devel
-%endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
 BuildRequires: go-md2man
@@ -119,9 +116,6 @@ done
 export GOPATH=$(pwd):$(pwd)/vendor
 
 mkdir -p bin
-%if 0%{?rhel} >= 8
-export BUILDTAGS='exclude_graphdriver_btrfs btrfs_noversion'
-%endif
 %gobuild -o bin/%{name} ./cmd/%{name}
 pushd docs
 for file in $(ls | grep 1.md)
