@@ -4,7 +4,7 @@
 %global _find_debuginfo_dwz_opts %{nil}
 %global _dwz_low_mem_die_limit 0
 %else
-%global debug_package   %{nil}
+%global debug_package %{nil}
 %endif
 
 %global provider github
@@ -114,7 +114,7 @@ mv vendor src
 mkdir -p src/github.com/containers
 ln -s ../../../ src/%{import_path}
 
-%gobuild -o bin/%{name} ./cmd/%{name}
+%gobuild -o bin/%{name} %{import_path}/cmd/%{name}
 pushd docs
 for file in $(ls | grep 1.md)
 do
