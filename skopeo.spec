@@ -36,15 +36,15 @@
 
 # Used for comparing with latest upstream tag
 # to decide whether to autobuild
-%global built_tag v1.5.2
+%global built_tag v1.6.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.5.2
-Release: 3%{?dist}
+Version: 1.6.0
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
-License: ASL 2.0
+License: ASL 2.0 and BSD and ISC and MIT
 URL: %{git0}
 ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Feb 04 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.6.0-1
+- bump to v1.6.0
+
 * Fri Feb 04 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.5.2-3
 - bump release tag to check for koji build success
 
