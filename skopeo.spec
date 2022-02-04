@@ -42,7 +42,7 @@
 Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.5.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -379,6 +379,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Feb 04 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.5.2-3
+- bump release tag to check for koji build success
+
 * Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.5.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
