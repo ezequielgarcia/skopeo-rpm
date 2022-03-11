@@ -11,13 +11,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-%global commit0 209a993159eae02f037d01efc001feb57577c2ef
+%global commit0 49084d2cd8c9f8e7b38ba8405d61e701d5381bc0
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.5.0
-Release: 2%{?dist}
+Version: 1.6.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -118,6 +118,22 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.6.1
+- Related: #2001445
+
+* Thu Feb 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.6.0
+- Related: #2001445
+
+* Mon Nov 29 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.2
+- Related: #2001445
+
+* Mon Nov 08 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.1
+- Related: #2001445
+
 * Fri Oct 15 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.0-2
 - bump Epoch to preserve upgrade path
 - Related: #2001445
