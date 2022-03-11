@@ -17,18 +17,18 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 # These vendored components must have the same version. If it is not the case,
 # pick the oldest version on c/image, c/common, c/storage vendored in
 # podman/skopeo/podman.
-%global podman_branch v3.0.1-rhel
-%global image_branch v5.10.5
+%global podman_branch v3.0
+%global image_branch v5.10.2
 %global common_branch v0.33.4
-%global storage_branch v1.24.8
+%global storage_branch v1.24.6
 %global shortnames_branch main
-%global commit0 e7880c4a8991966f16e367f085d42375ad70197e
+%global commit0 99219839236053c4fc27e3099639fcecb1378a3e
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 1
 Name: skopeo
-Version: 1.2.2
-Release: 6%{?dist}
+Version: 1.2.4
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: %{git0}
@@ -233,27 +233,16 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Thu Mar 18 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-6
-- update documentation and configs according to the current
-  versions of vendored projects
-- Related: #1938234
+* Wed Sep 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.4-1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
+  (https://github.com/containers/skopeo/commit/9921983)
+- Related: #2001445
 
-* Mon Mar 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-5
-- use infra_image = registry.redhat.io/ubi8/pause in contiainers.conf
-  (unlike previous one ubi8/pause doesn't require authentication)
-- Related: #1934947
-
-* Fri Mar 12 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-4
-- quote infra_image registry, otherwise it can't be parsed
-- Related: #1934947
-
-* Thu Mar 11 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-3
-- use infra_image = registry.redhat.io/rhel8/pause in contiainers.conf
-- Resolves: #1934947
-
-* Tue Mar 02 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-2
-- update rhel-shortnames.conf to include only trusted registries
-- Resolves: #1931785
+* Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
+- update shortnames from Pyxis
+- sync with the vendored versions in 3.0-8.5.0
+- bump release to assure upgrade path from 3.0-8.4.0
+- Related: #1934415
 
 * Fri Feb 19 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
