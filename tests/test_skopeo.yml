@@ -7,7 +7,6 @@
         - classic
         - container
       required_packages:
-        - bats
         - skopeo
         - skopeo-tests
       tests:

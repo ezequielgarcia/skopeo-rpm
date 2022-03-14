@@ -20,7 +20,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.6.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,6 +121,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Mar 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-3
+- remove BATS from required packages (Ed Santiago)
+- Related: #2061316
+
 * Mon Mar 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-2
 - be sure to install BATS before gating tests are executed
   (thanks to Ed Santiago)
