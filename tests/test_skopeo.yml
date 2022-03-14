@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  tags: classic
   roles:
     - role: bats_installed
     - role: standard-test-basic
