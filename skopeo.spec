@@ -80,6 +80,7 @@ Requires: podman
 Requires: httpd-tools
 Requires: openssl
 Requires: fakeroot
+Requires: squashfs-tools
 
 %description tests
 %{summary}
