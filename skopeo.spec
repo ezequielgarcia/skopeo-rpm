@@ -21,7 +21,7 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%global built_tag v1.6.1
+%global built_tag v1.7.0
 %global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
@@ -146,6 +146,6 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 
 %changelog
 #%%autochangelog
-* Fri Mar 18 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.6.1
-- bump to v1.6.1
+* Thu Mar 24 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.7.0
+- bump to v1.7.0
 - autospec misbehaves if the git logs ever used an unescaped rpm macro
