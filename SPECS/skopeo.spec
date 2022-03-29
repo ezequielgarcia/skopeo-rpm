@@ -1,5 +1,3 @@
-%global _lto_cflags %{nil}
-
 %global with_check 0
 
 %global _find_debuginfo_dwz_opts %{nil}
@@ -12,18 +10,17 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
-%global import_path github.com/containers/skopeo
-%global branch release-1.4
-%global commit0 01e51ce610e3cfe1230a10af982e962c4ad1c990
-%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
+%global import_path github.com/containers/%{name}
+%global commit0 49084d2cd8c9f8e7b38ba8405d61e701d5381bc0
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
-Epoch: 1
+Epoch: 2
 Name: skopeo
-Version: 1.4.2
-Release: 0.1%{?dist}
+Version: 1.6.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
-URL: https://github.com/containers/skopeo
+URL: https://%{import_path}
 # https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
 ExclusiveArch: %{go_arches}
 %if 0%{?branch:1}
@@ -40,13 +37,14 @@ BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
 BuildRequires: make
 Requires: containers-common >= 2:1-2
+Requires: system-release
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
 
 %package tests
-Summary:         Tests for %{name}
+Summary: Tests for %{name}
 Requires: %{name} = %{epoch}:%{version}-%{release}
 #Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
 Requires: gnupg
@@ -81,7 +79,7 @@ for v in vendor/*; do
     fi
 done
 
-export GOPATH=$(pwd):$(pwd)/vendor:%{gopath}
+export GOPATH=$(pwd):$(pwd)/vendor
 export GO111MODULE=off
 export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
@@ -91,10 +89,6 @@ mkdir -p bin
 
 %install
 make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
-
-# remove bits which are parts of containers-common
-rm -f %{buildroot}/%{_sysconfdir}/containers/policy.json
-rm -f %{buildroot}/%{_sysconfdir}/containers/registries.d/default.yaml
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
@@ -124,6 +118,100 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.6.1
+- Related: #2001445
+
+* Thu Feb 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.6.0
+- Related: #2001445
+
+* Mon Nov 29 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.2
+- Related: #2001445
+
+* Mon Nov 08 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.1
+- Related: #2001445
+
+* Fri Oct 15 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.0-2
+- bump Epoch to preserve upgrade path
+- Related: #2001445
+
+* Wed Oct 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.5.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.0
+- Related: #2001445
+
+* Wed Oct 13 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.5.1-0.3
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/9c9a9f3)
+- Related: #2001445
+
+* Fri Oct 08 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.5.1-0.2
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/116e75f)
+- Related: #2001445
+
+* Thu Oct 07 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.5.1-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/fc81803)
+- Related: #2001445
+
+* Wed Oct 06 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.12
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/ff88d3f)
+- Related: #2001445
+
+* Mon Oct 04 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.11
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/a95b0cc)
+- Related: #2001445
+
+* Fri Oct 01 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.10
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/53cf287)
+- Related: #2001445
+
+* Wed Sep 29 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.9
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/86fa758)
+- Related: #2001445
+
+* Mon Sep 27 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.8
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/4d3588e)
+- Related: #2001445
+
+* Thu Sep 23 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.7
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/25d3e7b)
+- Related: #2001445
+
+* Wed Sep 22 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.6
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/c5a5199)
+- Related: #2001445
+
+* Tue Sep 21 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.5
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/db1e814)
+- Related: #2001445
+
+* Fri Sep 17 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.4
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/31b8981)
+- Related: #2001445
+
+* Wed Sep 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.3
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/177443f)
+- Related: #2001445
+
+* Fri Sep 10 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.1-0.2
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/47b8082)
+- Related: #2001445
+
 * Thu Aug 26 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.4.2-0.1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.4
   (https://github.com/containers/skopeo/commit/01e51ce)
