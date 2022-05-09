@@ -1,4 +1,3 @@
-%global _lto_cflags %{nil}
 %global debug_package %{nil}
 
 %global with_check 0
@@ -21,7 +20,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.8.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -122,6 +121,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
+- enable LTO
+- Related: #1988128
+
 * Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.8.0
 - Related: #2061316
