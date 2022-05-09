@@ -145,7 +145,4 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
-#%%autochangelog
-* Thu Mar 24 2022 Lokesh Mandvekar <lsm5@fedoraproject.org> - 1:1.7.0
-- bump to v1.7.0
-- autospec misbehaves if the git logs ever used an unescaped rpm macro
+%autochangelog
