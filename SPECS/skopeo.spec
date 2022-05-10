@@ -233,11 +233,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Thu Dec 09 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.4-1
+* Wed Sep 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.4-1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.2
   (https://github.com/containers/skopeo/commit/9921983)
-- update shortnames from Pyxis
-- Related: #2009153
+- Related: #2001445
 
 * Thu Jul 15 2021 Jindrich Novy <jnovy@redhat.com> - 1:1.2.2-10
 - update shortnames from Pyxis
