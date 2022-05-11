@@ -20,7 +20,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.8.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -33,7 +33,7 @@ Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcom
 %endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
-BuildRequires: go-md2man
+BuildRequires: /usr/bin/go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
@@ -121,6 +121,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed May 11 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-3
+- BuildRequires: /usr/bin/go-md2man
+- Related: #2061316
+
 * Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
 - enable LTO
 - Related: #1988128
