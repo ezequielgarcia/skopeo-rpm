@@ -1,9 +1,4 @@
-%global debug_package %{nil}
-
 %global with_check 0
-
-%global _find_debuginfo_dwz_opts %{nil}
-%global _dwz_low_mem_die_limit 0
 
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
@@ -20,7 +15,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.8.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,6 +116,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri May 13 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-4
+- Re-enable debuginfo
+- Related: #2061316
+
 * Wed May 11 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-3
 - BuildRequires: /usr/bin/go-md2man
 - Related: #2061316
