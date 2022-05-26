@@ -1,3 +1,7 @@
+%if "%{_vendor}" == "debbuild"
+%define gobuild(o:) GO111MODULE=off go build -buildmode pie -tags=" ${BUILDTAGS:-}" -a -v -x %{?**};
+%endif
+
 %global with_debug 1
 
 %if 0%{?with_debug}
@@ -22,22 +26,37 @@
 %global git0 https://%{import_path}
 
 %global built_tag v1.8.0
-%global built_tag_strip %(b=%{built_tag}; echo ${b:1})
-%global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: %{gen_version}
-Release: %autorelease
-Summary: Inspect container images and repositories on registries
+Version: 1.8.0
+%if "%{_vendor}" == "debbuild"
+Maintainer: Lokesh Mandvekar <lsm5@fedoraproject.org>
+License: ASL-2.0+
+Release: 0%{?dist}
+%else
 License: ASL 2.0 and BSD and ISC and MIT
+Release: %autorelease
+%endif
+Summary: Inspect container images and repositories on registries
 URL: %{git0}
-ExclusiveArch: %{go_arches}
 Source0: %{git0}/archive/%{built_tag}.tar.gz
+BuildRequires: go-md2man
+%if "%{_vendor}" == "debbuild"
+BuildRequires: git
+BuildRequires: golang
+BuildRequires: libassuan-dev
+BuildRequires: libbtrfs-dev
+BuildRequires: libglib2.0-dev
+BuildRequires: libgpgme-dev
+BuildRequires: pkg-config
+BuildRequires: libdevmapper-dev
+Requires: containers-common >= 4:1
+%else
+ExclusiveArch: %{go_arches}
 BuildRequires: btrfs-progs-devel
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
-BuildRequires: go-md2man
 BuildRequires: go-rpm-macros
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
@@ -64,6 +83,7 @@ Provides: bundled(golang(github.com/spf13/cobra)) = v1.3.0
 Provides: bundled(golang(github.com/spf13/pflag)) = v1.0.5
 Provides: bundled(golang(github.com/stretchr/testify)) = v1.7.0
 Provides: bundled(golang(github.com/syndtr/gocapability)) = v0.0.0_20200815063812_42c35b437635
+%endif
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -88,14 +108,13 @@ Requires: squashfs-tools
 This package contains system tests for %{name}
 
 %prep
-%autosetup -Sgit -n %{name}-%{built_tag_strip}
+%autosetup -Sgit
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
+%if "%{_vendor}" != "debbuild"
 %set_build_flags
-export GOPATH=$(pwd)/_build:$(pwd)
-export CGO_CFLAGS=$CFLAGS
 # These extra flags present in $CFLAGS have been skipped for now as they break the build
 CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-flto=auto//g')
 CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-Wp,D_GLIBCXX_ASSERTIONS//g')
@@ -104,15 +123,19 @@ CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-specs=\/usr\/lib\/rpm\/redhat\/redhat-an
 %ifarch x86_64
 export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 %endif
+%endif
+
+export GOPATH=$(pwd)/_build:$(pwd)
+export CGO_CFLAGS=$CFLAGS
 
 # unset LDFLAGS earlier set from set_build_flags
 LDFLAGS=''
 
 mkdir _build
-pushd _build
+cd _build
 mkdir -p src/%{provider}.%{provider_tld}/%{project}
-ln -s $(dirs +1 -l) src/%{import_path}
-popd
+ln -s ../../../../ src/%{import_path}
+cd ..
 
 mv vendor src
 
@@ -145,4 +168,6 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+%if "%{_vendor}" != "debbuild"
 %autochangelog
+%endif
