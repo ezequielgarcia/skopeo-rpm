@@ -44,7 +44,7 @@ Source0: %{git0}/archive/%{built_tag}.tar.gz
 BuildRequires: go-md2man
 %if "%{_vendor}" == "debbuild"
 BuildRequires: git
-%if 0%{?debian} <= 11 || 0%{?ubuntu} <= 2004
+%if (0%{?debian} && 0%{?debian} <= 11) || (0%{?ubuntu} && 0%{?ubuntu} <= 2004)
 BuildRequires: golang-1.16
 %else
 BuildRequires: golang
