@@ -44,7 +44,7 @@ Source0: %{git0}/archive/%{built_tag}.tar.gz
 BuildRequires: go-md2man
 %if "%{_vendor}" == "debbuild"
 BuildRequires: git
-BuildRequires: golang
+BuildRequires: golang >= 1.18
 BuildRequires: libassuan-dev
 BuildRequires: libbtrfs-dev
 BuildRequires: libglib2.0-dev
