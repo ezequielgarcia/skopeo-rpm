@@ -31,7 +31,7 @@ Name: %{repo}
 Epoch: %{conditional_epoch}
 Version: 1.8.0
 %if "%{_vendor}" == "debbuild"
-Maintainer: Lokesh Mandvekar <lsm5@fedoraproject.org>
+Packager: Lokesh Mandvekar <lsm5@fedoraproject.org>
 License: ASL-2.0+
 Release: 0%{?dist}
 %else
