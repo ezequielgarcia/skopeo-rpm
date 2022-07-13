@@ -25,11 +25,11 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%global built_tag v1.8.0
+%global built_tag v1.9.0
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.8.0
+Version: 1.9.0
 %if "%{_vendor}" == "debbuild"
 Packager: Lokesh Mandvekar <lsm5@fedoraproject.org>
 License: ASL-2.0+
