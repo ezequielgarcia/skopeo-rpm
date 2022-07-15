@@ -110,6 +110,7 @@ This package contains system tests for %{name}
 %prep
 %autosetup -Sgit
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/completions: bin\/%{name}/completions:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
@@ -162,6 +163,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
+%dir %{_datadir}/fish/vendor_completions.d
+%{_datadir}/fish/vendor_completions.d/%{name}.fish
+%{_datadir}/zsh/site-functions
+%{_datadir}/zsh/site-functions/_%{name}
 
 %files tests
 %license LICENSE
