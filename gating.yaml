@@ -1,0 +1,7 @@
+# recipients: jnovy, lsm5, santiago
+--- !Policy
+product_versions:
+  - rhel-9
+decision_context: osci_compose_gate
+rules:
+  - !PassingTestCaseRule {test_case_name: osci.brew-build.tier0.functional}
