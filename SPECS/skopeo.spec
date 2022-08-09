@@ -1,8 +1,5 @@
 %global with_check 0
 
-%global _find_debuginfo_dwz_opts %{nil}
-%global _dwz_low_mem_die_limit 0
-
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
 go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
@@ -10,15 +7,15 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
-%global branch release-1.6
 %global import_path github.com/containers/%{name}
-%global commit0 1186cc6bce235addb7345115c43aacea3cf6893a
+#%%global branch main
+%global commit0 37727a45f96ac208785b606f7772d609bf50dbc4
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.6.1
-Release: 2%{?dist}
+Version: 1.8.0
+Release: 4%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -31,7 +28,7 @@ Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcom
 %endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.16.6
-BuildRequires: go-md2man
+BuildRequires: /usr/bin/go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
@@ -119,9 +116,38 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Fri Apr 01 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-2
-- fix CVE-2022-21698
-- Related: #2068165
+* Fri May 13 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-4
+- Re-enable debuginfo
+- Related: #2061316
+
+* Wed May 11 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-3
+- BuildRequires: /usr/bin/go-md2man
+- Related: #2061316
+
+* Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
+- enable LTO
+- Related: #1988128
+
+* Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.8.0
+- Related: #2061316
+
+* Fri Mar 25 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.7.0
+- Related: #2061316
+
+* Mon Mar 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-4
+- add tags: classic (Ed Santiago)
+- Related: #2061316
+
+* Mon Mar 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-3
+- remove BATS from required packages (Ed Santiago)
+- Related: #2061316
+
+* Mon Mar 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-2
+- be sure to install BATS before gating tests are executed
+  (thanks to Ed Santiago)
+- Related: #2061316
 
 * Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.6.1
