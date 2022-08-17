@@ -25,7 +25,7 @@
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 %global git0 https://%{import_path}
 
-%global built_tag v1.9.2
+%global built_tag_strip 1.9.2
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
@@ -40,7 +40,7 @@ Release: %autorelease
 %endif
 Summary: Inspect container images and repositories on registries
 URL: %{git0}
-Source0: %{git0}/archive/%{built_tag}.tar.gz
+Source0: %{git0}/archive/v%{built_tag_strip}.tar.gz
 BuildRequires: go-md2man
 %if "%{_vendor}" == "debbuild"
 BuildRequires: git
@@ -108,7 +108,7 @@ Requires: squashfs-tools
 This package contains system tests for %{name}
 
 %prep
-%autosetup -Sgit
+%autosetup -Sgit %{name}-%{built_tag_strip}
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
 sed -i 's/completions: bin\/%{name}/completions:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
