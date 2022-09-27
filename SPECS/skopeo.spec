@@ -10,14 +10,15 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
 %endif
 
+%global branch release-1.6
 %global import_path github.com/containers/%{name}
-%global commit0 49084d2cd8c9f8e7b38ba8405d61e701d5381bc0
+%global commit0 c20c32dc25f4bb0ec2e0cfadb51d692f4b0b50ca
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.6.1
-Release: 1%{?dist}
+Version: 1.6.2
+Release: 5%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -29,7 +30,7 @@ Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar
 Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
 %endif
 BuildRequires: git-core
-BuildRequires: golang >= 1.16.6
+BuildRequires: golang >= 1.17.7
 BuildRequires: go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
@@ -118,6 +119,43 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Aug 16 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-5
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
+  (https://github.com/containers/skopeo/commit/c20c32d)
+- Related: #2061390
+
+* Fri Jul 29 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-4
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
+  (https://github.com/containers/skopeo/commit/f952195)
+- Related: #2061390
+
+* Wed Jul 27 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-3
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
+  (https://github.com/containers/skopeo/commit/4414e52)
+- Related: #2061390
+
+* Fri May 06 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-2
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
+  (https://github.com/containers/skopeo/commit/4336972)
+- Related: #2061390
+
+* Fri Apr 29 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
+  (https://github.com/containers/skopeo/commit/540efb3)
+- Related: #2061390
+
+* Fri Apr 29 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-3
+- consume release-1.6 branch for the 4.0 stable stream
+- Related: #2061390
+
+* Fri Apr 08 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-2
+- bump golang BR to 1.17.7
+- Related: #2061390
+
+* Fri Mar 25 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.7.0
+- Related: #2061390
+
 * Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.6.1
 - Related: #2001445
