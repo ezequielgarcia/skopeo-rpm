@@ -37,7 +37,7 @@ Release: %autorelease
 Summary: Inspect container images and repositories on registries
 URL: %{git0}
 # Tarball fetched from upstream
-Source0: %{git0}/archive/v%{built_tag_strip}.tar.gz
+Source0: %{url}/archive/%{built_tag}.tar.gz
 BuildRequires: go-md2man
 ExclusiveArch: %{go_arches}
 BuildRequires: btrfs-progs-devel
