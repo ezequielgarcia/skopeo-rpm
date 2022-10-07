@@ -26,12 +26,12 @@
 %global git0 https://%{import_path}
 
 %global built_tag v1.10.0
-%global built_tag_strip 1.10.0
+%global built_tag_strip %(b=%{built_tag}; echo ${b:1})
 %global gen_version %(b=%{built_tag_strip}; echo ${b/-/"~"})
 
 Name: %{repo}
 Epoch: %{conditional_epoch}
-Version: 1.10.0
+Version: %{gen_version}
 License: ASL 2.0 and BSD and ISC and MIT
 Release: %autorelease
 Summary: Inspect container images and repositories on registries
