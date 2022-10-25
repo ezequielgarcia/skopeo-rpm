@@ -1,9 +1,4 @@
-%global debug_package %{nil}
-
 %global with_check 0
-
-%global _find_debuginfo_dwz_opts %{nil}
-%global _dwz_low_mem_die_limit 0
 
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
@@ -14,13 +9,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 #%%global branch main
-%global commit0 37727a45f96ac208785b606f7772d609bf50dbc4
+%global commit0 2eac0f463a6d2d9d8312c4a52c1e30e8bb8bf7f8
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.8.0
-Release: 2%{?dist}
+Version: 1.9.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -68,6 +63,7 @@ This package contains system tests for %{name}
 %autosetup -Sgit -n %{name}-%{commit0}
 %endif
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/completions: bin\/%{name}/completions:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
@@ -115,12 +111,20 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
+%dir %{_datadir}/fish/vendor_completions.d
+%{_datadir}/fish/vendor_completions.d/%{name}.fish
+%dir %{_datadir}/zsh/site-functions
+%{_datadir}/zsh/site-functions/_%{name}
 
 %files tests
 %license LICENSE
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Jul 27 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.1
+- Related: #2061390
+
 * Tue Jun 07 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
 - BuildRequires: /usr/bin/go-md2man
 - Related: #2061390
