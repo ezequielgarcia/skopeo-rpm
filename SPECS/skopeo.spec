@@ -9,12 +9,12 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 #%%global branch main
-%global commit0 2eac0f463a6d2d9d8312c4a52c1e30e8bb8bf7f8
+%global commit0 ca1b0f34d1d2c3e2074c9c231249f1a0e4d3ceb7
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.9.1
+Version: 1.9.2
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
@@ -121,11 +121,19 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Wed Jul 27 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.1-1
+* Wed Aug 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.2
+- Related: #2061390
+
+* Tue Jul 26 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.9.1
 - Related: #2061390
 
-* Tue Jun 07 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
+* Mon Jul 18 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.0-2
+- update to skopeo-1.9.0 - thanks to Lokesh Mandvekar for fixing build issues
+- Related: #2061390
+
+* Wed May 11 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
 - BuildRequires: /usr/bin/go-md2man
 - Related: #2061390
 
@@ -133,14 +141,23 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 - update to https://github.com/containers/skopeo/releases/tag/v1.8.0
 - Related: #2061390
 
-* Wed Apr 20 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-2
+* Fri Apr 08 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-2
 - Related: #2061390
 
 * Fri Mar 25 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.7.0
+- Related: #2061390
 
-* Mon Mar 07 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
+* Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.6.1
+- Related: #2001445
+
+* Thu Feb 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.6.0
+- Related: #2001445
+
+* Mon Nov 29 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.5.2
 - Related: #2001445
 
 * Mon Nov 08 2021 Jindrich Novy <jnovy@redhat.com> - 2:1.5.1-1
