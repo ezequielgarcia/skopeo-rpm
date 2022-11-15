@@ -9,13 +9,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 #%%global branch main
-%global commit0 37727a45f96ac208785b606f7772d609bf50dbc4
+%global commit0 ca1b0f34d1d2c3e2074c9c231249f1a0e4d3ceb7
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.8.0
-Release: 4%{?dist}
+Version: 1.9.2
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -63,6 +63,7 @@ This package contains system tests for %{name}
 %autosetup -Sgit -n %{name}-%{commit0}
 %endif
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/completions: bin\/%{name}/completions:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
@@ -110,12 +111,28 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
+%dir %{_datadir}/fish/vendor_completions.d
+%{_datadir}/fish/vendor_completions.d/%{name}.fish
+%dir %{_datadir}/zsh/site-functions
+%{_datadir}/zsh/site-functions/_%{name}
 
 %files tests
 %license LICENSE
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Aug 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.2
+- Related: #2061316
+
+* Tue Jul 26 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.1
+- Related: #2061316
+
+* Thu Jul 14 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.0
+- Related: #2061316
+
 * Fri May 13 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-4
 - Re-enable debuginfo
 - Related: #2061316
