@@ -8,14 +8,14 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-#%%global branch main
-%global commit0 ee60474d5a4d99745aac9855797ad4b26510d786
+%global branch main
+%global commit0 28175104d754cde3e0e961ab01b82d3545bac419
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.10.0
-Release: 1%{?dist}
+Version: 1.11.0
+Release: 0.1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,6 +121,11 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Jan 13 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.0-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/2817510)
+- Related: #2124478
+
 * Tue Nov 01 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.10.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.10.0
 - Related: #2124478
