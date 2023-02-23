@@ -1,8 +1,5 @@
 %global with_check 0
 
-%global _find_debuginfo_dwz_opts %{nil}
-%global _dwz_low_mem_die_limit 0
-
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
 %define gobuild(o:) \
 go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
@@ -11,12 +8,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-%global commit0 49084d2cd8c9f8e7b38ba8405d61e701d5381bc0
+#%%global branch main
+%global commit0 ee60474d5a4d99745aac9855797ad4b26510d786
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.6.1
+Version: 1.10.0
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
@@ -29,8 +27,8 @@ Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar
 Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
 %endif
 BuildRequires: git-core
-BuildRequires: golang >= 1.16.6
-BuildRequires: go-md2man
+BuildRequires: golang >= 1.17.7
+BuildRequires: /usr/bin/go-md2man
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
@@ -65,6 +63,7 @@ This package contains system tests for %{name}
 %autosetup -Sgit -n %{name}-%{commit0}
 %endif
 sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
+sed -i 's/completions: bin\/%{name}/completions:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
@@ -112,12 +111,47 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %dir %{_datadir}/bash-completion
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/%{name}
+%dir %{_datadir}/fish/vendor_completions.d
+%{_datadir}/fish/vendor_completions.d/%{name}.fish
+%dir %{_datadir}/zsh/site-functions
+%{_datadir}/zsh/site-functions/_%{name}
 
 %files tests
 %license LICENSE
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Oct 06 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.10.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.10.0
+- Related: #2123641
+
+* Wed Aug 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.2-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.2
+- Related: #2061390
+
+* Tue Jul 26 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.9.1
+- Related: #2061390
+
+* Mon Jul 18 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.0-2
+- update to skopeo-1.9.0 - thanks to Lokesh Mandvekar for fixing build issues
+- Related: #2061390
+
+* Wed May 11 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-2
+- BuildRequires: /usr/bin/go-md2man
+- Related: #2061390
+
+* Mon May 09 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.8.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.8.0
+- Related: #2061390
+
+* Fri Apr 08 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-2
+- Related: #2061390
+
+* Fri Mar 25 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.7.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.7.0
+- Related: #2061390
+
 * Thu Feb 17 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.6.1
 - Related: #2001445
