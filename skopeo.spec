@@ -8,14 +8,14 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-%global branch release-1.11
-%global commit0 d79588e6c1d2ff2053206a650adc1d30af591908
+#%%global branch release-1.11
+%global commit0 a55290973794d93f602a027e795bf510bd3cad01
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.11.3
-Release: 0.1%{?dist}
+Version: 1.12.0
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -47,9 +47,13 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 #Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
 Requires: gnupg
 Requires: jq
+Requires: golang
 Requires: podman
+Requires: crun
 Requires: httpd-tools
 Requires: openssl
+Requires: fakeroot
+Requires: squashfs-tools
 
 %description tests
 %{summary}
@@ -121,6 +125,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Apr 19 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.12.0-1
+- update to 1.12.0
+- Related: #2176063
+
 * Mon Apr 03 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.3-0.1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.11
   (https://github.com/containers/skopeo/commit/d79588e)
