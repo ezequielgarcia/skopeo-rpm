@@ -15,7 +15,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.12.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -52,7 +52,6 @@ Requires: podman
 Requires: crun
 Requires: httpd-tools
 Requires: openssl
-Requires: fakeroot
 Requires: squashfs-tools
 
 %description tests
@@ -125,6 +124,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Apr 24 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.12.0-2
+- remove fakeroot from skopeo-tests
+- Related: #2176063
+
 * Wed Apr 19 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.12.0-1
 - update to 1.12.0
 - Related: #2176063
