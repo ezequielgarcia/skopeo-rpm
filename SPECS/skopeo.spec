@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %global with_check 0
 
 %if 0%{?rhel} > 7 && ! 0%{?fedora}
@@ -8,14 +9,14 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-%global branch release-1.9
-%global commit0 04d99f7eb2de0abdb04ea6b7b9f3fff77dfe4c9f
+%global branch release-1.11
+%global commit0 3f98753bfdaa2c9e0465328b279f48bbdaa2ddaa
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.9.4
-Release: 0.1%{?dist}
+Version: 1.11.2
+Release: 0.2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -121,13 +122,42 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Fri Jan 13 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.9.4-0.1
-- consume skopeo from release-1.9 upstream branch
-- Resolves: #2160713
+* Wed Feb 22 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.2-0.2
+- fix build
+- Related: #2123641
 
-* Thu Oct 20 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.3-1
-- update to https://github.com/containers/skopeo/releases/tag/v1.9.3
-- Related: #2135973
+* Tue Feb 21 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.2-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.11
+  (https://github.com/containers/skopeo/commit/3f98753)
+- Related: #2123641
+
+* Fri Feb 17 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.11.1
+- Related: #2123641
+
+* Fri Jan 27 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.11.0
+  (https://github.com/containers/skopeo/commit/968670116c56023d37e9e98b48346478599c6801)
+- Related: #2123641
+
+* Tue Jan 24 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.0-0.3
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/fe15a36)
+- Related: #2123641
+
+* Tue Jan 17 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.0-0.2
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/8e09e64)
+- Related: #2123641
+
+* Fri Jan 13 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.11.0-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/main
+  (https://github.com/containers/skopeo/commit/2817510)
+- Related: #2123641
+
+* Thu Oct 06 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.10.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.10.0
+- Related: #2123641
 
 * Wed Aug 03 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.9.2-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.9.2
