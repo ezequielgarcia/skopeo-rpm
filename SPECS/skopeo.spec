@@ -18,7 +18,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.6.2
-Release: 6%{?dist}
+Release: 8%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -119,10 +119,19 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
-* Fri Jan 13 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-6
+* Thu Jun 15 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-8
+- rebuild for following CVEs:
+CVE-2022-41724 CVE-2022-41725 CVE-2023-24537 CVE-2023-24538 CVE-2023-24534 CVE-2023-24536 CVE-2022-41723 CVE-2023-24539 CVE-2023-24540 CVE-2023-29400
+- Resolves: #2179946
+- Resolves: #2187316
+- Resolves: #2187362
+- Resolves: #2203679
+- Resolves: #2207508
+
+* Tue Mar 14 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-7
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
   (https://github.com/containers/skopeo/commit/2b16a1c)
-- Related: #2129766
+- Related: #2176055
 
 * Tue Aug 16 2022 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-5
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.6
