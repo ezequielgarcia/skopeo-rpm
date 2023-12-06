@@ -9,13 +9,13 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 %global import_path github.com/containers/%{name}
 #%%global branch release-1.11
-%global commit0 9e29e4cede9bdaa4a54aa5b0af86efedb823bde4
+%global commit0 6abf96bb82666fbb3d4ad9faf1812e5ae2d31a74
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.13.3
-Release: 3%{?dist}
+Version: 1.14.0
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -124,6 +124,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Dec 06 2023 Lokesh Mandvekar <lsm5@redhat.com> - 2:1.14.0-1
+- bump to v1.14.0
+- Related: Jira:RHEL-2112
+
 * Fri Dec 01 2023 Lokesh Mandvekar <lsm5@redhat.com> - 2:1.13.3-3
 - Rebuild with golang 1.20.10
 - Related: Jira:RHEL-2786
