@@ -15,7 +15,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 
 Epoch: 2
 Name: skopeo
-Version: 1.13.3
+Version: 1.14.0
 Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
@@ -122,6 +122,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Dec 07 2023 Lokesh Mandvekar <lsm5@redhat.com> - 2:1.14.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.14.0
+- Related: Jira:RHEL-2110
+
 * Fri Aug 25 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.13.3-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.13.3
 - Related: #2176055
