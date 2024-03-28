@@ -8,7 +8,7 @@
 Epoch: 2
 Name: skopeo
 Version: 1.15.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -26,6 +26,7 @@ BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
 BuildRequires: glib2-devel
+BuildRequires: go-rpm-macros
 BuildRequires: make
 Requires: containers-common >= 2:1-2
 Requires: system-release
@@ -117,6 +118,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Mar 28 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.0-3
+- BR: go-rpm-macros
+- Related: RHEL-30637
+
 * Thu Mar 28 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.0-2
 - remove Fedora hack
 - Related: RHEL-30637
