@@ -1,12 +1,13 @@
 ---
 - hosts: localhost
+  tags: classic
   roles:
+    - role: bats_installed
     - role: standard-test-basic
       tags:
         - classic
         - container
       required_packages:
-        - bats
         - skopeo
         - skopeo-tests
       tests:
