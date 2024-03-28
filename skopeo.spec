@@ -1,12 +1,5 @@
 %global with_check 0
 
-%if 0%{?rhel} > 7 && ! 0%{?fedora}
-%define gobuild(o:) \
-go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
-%else
-%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
-%endif
-
 %global import_path github.com/containers/%{name}
 #%%global branch release-1.14
 %global commit0 99e3c44865d4200bb93f38365622ef1e857c3a61
@@ -15,7 +8,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.15.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -124,6 +117,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Mar 28 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.0-2
+- remove Fedora hack
+- Related: RHEL-30637
+
 * Thu Mar 28 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.0-2.14.2
 - Sync with RHEL9
 - Resolves: RHEL-30637
