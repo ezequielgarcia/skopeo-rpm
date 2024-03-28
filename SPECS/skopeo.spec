@@ -9,14 +9,14 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 %endif
 
 %global import_path github.com/containers/%{name}
-#%%global branch release-1.11
-%global commit0 9e29e4cede9bdaa4a54aa5b0af86efedb823bde4
+%global branch release-1.14
+%global commit0 1c2ab995059dd011aad74e2c37305d636ebd2675
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.13.3
-Release: 1%{?dist}
+Version: 1.14.3
+Release: 0.1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -122,6 +122,27 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Feb 02 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.14.3-0.1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.14
+  (https://github.com/containers/skopeo/commit/1c2ab99)
+- Related: Jira:RHEL-2110
+
+* Wed Jan 31 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.14.1-2
+- Switch to the maint branch
+- Related: Jira:RHEL-2110
+
+* Fri Jan 19 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.14.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.14.1
+- Related: Jira:RHEL-2110
+
+* Tue Jan 02 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.14.0-2
+- update to latest content of https://github.com/containers/skopeo/releases/tag/1.14.0
+  (https://github.com/containers/skopeo/commit/6abf96bb82666fbb3d4ad9faf1812e5ae2d31a74)
+
+* Thu Dec 07 2023 Lokesh Mandvekar <lsm5@redhat.com> - 2:1.14.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.14.0
+- Related: Jira:RHEL-2110
+
 * Fri Aug 25 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.13.3-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.13.3
 - Related: #2176055
