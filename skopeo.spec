@@ -2,13 +2,13 @@
 
 %global import_path github.com/containers/%{name}
 #%%global branch release-1.14
-%global commit0 99e3c44865d4200bb93f38365622ef1e857c3a61
+%global commit0 e2ea426918973e5e007a5e1e2457a41ab336fc41
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
 Name: skopeo
-Version: 1.15.0
-Release: 3%{?dist}
+Version: 1.15.1
+Release: 1%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -118,6 +118,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu May 16 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.1-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.15.1
+- Related: RHEL-34195
+
 * Thu Mar 28 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.0-3
 - BR: go-rpm-macros
 - Related: RHEL-30637
