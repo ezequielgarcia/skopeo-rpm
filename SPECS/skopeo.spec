@@ -18,7 +18,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.6.2
-Release: 8%{?dist}
+Release: 9%{?dist}.alma.1
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -119,6 +119,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Wed Nov 15 2023 Eduard Abdullin <eabdullin@almalinux.org> - 2:1.6.2-9.alma.1
+- Bump release
+
 * Thu Jun 15 2023 Jindrich Novy <jnovy@redhat.com> - 2:1.6.2-8
 - rebuild for following CVEs:
 CVE-2022-41724 CVE-2022-41725 CVE-2023-24537 CVE-2023-24538 CVE-2023-24534 CVE-2023-24536 CVE-2022-41723 CVE-2023-24539 CVE-2023-24540 CVE-2023-29400
