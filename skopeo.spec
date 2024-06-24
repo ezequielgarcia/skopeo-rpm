@@ -8,7 +8,7 @@
 Epoch: 2
 Name: skopeo
 Version: 1.15.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -118,6 +118,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jun 24 2024 Troy Dawson <tdawson@redhat.com> - 2:1.15.1-2
+- Bump release for June 2024 mass rebuild
+
 * Thu May 16 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.15.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.15.1
 - Related: RHEL-34195
