@@ -1,35 +1,78 @@
-%global with_check 0
+%global with_debug 1
 
-%global import_path github.com/containers/%{name}
-#%%global branch release-1.14
-%global commit0 e2ea426918973e5e007a5e1e2457a41ab336fc41
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
-
-Epoch: 2
-Name: skopeo
-Version: 1.15.1
-Release: 2%{?dist}
-Summary: Inspect container images and repositories on registries
-License: ASL 2.0
-URL: https://%{import_path}
-# https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
-ExclusiveArch: %{go_arches}
-%if 0%{?branch:1}
-Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
+%if 0%{?with_debug}
+%global _find_debuginfo_dwz_opts %{nil}
+%global _dwz_low_mem_die_limit 0
 %else
-Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+%global debug_package %{nil}
+%endif
+
+# RHEL's default %%gobuild macro doesn't account for the BUILDTAGS variable, so we
+# set it separately here and do not depend on RHEL's go-[s]rpm-macros package
+# until that's fixed.
+# c9s bz: https://bugzilla.redhat.com/show_bug.cgi?id=2227328
+# c8s bz: https://bugzilla.redhat.com/show_bug.cgi?id=2227331
+%if %{defined rhel}
+%define gobuild(o:) go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "-linkmode=external -compressdwarf=false ${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v -x %{?**};
+%endif
+
+%global gomodulesmode GO111MODULE=on
+
+# No btrfs on RHEL
+%if %{defined fedora}
+%define build_with_btrfs 1
+%endif
+
+# Only used in official koji builds
+# Copr builds set a separate epoch for all environments
+%if %{defined fedora}
+%define conditional_epoch 1
+%else
+%define conditional_epoch 2
+%endif
+
+Name: skopeo
+%if %{defined copr_username}
+Epoch: 102
+%else
+Epoch: %{conditional_epoch}
+%endif
+# DO NOT TOUCH the Version string!
+# The TRUE source of this specfile is:
+# https://github.com/containers/skopeo/blob/main/rpm/skopeo.spec
+# If that's what you're reading, Version must be 0, and will be updated by Packit for
+# copr and koji builds.
+# If you're reading this on dist-git, the version is automatically filled in by Packit.
+Version: 1.15.2
+# The `AND` needs to be uppercase in the License for SPDX compatibility
+License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
+Release: 1%{?dist}
+%if %{defined golang_arches_future}
+ExclusiveArch: %{golang_arches_future}
+%else
+ExclusiveArch: aarch64 ppc64le s390x x86_64
+%endif
+Summary: Inspect container images and repositories on registries
+URL: https://github.com/containers/%{name}
+# Tarball fetched from upstream
+Source0: %{url}/archive/v%{version}.tar.gz
+BuildRequires: %{_bindir}/go-md2man
+%if %{defined build_with_btrfs}
+BuildRequires: btrfs-progs-devel
 %endif
 BuildRequires: git-core
-BuildRequires: golang >= 1.20.10
-BuildRequires: /usr/bin/go-md2man
+BuildRequires: golang
+%if !%{defined gobuild}
+BuildRequires: go-rpm-macros
+%endif
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
 BuildRequires: pkgconfig(devmapper)
+BuildRequires: ostree-devel
 BuildRequires: glib2-devel
-BuildRequires: go-rpm-macros
 BuildRequires: make
-Requires: containers-common >= 2:1-2
-Requires: system-release
+BuildRequires: shadow-utils-subid-devel
+Requires: containers-common >= 4:1-21
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -37,15 +80,17 @@ registries without the need to pull them
 
 %package tests
 Summary: Tests for %{name}
+
 Requires: %{name} = %{epoch}:%{version}-%{release}
-#Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
+Requires: bats
 Requires: gnupg
 Requires: jq
-Requires: golang >= 1.20.10
+Requires: golang
 Requires: podman
 Requires: crun
 Requires: httpd-tools
 Requires: openssl
+Requires: fakeroot
 Requires: squashfs-tools
 
 %description tests
@@ -54,48 +99,48 @@ Requires: squashfs-tools
 This package contains system tests for %{name}
 
 %prep
-%if 0%{?branch:1}
-%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
-%else
-%autosetup -Sgit -n %{name}-%{commit0}
-%endif
-sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
-sed -i 's/completions: bin\/%{name}/completions:/' Makefile
-sed -i 's/install-docs: docs/install-docs:/' Makefile
+%autosetup -Sgit %{name}-%{version}
+# The %%install stage should not rebuild anything but only install what's
+# built in the %%build stage. So, remove any dependency on build targets.
+sed -i 's/^install-binary: bin\/%{name}.*/install-binary:/' Makefile
+sed -i 's/^completions: bin\/%{name}.*/completions:/' Makefile
+sed -i 's/^install-docs: docs.*/install-docs:/' Makefile
 
 %build
-mkdir -p src/github.com/containers
-ln -s ../../../ src/%{import_path}
+%set_build_flags
+export CGO_CFLAGS=$CFLAGS
 
-mkdir -p vendor/src
-for v in vendor/*; do
-    if test ${v} = vendor/src; then continue; fi
-    if test -d ${v}; then
-      mv ${v} vendor/src/
-    fi
-done
+# These extra flags present in $CFLAGS have been skipped for now as they break the build
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-flto=auto//g')
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-Wp,D_GLIBCXX_ASSERTIONS//g')
+CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-specs=\/usr\/lib\/rpm\/redhat\/redhat-annobin-cc1//g')
 
-export GOPATH=$(pwd):$(pwd)/vendor
-export GO111MODULE=off
-export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
-export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
-mkdir -p bin
+%ifarch x86_64
+export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
+%endif
+
+BASEBUILDTAGS="$(hack/libdm_tag.sh) $(hack/libsubid_tag.sh)"
+%if %{defined build_with_btrfs}
+export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_tag.sh) $(hack/btrfs_installed_tag.sh)"
+%else
+export BUILDTAGS="$BASEBUILDTAGS btrfs_noversion exclude_graphdriver_btrfs"
+%endif
+
+# unset LDFLAGS earlier set from set_build_flags
+LDFLAGS=''
+
 %gobuild -o bin/%{name} ./cmd/%{name}
 %{__make} docs
 
 %install
-make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
+make \
+    DESTDIR=%{buildroot} \
+    PREFIX=%{_prefix} \
+    install-binary install-docs install-completions
 
 # system tests
 install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
 cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
-
-%check
-%if 0%{?with_check}
-export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
-
-%gotest %{import_path}/integration
-%endif
 
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
@@ -118,6 +163,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Jul 12 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.15.2-1
+- Update to version 1.15.2
+
 * Mon Jun 24 2024 Troy Dawson <tdawson@redhat.com> - 2:1.15.1-2
 - Bump release for June 2024 mass rebuild
 
