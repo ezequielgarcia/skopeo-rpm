@@ -43,7 +43,7 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.15.2
+Version: 1.16.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
 Release: 1%{?dist}
@@ -67,7 +67,6 @@ BuildRequires: go-rpm-macros
 %endif
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
-BuildRequires: pkgconfig(devmapper)
 BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
@@ -82,7 +81,9 @@ registries without the need to pull them
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
+%if %{defined fedora}
 Requires: bats
+%endif
 Requires: gnupg
 Requires: jq
 Requires: golang
@@ -119,7 +120,7 @@ CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-specs=\/usr\/lib\/rpm\/redhat\/redhat-an
 export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 %endif
 
-BASEBUILDTAGS="$(hack/libdm_tag.sh) $(hack/libsubid_tag.sh)"
+BASEBUILDTAGS="$(hack/libsubid_tag.sh)"
 %if %{defined build_with_btrfs}
 export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_tag.sh) $(hack/btrfs_installed_tag.sh)"
 %else
@@ -159,10 +160,13 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/zsh/site-functions/_%{name}
 
 %files tests
-%license LICENSE
+%license LICENSE vendor/modules.txt
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Jul 29 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.16.0-1
+- Update to version 1.16.0
+
 * Fri Jul 12 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.15.2-1
 - Update to version 1.15.2
 
