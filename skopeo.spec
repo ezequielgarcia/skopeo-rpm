@@ -46,7 +46,7 @@ Epoch: %{conditional_epoch}
 Version: 1.16.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -166,6 +166,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jul 30 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.16.0-2
+- Don't require fakeroot for tests
+- Resolves: RHEL-27608
+
 * Mon Jul 29 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.16.0-1
 - Update to version 1.16.0
 
