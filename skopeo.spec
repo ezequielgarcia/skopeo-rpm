@@ -91,7 +91,9 @@ Requires: podman
 Requires: crun
 Requires: httpd-tools
 Requires: openssl
+%if %{defined fedora}
 Requires: fakeroot
+%endif
 Requires: squashfs-tools
 
 %description tests
