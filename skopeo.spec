@@ -46,7 +46,7 @@ Epoch: %{conditional_epoch}
 Version: 1.16.1
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -166,6 +166,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 2:1.16.1-2
+- Bump release for October 2024 mass rebuild:
+  Resolves: RHEL-64018
+
 * Mon Aug 26 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.16.1-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.16.1
 - Related: RHEL-34195
