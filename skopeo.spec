@@ -43,10 +43,10 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.16.1
+Version: 1.17.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 2%{?dist}
+Release: 1%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -166,6 +166,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Nov 25 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.17.0
+- Related: RHEL-58990
+
 * Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 2:1.16.1-2
 - Bump release for October 2024 mass rebuild:
   Resolves: RHEL-64018
