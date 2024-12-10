@@ -46,7 +46,7 @@ Epoch: %{conditional_epoch}
 Version: 1.17.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -93,8 +93,8 @@ Requires: httpd-tools
 Requires: openssl
 %if %{defined fedora}
 Requires: fakeroot
-%endif
 Requires: squashfs-tools
+%endif
 
 %description tests
 %{summary}
@@ -166,6 +166,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Dec 10 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-2
+- remove squashfs-tools from RHEL10 build
+- Related: RHEL-68938
+
 * Mon Nov 25 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.17.0
 - Related: RHEL-58990
