@@ -15,7 +15,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.17.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -26,6 +26,7 @@ Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar
 %else
 Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
 %endif
+Patch0: https://patch-diff.githubusercontent.com/raw/containers/skopeo/pull/2493.patch
 BuildRequires: git-core
 BuildRequires: golang >= 1.20.10
 BuildRequires: /usr/bin/go-md2man
@@ -124,6 +125,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jan 23 2025 Jindrich Novy <jnovy@redhat.com> - 2:1.17.0-2
+- fix 'Skopeo system tests pulling amd64 image on aarch64'
+- Related: RHEL-60277
+
 * Wed Nov 27 2024 Jindrich Novy <jnovy@redhat.com> - 2:1.17.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.17.0
 - Related: RHEL-60277
