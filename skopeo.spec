@@ -46,7 +46,7 @@ Epoch: %{conditional_epoch}
 Version: 1.17.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -56,6 +56,7 @@ Summary: Inspect container images and repositories on registries
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
 Source0: %{url}/archive/v%{version}.tar.gz
+Patch0: https://patch-diff.githubusercontent.com/raw/containers/skopeo/pull/2493.patch
 BuildRequires: %{_bindir}/go-md2man
 %if %{defined build_with_btrfs}
 BuildRequires: btrfs-progs-devel
@@ -166,6 +167,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Jan 23 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-3
+- fix 'Skopeo system tests pulling amd64 image on aarch64'
+- Resolves: RHEL-76027
+
 * Tue Dec 10 2024 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-2
 - remove squashfs-tools from RHEL10 build
 - Related: RHEL-68938
