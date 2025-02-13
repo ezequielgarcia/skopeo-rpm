@@ -7,15 +7,6 @@
 %global debug_package %{nil}
 %endif
 
-# RHEL's default %%gobuild macro doesn't account for the BUILDTAGS variable, so we
-# set it separately here and do not depend on RHEL's go-[s]rpm-macros package
-# until that's fixed.
-# c9s bz: https://bugzilla.redhat.com/show_bug.cgi?id=2227328
-# c8s bz: https://bugzilla.redhat.com/show_bug.cgi?id=2227331
-%if %{defined rhel}
-%define gobuild(o:) go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "-linkmode=external -compressdwarf=false ${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v -x %{?**};
-%endif
-
 %global gomodulesmode GO111MODULE=on
 
 # No btrfs on RHEL
@@ -43,10 +34,10 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.17.0
+Version: 1.18.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 3%{?dist}
+Release: 1%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -56,7 +47,6 @@ Summary: Inspect container images and repositories on registries
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
 Source0: %{url}/archive/v%{version}.tar.gz
-Patch0: https://patch-diff.githubusercontent.com/raw/containers/skopeo/pull/2493.patch
 BuildRequires: %{_bindir}/go-md2man
 %if %{defined build_with_btrfs}
 BuildRequires: btrfs-progs-devel
@@ -127,7 +117,7 @@ BASEBUILDTAGS="$(hack/libsubid_tag.sh)"
 %if %{defined build_with_btrfs}
 export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_tag.sh) $(hack/btrfs_installed_tag.sh)"
 %else
-export BUILDTAGS="$BASEBUILDTAGS btrfs_noversion exclude_graphdriver_btrfs"
+export BUILDTAGS="$BASEBUILDTAGS btrfs_noversion exclude_graphdriver_btrfs libtrust_openssl"
 %endif
 
 # unset LDFLAGS earlier set from set_build_flags
@@ -167,6 +157,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 13 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.18.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.18.0
+- Related: RHEL-58990
+
 * Thu Jan 23 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.17.0-3
 - fix 'Skopeo system tests pulling amd64 image on aarch64'
 - Resolves: RHEL-76027
