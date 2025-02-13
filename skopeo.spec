@@ -25,7 +25,7 @@
 Name: skopeo
 Epoch: 2
 Version: 1.18.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
 %if %{defined golang_arches_future}
@@ -56,7 +56,7 @@ BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 BuildRequires: shadow-utils-subid-devel
-Requires: containers-common >= 4:1-21
+Requires: containers-common
 
 %description
 Command line utility to inspect images and repositories directly on Docker
@@ -161,6 +161,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Thu Feb 13 2025 Jindrich Novy <jnovy@redhat.com> - 2:1.18.0-2
+- fix the broken condition introduced by upstream
+- Related: RHEL-60277
+
 * Thu Feb 13 2025 Jindrich Novy <jnovy@redhat.com> - 2:1.18.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.18.0
 - Related: RHEL-60277
