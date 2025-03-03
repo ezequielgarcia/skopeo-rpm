@@ -72,9 +72,7 @@ registries without the need to pull them
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%if %{defined fedora}
 Requires: bats
-%endif
 Requires: gnupg
 Requires: jq
 Requires: golang
@@ -90,7 +88,8 @@ Requires: squashfs-tools
 %description tests
 %{summary}
 
-This package contains system tests for %{name}
+This package contains system tests for %{name}. Only intended for distro gating
+tests. End user / customer usage not supported.
 
 %prep
 %autosetup -Sgit %{name}-%{version}
@@ -138,6 +137,9 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
+
+# Placeholder check to silence rpmlint
+%check
 
 %files
 %license LICENSE
