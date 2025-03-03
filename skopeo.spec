@@ -66,10 +66,7 @@ registries without the need to pull them
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%if %{defined fedora}
 Requires: bats
-Requires: fakeroot
-%endif
 Requires: gnupg
 Requires: jq
 Requires: golang
@@ -82,7 +79,8 @@ Requires: squashfs-tools
 %description tests
 %{summary}
 
-This package contains system tests for %{name}
+This package contains system tests for %{name}. Only intended for distro gating
+tests. End user / customer usage not supported.
 
 %prep
 %if 0%{?branch:1}
