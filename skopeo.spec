@@ -22,6 +22,7 @@
 # Copr builds set a separate epoch for all environments
 %if %{defined fedora}
 %define conditional_epoch 1
+%define requires_bats 1
 %else
 %define conditional_epoch 2
 %endif
@@ -41,7 +42,7 @@ Epoch: %{conditional_epoch}
 Version: 1.18.1
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -80,7 +81,11 @@ registries without the need to pull them
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
+%if %{defined requires_bats}
 Requires: bats
+%else
+Recommends: bats
+%endif
 Requires: gnupg
 Requires: jq
 Requires: golang
@@ -171,6 +176,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Mar 14 2025 Lokesh Mandvekar <lsm5@redhat.com> - 1:1.18.1-2
+- Fix bats dep on tests subpackage
+- Resolves: RHEL-58990
+
 * Fri Mar 14 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.18.1-1
 - update to the latest content of https://github.com/containers/skopeo/tree/release-1.18
   (https://github.com/containers/skopeo/commit/bfd0850)
