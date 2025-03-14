@@ -9,6 +9,10 @@
 
 %global gomodulesmode GO111MODULE=on
 
+%global branch release-1.18
+%global commit0 bfd0850f067e79cf4a60a911e212a62bd55181fb
+%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+
 # No btrfs on RHEL
 %if %{defined fedora}
 %define build_with_btrfs 1
@@ -34,7 +38,7 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.18.0
+Version: 1.18.1
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
 Release: 1%{?dist}
@@ -46,7 +50,11 @@ ExclusiveArch: aarch64 ppc64le s390x x86_64
 Summary: Inspect container images and repositories on registries
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
-Source0: %{url}/archive/v%{version}.tar.gz
+%if 0%{?branch:1}
+Source0: https://github.com/containers/%{name}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
+%else
+Source0: https://github.com/containers/%{name}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+%endif
 BuildRequires: %{_bindir}/go-md2man
 %if %{defined build_with_btrfs}
 BuildRequires: btrfs-progs-devel
@@ -92,7 +100,11 @@ This package contains system tests for %{name}. Only intended for distro gating
 tests. End user / customer usage not supported.
 
 %prep
-%autosetup -Sgit %{name}-%{version}
+%if 0%{?branch:1}
+%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+%else
+%autosetup -Sgit -n %{name}-%{commit0}
+%endif
 # The %%install stage should not rebuild anything but only install what's
 # built in the %%build stage. So, remove any dependency on build targets.
 sed -i 's/^install-binary: bin\/%{name}.*/install-binary:/' Makefile
@@ -159,6 +171,12 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Fri Mar 14 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.18.1-1
+- update to the latest content of https://github.com/containers/skopeo/tree/release-1.18
+  (https://github.com/containers/skopeo/commit/bfd0850)
+- fixes "CVE-2025-27144 skopeo: Go JOSE's Parsing Vulnerable to Denial of Service [rhel-10.1]"
+- Resolves: RHEL-80611
+
 * Thu Feb 13 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.18.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.18.0
 - Related: RHEL-58990
