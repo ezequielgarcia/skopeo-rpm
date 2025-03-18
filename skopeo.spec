@@ -26,7 +26,7 @@
 Name: skopeo
 Epoch: 2
 Version: 1.18.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
 %if %{defined golang_arches_future}
@@ -164,6 +164,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Mar 18 2025 Jindrich Novy <jnovy@redhat.com> - 2:1.18.1-3
+- fix gating.yaml
+- Related: RHEL-80816
+
 * Fri Mar 14 2025 Lokesh Mandvekar <lsm5@redhat.com> - 2:1.18.1-2
 - Fix bats dep on tests subpackage
 - Resolves: RHEL-80616
