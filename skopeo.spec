@@ -9,26 +9,44 @@
 
 %global gomodulesmode GO111MODULE=on
 
-%global branch release-1.18
-%global commit0 bfd0850f067e79cf4a60a911e212a62bd55181fb
+#%%global branch release-1.18
+%global commit0 7aa78df96b049bc9e36e10283ba08ceb9165041d
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # No btrfs on RHEL
 %if %{defined fedora}
 %define build_with_btrfs 1
-%define requires_bats 1
 %endif
 
 %if %{defined rhel}
 %define fips 1
 %endif
 
+# Only used in official koji builds
+# Copr builds set a separate epoch for all environments
+%if %{defined fedora}
+%define conditional_epoch 1
+%define fakeroot 1
+%else
+%define conditional_epoch 2
+%endif
+
 Name: skopeo
-Epoch: 2
-Version: 1.18.1
-Release: 3%{?dist}
+%if %{defined copr_username}
+Epoch: 102
+%else
+Epoch: %{conditional_epoch}
+%endif
+# DO NOT TOUCH the Version string!
+# The TRUE source of this specfile is:
+# https://github.com/containers/skopeo/blob/main/rpm/skopeo.spec
+# If that's what you're reading, Version must be 0, and will be updated by Packit for
+# copr and koji builds.
+# If you're reading this on dist-git, the version is automatically filled in by Packit.
+Version: 1.19.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
+Release: 1%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -57,20 +75,21 @@ BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 BuildRequires: shadow-utils-subid-devel
-Requires: containers-common
+Requires: containers-common >= 4:1-21
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
 
+# NOTE: The tests subpackage is only intended for testing and will not be supported
+# for end-users and/or customers.
 %package tests
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%if %{defined requires_bats}
 Requires: bats
-%else
-Recommends: bats
+%if %{defined fakeroot}
+Requires: fakeroot
 %endif
 Requires: gnupg
 Requires: jq
@@ -84,8 +103,7 @@ Requires: squashfs-tools
 %description tests
 %{summary}
 
-This package contains system tests for %{name}. Only intended for distro gating
-tests. End user / customer usage not supported.
+This package contains system tests for %{name}
 
 %prep
 %if 0%{?branch:1}
@@ -114,9 +132,9 @@ export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 
 BASEBUILDTAGS="$(hack/libsubid_tag.sh)"
 %if %{defined build_with_btrfs}
-export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_tag.sh) $(hack/btrfs_installed_tag.sh)"
+export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_installed_tag.sh)"
 %else
-export BUILDTAGS="$BASEBUILDTAGS btrfs_noversion exclude_graphdriver_btrfs"
+export BUILDTAGS="$BASEBUILDTAGS exclude_graphdriver_btrfs"
 %endif
 
 %if %{defined fips}
@@ -164,6 +182,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jun 10 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.19.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.19.0
+- Related: RHEL-80816
+
 * Tue Mar 18 2025 Jindrich Novy <jnovy@redhat.com> - 2:1.18.1-3
 - fix gating.yaml
 - Related: RHEL-80816
