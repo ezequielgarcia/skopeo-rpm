@@ -46,7 +46,7 @@ Epoch: %{conditional_epoch}
 Version: 1.19.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -87,7 +87,9 @@ registries without the need to pull them
 Summary: Tests for %{name}
 
 Requires: %{name} = %{epoch}:%{version}-%{release}
+%if %{undefined rhel}
 Requires: bats
+%endif
 %if %{defined fakeroot}
 Requires: fakeroot
 %endif
@@ -182,6 +184,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Tue Jun 17 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.19.0-2
+- Do not require BATS on RHEL
+- Resolves: RHEL-96982
+
 * Tue Jun 10 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.19.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.19.0
 - Related: RHEL-80817
