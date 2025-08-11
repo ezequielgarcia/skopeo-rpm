@@ -10,7 +10,7 @@
 %global gomodulesmode GO111MODULE=on
 
 #%%global branch release-1.18
-%global commit0 7aa78df96b049bc9e36e10283ba08ceb9165041d
+%global commit0 e2c1eecd40b9121adf431a33cbbe60d22dc9fad7
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # No btrfs on RHEL
@@ -43,10 +43,10 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.19.0
+Version: 1.20.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
-Release: 2%{?dist}
+Release: 1%{?dist}
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
 %else
@@ -71,10 +71,10 @@ BuildRequires: go-rpm-macros
 %endif
 BuildRequires: gpgme-devel
 BuildRequires: libassuan-devel
-BuildRequires: ostree-devel
 BuildRequires: glib2-devel
 BuildRequires: make
 BuildRequires: shadow-utils-subid-devel
+BuildRequires: sqlite-devel
 Requires: containers-common >= 4:1-21
 
 %description
@@ -132,7 +132,7 @@ CGO_CFLAGS=$(echo $CGO_CFLAGS | sed 's/-specs=\/usr\/lib\/rpm\/redhat\/redhat-an
 export CGO_CFLAGS="$CGO_CFLAGS -m64 -mtune=generic -fcf-protection=full"
 %endif
 
-BASEBUILDTAGS="$(hack/libsubid_tag.sh)"
+BASEBUILDTAGS="$(hack/libsubid_tag.sh) libsqlite3"
 %if %{defined build_with_btrfs}
 export BUILDTAGS="$BASEBUILDTAGS $(hack/btrfs_installed_tag.sh)"
 %else
@@ -184,6 +184,10 @@ cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
 %{_datadir}/%{name}/test
 
 %changelog
+* Mon Aug 11 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.20.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.20.0
+- Related: RHEL-80816
+
 * Wed Jun 18 2025 Jindrich Novy <jnovy@redhat.com> - 1:1.19.0-2
 - Do not require BATS on RHEL
 - Resolves: RHEL-97592
