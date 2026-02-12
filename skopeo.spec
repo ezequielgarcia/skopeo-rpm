@@ -9,8 +9,8 @@
 
 %global gomodulesmode GO111MODULE=on
 
-%global branch release-1.21
-%global commit0 48a05d71f0fa4cce3dc3f4187d1e93d7f004b495
+#%%global branch release-1.21
+%global commit0 23dddaad3d8f86f8c1d3204646b14aa0da86a85e
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # No btrfs on RHEL
@@ -43,7 +43,7 @@ Epoch: %{conditional_epoch}
 # If that's what you're reading, Version must be 0, and will be updated by Packit for
 # copr and koji builds.
 # If you're reading this on dist-git, the version is automatically filled in by Packit.
-Version: 1.21.0
+Version: 1.22.0
 # The `AND` needs to be uppercase in the License for SPDX compatibility
 License: Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT AND MPL-2.0
 Release: 1%{?dist}
@@ -181,6 +181,10 @@ make \
 %files tests
 
 %changelog
+* Thu Feb 12 2026 Jindrich Novy <jnovy@redhat.com> - 1:1.22.0-1
+- update to https://github.com/containers/skopeo/releases/tag/v1.22.0
+- Related: RHEL-122178
+
 * Tue Feb 03 2026 Jindrich Novy <jnovy@redhat.com> - 1:1.21.0-1
 - update to https://github.com/containers/skopeo/releases/tag/v1.21.0
 - Related: RHEL-122178
