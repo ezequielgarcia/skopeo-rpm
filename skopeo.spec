@@ -1,12 +1,7 @@
 %global debug_package %{nil}
 %global with_check 0
 
-%if 0%{?rhel} > 7 && ! 0%{?fedora}
-%define gobuild(o:) \
-go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -compressdwarf=false -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags'" -a -v %{?**};
-%else
-%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v %{?**};
-%endif
+%define gobuild(o:) CGO_ENABLED=0 GO111MODULE=off go build -compiler gc -tags="${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-static'" -a -v %{?**};
 
 %global import_path github.com/containers/%{name}
 %global branch release-1.14
@@ -16,7 +11,7 @@ go build -buildmode pie -compiler gc -tags="rpm_crashtraceback libtrust_openssl 
 Epoch: 2
 Name: skopeo
 Version: 1.14.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: Inspect container images and repositories on registries
 License: ASL 2.0
 URL: https://%{import_path}
@@ -30,32 +25,11 @@ Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcom
 BuildRequires: git-core
 BuildRequires: golang >= 1.17.7
 BuildRequires: /usr/bin/go-md2man
-BuildRequires: gpgme-devel
-BuildRequires: libassuan-devel
-BuildRequires: pkgconfig(devmapper)
-BuildRequires: glib2-devel
 BuildRequires: make
-Requires: containers-common >= 2:1-2
-Requires: system-release
 
 %description
 Command line utility to inspect images and repositories directly on Docker
 registries without the need to pull them
-
-%package tests
-Summary: Tests for %{name}
-Requires: %{name} = %{epoch}:%{version}-%{release}
-#Requires: bats  (which RHEL8 doesn't have. If it ever does, un-comment this)
-Requires: gnupg
-Requires: jq
-Requires: podman
-Requires: httpd-tools
-Requires: openssl
-
-%description tests
-%{summary}
-
-This package contains system tests for %{name}
 
 %prep
 %if 0%{?branch:1}
@@ -81,8 +55,7 @@ done
 
 export GOPATH=$(pwd):$(pwd)/vendor
 export GO111MODULE=off
-export CGO_CFLAGS="%{optflags} -D_GNU_SOURCE -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
-export BUILDTAGS="exclude_graphdriver_btrfs btrfs_noversion $(hack/libdm_tag.sh)"
+export BUILDTAGS="containers_image_openpgp exclude_graphdriver_btrfs exclude_graphdriver_devicemapper exclude_graphdriver_overlay exclude_graphdriver_aufs"
 mkdir -p bin
 %gobuild -o bin/%{name} ./cmd/%{name}
 %{__make} docs
@@ -90,9 +63,11 @@ mkdir -p bin
 %install
 make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
 
-# system tests
-install -d -p %{buildroot}/%{_datadir}/%{name}/test/system
-cp -pav systemtest/* %{buildroot}/%{_datadir}/%{name}/test/system/
+# bundled policy.json (replaces containers-common dependency)
+install -d -p %{buildroot}/%{_sysconfdir}/containers
+cat > %{buildroot}/%{_sysconfdir}/containers/policy.json << 'POLICY'
+{"default": [{"type": "insecureAcceptAnything"}]}
+POLICY
 
 %check
 %if 0%{?with_check}
@@ -116,12 +91,17 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 %{_datadir}/fish/vendor_completions.d/%{name}.fish
 %dir %{_datadir}/zsh/site-functions
 %{_datadir}/zsh/site-functions/_%{name}
-
-%files tests
-%license LICENSE
-%{_datadir}/%{name}/test
+%dir %{_sysconfdir}/containers
+%config(noreplace) %{_sysconfdir}/containers/policy.json
 
 %changelog
+* Mon Mar 31 2026 Eze Garcia <egarcia@een.com> - 2:1.14.5-8
+- Static build with CGO_ENABLED=0 and containers_image_openpgp
+- Drop containers-common dependency (conflicts with containerd.io on bridges)
+- Exclude all graph drivers (only docker:// and docker-archive: needed)
+- Bundle /etc/containers/policy.json (insecureAcceptAnything)
+- Remove tests subpackage
+
 * Tue Feb 17 2026 Jindrich Novy <jnovy@redhat.com> - 2:1.14.5-7
 - rebuild for CVE-2025-68121
 - Resolves: RHEL-149267
