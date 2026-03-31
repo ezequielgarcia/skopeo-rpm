@@ -3,24 +3,24 @@
 
 %define gobuild(o:) CGO_ENABLED=0 GO111MODULE=off go build -compiler gc -tags="${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-static'" -a -v %{?**};
 
-%global import_path github.com/containers/%{name}
+%global srcname skopeo
+%global import_path github.com/containers/%{srcname}
 %global branch release-1.14
 %global commit0 072072bf6e451bbd1e69a40177d047f088eca393
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Epoch: 2
-Name: skopeo
+Name: skopeo-static
 Version: 1.14.5
-Release: 8%{?dist}
-Summary: Inspect container images and repositories on registries
+Release: 1%{?dist}
+Summary: Statically linked skopeo for bridge devices
 License: ASL 2.0
 URL: https://%{import_path}
-# https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
-ExclusiveArch: %{go_arches}
+ExclusiveArch: x86_64
 %if 0%{?branch:1}
 Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
 %else
-Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+Source0: https://%{import_path}/archive/%{commit0}/%{srcname}-%{version}-%{shortcommit0}.tar.gz
 %endif
 BuildRequires: git-core
 BuildRequires: golang >= 1.17.7
@@ -33,12 +33,11 @@ registries without the need to pull them
 
 %prep
 %if 0%{?branch:1}
-%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
+%autosetup -Sgit -n containers-%{srcname}-%{shortcommit0}
 %else
-%autosetup -Sgit -n %{name}-%{commit0}
+%autosetup -Sgit -n %{srcname}-%{commit0}
 %endif
-sed -i 's/install-binary: bin\/%{name}/install-binary:/' Makefile
-sed -i 's/completions: bin\/%{name}/completions:/' Makefile
+sed -i 's/install-binary: bin\/%{srcname}/install-binary:/' Makefile
 sed -i 's/install-docs: docs/install-docs:/' Makefile
 
 %build
@@ -57,11 +56,12 @@ export GOPATH=$(pwd):$(pwd)/vendor
 export GO111MODULE=off
 export BUILDTAGS="containers_image_openpgp exclude_graphdriver_btrfs exclude_graphdriver_devicemapper exclude_graphdriver_overlay exclude_graphdriver_aufs"
 mkdir -p bin
-%gobuild -o bin/%{name} ./cmd/%{name}
+%gobuild -o bin/%{srcname} ./cmd/%{srcname}
 %{__make} docs
 
 %install
-make install-binary install-docs install-completions DESTDIR=%{buildroot} PREFIX=%{_prefix}
+make install-binary install-docs DESTDIR=%{buildroot} PREFIX=%{_prefix}
+mv %{buildroot}%{_bindir}/%{srcname} %{buildroot}%{_bindir}/%{name}
 
 # bundled policy.json (replaces containers-common dependency)
 install -d -p %{buildroot}/%{_sysconfdir}/containers
@@ -81,26 +81,19 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/vendor:%{gopath}
 
 %files
 %license LICENSE
-%doc README.md
 %{_bindir}/%{name}
-%{_mandir}/man1/%{name}*
-%dir %{_datadir}/bash-completion
-%dir %{_datadir}/bash-completion/completions
-%{_datadir}/bash-completion/completions/%{name}
-%dir %{_datadir}/fish/vendor_completions.d
-%{_datadir}/fish/vendor_completions.d/%{name}.fish
-%dir %{_datadir}/zsh/site-functions
-%{_datadir}/zsh/site-functions/_%{name}
+%{_mandir}/man1/%{srcname}*
 %dir %{_sysconfdir}/containers
 %config(noreplace) %{_sysconfdir}/containers/policy.json
 
 %changelog
-* Mon Mar 31 2026 Eze Garcia <egarcia@een.com> - 2:1.14.5-8
+* Mon Mar 31 2026 Eze Garcia <egarcia@een.com> - 2:1.14.5-1
+- Rename to skopeo-static, installs as /usr/bin/skopeo-static
 - Static build with CGO_ENABLED=0 and containers_image_openpgp
 - Drop containers-common dependency (conflicts with containerd.io on bridges)
 - Exclude all graph drivers (only docker:// and docker-archive: needed)
 - Bundle /etc/containers/policy.json (insecureAcceptAnything)
-- Remove tests subpackage
+- Remove tests subpackage and shell completions
 
 * Tue Feb 17 2026 Jindrich Novy <jnovy@redhat.com> - 2:1.14.5-7
 - rebuild for CVE-2025-68121
